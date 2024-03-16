@@ -1,0 +1,2 @@
+# Benchmark params
+MINERS = 'miners'
