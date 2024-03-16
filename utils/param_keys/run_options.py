@@ -1,0 +1,2 @@
+BASELINE = 'baseline'
+COMPARE = 'compare'

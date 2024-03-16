@@ -1,0 +1,34 @@
+[
+  {
+    "pipeline_step": "event_logs_generation",
+    "output_path":"data/generated",
+    "generator_params": {
+      "objectives": {
+      "normalized_sequence_entropy_linear_forgetting": 0.05,
+      "ratio_top_20_variants": 0.4
+      },
+      "config_space": {
+        "mode": [5, 40],
+        "sequence": [0.01, 1],
+        "choice": [0.01, 1],
+        "parallel": [0.01, 1],
+        "loop": [0.01, 1],
+        "silent": [0.01, 1],
+        "lt_dependency": [0.01, 1],
+        "num_traces": [100, 1001],
+        "duplicate": [0],
+        "or": [0]
+      },
+      "n_trials": 20
+    }
+  },  
+  {
+    "pipeline_step": "feature_extraction",
+    "input_path": "data/generated",
+    "feature_params": {"feature_set":["simple_stats", "trace_length", "trace_variant", "activities", "start_activities", "end_activities", "entropies", "complexity"]},
+    "feature_params": {"feature_set":["trace_length"]},
+    "output_path": "output/plots",
+    "real_eventlog_path": "data/log_meta_features.csv",
+    "plot_type": "boxplot"
+  }
+]

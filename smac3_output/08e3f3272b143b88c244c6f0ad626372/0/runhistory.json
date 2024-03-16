@@ -1,0 +1,594 @@
+{
+  "stats": {
+    "submitted": 20,
+    "finished": 20,
+    "running": 0
+  },
+  "data": [
+    [
+      1,
+      null,
+      209652396,
+      null,
+      [
+        0.00867577819307963,
+        0.0027558076636298497
+      ],
+      1.3106598854064941,
+      1,
+      1707410311.58006,
+      1707410312.891378,
+      {}
+    ],
+    [
+      2,
+      null,
+      209652396,
+      null,
+      [
+        0.0870293335964325,
+        0.10459240813207453
+      ],
+      0.043802738189697266,
+      1,
+      1707410312.89313,
+      1707410312.937582,
+      {}
+    ],
+    [
+      3,
+      null,
+      209652396,
+      null,
+      [
+        0.040012477460420914,
+        0.04847568534868508
+      ],
+      0.33039402961730957,
+      1,
+      1707410312.9391959,
+      1707410313.270165,
+      {}
+    ],
+    [
+      4,
+      null,
+      209652396,
+      null,
+      [
+        Infinity,
+        Infinity
+      ],
+      0.0,
+      2,
+      1707410313.272167,
+      1707410313.275018,
+      {
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 184, in run\n    rval = self(config_copy, target_function, kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 257, in __call__\n    return algorithm(config, **algorithm_kwargs)\n  File \"/Users/andreamaldonado/git_tree/tag/tag/generator.py\", line 161, in gen_log\n    tree = generate_process_tree(parameters={\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/sim.py\", line 93, in generate_process_tree\n    return algorithm.apply(**kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/algorithm.py\", line 55, in apply\n    return exec_utils.get_variant(variant).apply(parameters=parameters)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 119, in apply\n    return GeneratedTree(parameters).generate()\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 293, in __init__\n    self.total_activities = int(round(self.draw_random_number_from_distribution()))\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 164, in draw_random_number_from_distribution\n    return self.activity_distribution.rvs(1)[0]\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 468, in rvs\n    return self.dist.rvs(*self.args, **kwds)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 1036, in rvs\n    raise ValueError(message)\nValueError: Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.\n",
+        "error": "ValueError('Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.')"
+      }
+    ],
+    [
+      5,
+      null,
+      209652396,
+      null,
+      [
+        Infinity,
+        Infinity
+      ],
+      0.0,
+      2,
+      1707410313.277013,
+      1707410313.277981,
+      {
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 184, in run\n    rval = self(config_copy, target_function, kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 257, in __call__\n    return algorithm(config, **algorithm_kwargs)\n  File \"/Users/andreamaldonado/git_tree/tag/tag/generator.py\", line 161, in gen_log\n    tree = generate_process_tree(parameters={\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/sim.py\", line 93, in generate_process_tree\n    return algorithm.apply(**kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/algorithm.py\", line 55, in apply\n    return exec_utils.get_variant(variant).apply(parameters=parameters)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 119, in apply\n    return GeneratedTree(parameters).generate()\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 293, in __init__\n    self.total_activities = int(round(self.draw_random_number_from_distribution()))\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 164, in draw_random_number_from_distribution\n    return self.activity_distribution.rvs(1)[0]\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 468, in rvs\n    return self.dist.rvs(*self.args, **kwds)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 1036, in rvs\n    raise ValueError(message)\nValueError: Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.\n",
+        "error": "ValueError('Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.')"
+      }
+    ],
+    [
+      6,
+      null,
+      209652396,
+      null,
+      [
+        Infinity,
+        Infinity
+      ],
+      0.0,
+      2,
+      1707410313.478412,
+      1707410313.479525,
+      {
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 184, in run\n    rval = self(config_copy, target_function, kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 257, in __call__\n    return algorithm(config, **algorithm_kwargs)\n  File \"/Users/andreamaldonado/git_tree/tag/tag/generator.py\", line 161, in gen_log\n    tree = generate_process_tree(parameters={\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/sim.py\", line 93, in generate_process_tree\n    return algorithm.apply(**kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/algorithm.py\", line 55, in apply\n    return exec_utils.get_variant(variant).apply(parameters=parameters)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 119, in apply\n    return GeneratedTree(parameters).generate()\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 293, in __init__\n    self.total_activities = int(round(self.draw_random_number_from_distribution()))\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 164, in draw_random_number_from_distribution\n    return self.activity_distribution.rvs(1)[0]\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 468, in rvs\n    return self.dist.rvs(*self.args, **kwds)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 1036, in rvs\n    raise ValueError(message)\nValueError: Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.\n",
+        "error": "ValueError('Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.')"
+      }
+    ],
+    [
+      7,
+      null,
+      209652396,
+      null,
+      [
+        0.033999062871293395,
+        0.06065631517637373
+      ],
+      0.35938191413879395,
+      1,
+      1707410313.481689,
+      1707410313.8416362,
+      {}
+    ],
+    [
+      8,
+      null,
+      209652396,
+      null,
+      [
+        0.09852683619378044,
+        0.49954121873129165
+      ],
+      0.39683985710144043,
+      1,
+      1707410313.843765,
+      1707410314.24118,
+      {}
+    ],
+    [
+      9,
+      null,
+      209652396,
+      null,
+      [
+        0.22537849349428962,
+        0.1110845324402908
+      ],
+      0.02721691131591797,
+      1,
+      1707410314.243447,
+      1707410314.2712588,
+      {}
+    ],
+    [
+      10,
+      null,
+      209652396,
+      null,
+      [
+        Infinity,
+        Infinity
+      ],
+      0.0,
+      2,
+      1707410314.2733371,
+      1707410314.274355,
+      {
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 184, in run\n    rval = self(config_copy, target_function, kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 257, in __call__\n    return algorithm(config, **algorithm_kwargs)\n  File \"/Users/andreamaldonado/git_tree/tag/tag/generator.py\", line 161, in gen_log\n    tree = generate_process_tree(parameters={\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/sim.py\", line 93, in generate_process_tree\n    return algorithm.apply(**kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/algorithm.py\", line 55, in apply\n    return exec_utils.get_variant(variant).apply(parameters=parameters)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 119, in apply\n    return GeneratedTree(parameters).generate()\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 293, in __init__\n    self.total_activities = int(round(self.draw_random_number_from_distribution()))\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 164, in draw_random_number_from_distribution\n    return self.activity_distribution.rvs(1)[0]\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 468, in rvs\n    return self.dist.rvs(*self.args, **kwds)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 1036, in rvs\n    raise ValueError(message)\nValueError: Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.\n",
+        "error": "ValueError('Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.')"
+      }
+    ],
+    [
+      11,
+      null,
+      209652396,
+      null,
+      [
+        Infinity,
+        Infinity
+      ],
+      0.0,
+      2,
+      1707410314.276593,
+      1707410314.2775638,
+      {
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 184, in run\n    rval = self(config_copy, target_function, kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 257, in __call__\n    return algorithm(config, **algorithm_kwargs)\n  File \"/Users/andreamaldonado/git_tree/tag/tag/generator.py\", line 161, in gen_log\n    tree = generate_process_tree(parameters={\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/sim.py\", line 93, in generate_process_tree\n    return algorithm.apply(**kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/algorithm.py\", line 55, in apply\n    return exec_utils.get_variant(variant).apply(parameters=parameters)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 119, in apply\n    return GeneratedTree(parameters).generate()\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 293, in __init__\n    self.total_activities = int(round(self.draw_random_number_from_distribution()))\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 164, in draw_random_number_from_distribution\n    return self.activity_distribution.rvs(1)[0]\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 468, in rvs\n    return self.dist.rvs(*self.args, **kwds)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 1036, in rvs\n    raise ValueError(message)\nValueError: Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.\n",
+        "error": "ValueError('Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.')"
+      }
+    ],
+    [
+      12,
+      null,
+      209652396,
+      null,
+      [
+        0.07750566951134852,
+        0.12288699083254578
+      ],
+      0.1145319938659668,
+      1,
+      1707410314.2796621,
+      1707410314.394741,
+      {}
+    ],
+    [
+      13,
+      null,
+      209652396,
+      null,
+      [
+        0.0018672556795386042,
+        0.008071380400834657
+      ],
+      1.0422191619873047,
+      1,
+      1707410314.397422,
+      1707410315.440257,
+      {}
+    ],
+    [
+      14,
+      null,
+      209652396,
+      null,
+      [
+        0.05197768126507163,
+        0.001655997135938581
+      ],
+      2.357675075531006,
+      1,
+      1707410315.762815,
+      1707410318.121088,
+      {}
+    ],
+    [
+      15,
+      null,
+      209652396,
+      null,
+      [
+        0.001044840657314805,
+        0.006689670837079269
+      ],
+      0.5169379711151123,
+      1,
+      1707410318.124809,
+      1707410318.642358,
+      {}
+    ],
+    [
+      16,
+      null,
+      209652396,
+      null,
+      [
+        0.012600338421428381,
+        0.012826990609081249
+      ],
+      0.6455528736114502,
+      1,
+      1707410318.6463501,
+      1707410319.292554,
+      {}
+    ],
+    [
+      17,
+      null,
+      209652396,
+      null,
+      [
+        Infinity,
+        Infinity
+      ],
+      0.0,
+      2,
+      1707410319.296553,
+      1707410319.297786,
+      {
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 184, in run\n    rval = self(config_copy, target_function, kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 257, in __call__\n    return algorithm(config, **algorithm_kwargs)\n  File \"/Users/andreamaldonado/git_tree/tag/tag/generator.py\", line 161, in gen_log\n    tree = generate_process_tree(parameters={\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/sim.py\", line 93, in generate_process_tree\n    return algorithm.apply(**kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/algorithm.py\", line 55, in apply\n    return exec_utils.get_variant(variant).apply(parameters=parameters)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 119, in apply\n    return GeneratedTree(parameters).generate()\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 293, in __init__\n    self.total_activities = int(round(self.draw_random_number_from_distribution()))\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 164, in draw_random_number_from_distribution\n    return self.activity_distribution.rvs(1)[0]\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 468, in rvs\n    return self.dist.rvs(*self.args, **kwds)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 1036, in rvs\n    raise ValueError(message)\nValueError: Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.\n",
+        "error": "ValueError('Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.')"
+      }
+    ],
+    [
+      18,
+      null,
+      209652396,
+      null,
+      [
+        0.017072958297623897,
+        1.0261883261615881e-05
+      ],
+      0.09042215347290039,
+      1,
+      1707410319.3014882,
+      1707410319.392482,
+      {}
+    ],
+    [
+      19,
+      null,
+      209652396,
+      null,
+      [
+        Infinity,
+        Infinity
+      ],
+      0.0,
+      2,
+      1707410319.3967192,
+      1707410319.3978062,
+      {
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 184, in run\n    rval = self(config_copy, target_function, kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/smac/runner/target_function_runner.py\", line 257, in __call__\n    return algorithm(config, **algorithm_kwargs)\n  File \"/Users/andreamaldonado/git_tree/tag/tag/generator.py\", line 161, in gen_log\n    tree = generate_process_tree(parameters={\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/sim.py\", line 93, in generate_process_tree\n    return algorithm.apply(**kwargs)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/algorithm.py\", line 55, in apply\n    return exec_utils.get_variant(variant).apply(parameters=parameters)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 119, in apply\n    return GeneratedTree(parameters).generate()\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 293, in __init__\n    self.total_activities = int(round(self.draw_random_number_from_distribution()))\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/pm4py/algo/simulation/tree_generator/variants/ptandloggenerator.py\", line 164, in draw_random_number_from_distribution\n    return self.activity_distribution.rvs(1)[0]\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 468, in rvs\n    return self.dist.rvs(*self.args, **kwds)\n  File \"/Users/andreamaldonado/miniconda3/envs/tag/lib/python3.9/site-packages/scipy/stats/_distn_infrastructure.py\", line 1036, in rvs\n    raise ValueError(message)\nValueError: Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.\n",
+        "error": "ValueError('Domain error in arguments. The `scale` parameter must be positive for all distributions, and many distributions have restrictions on shape parameters. Please see the `scipy.stats.triang` documentation for details.')"
+      }
+    ],
+    [
+      20,
+      null,
+      209652396,
+      null,
+      [
+        0.05002170667986583,
+        0.008412895285895018
+      ],
+      0.2965569496154785,
+      1,
+      1707410319.401689,
+      1707410319.698795,
+      {}
+    ]
+  ],
+  "configs": {
+    "1": {
+      "choice": 0.27420973585918546,
+      "duplicate": 0,
+      "loop": 0.6243590484932066,
+      "lt_dependency": 0.11643280289135872,
+      "mode": 12,
+      "num_traces": 876,
+      "or": 0,
+      "parallel": 0.5005605065450072,
+      "sequence": 0.9603757594153285,
+      "silent": 0.9968127990048379
+    },
+    "2": {
+      "choice": 0.7756838992610574,
+      "duplicate": 0,
+      "loop": 0.04211317901499569,
+      "lt_dependency": 0.5104543915577233,
+      "mode": 28,
+      "num_traces": 324,
+      "or": 0,
+      "parallel": 0.5131619844958186,
+      "sequence": 0.2709401994291693,
+      "silent": 0.17004768340848386
+    },
+    "3": {
+      "choice": 0.6535194861143827,
+      "duplicate": 0,
+      "loop": 0.9576082275714726,
+      "lt_dependency": 0.32692241824232043,
+      "mode": 21,
+      "num_traces": 396,
+      "or": 0,
+      "parallel": 0.7672931762319058,
+      "sequence": 0.6588770150579513,
+      "silent": 0.4562873648200184
+    },
+    "4": {
+      "choice": 0.16388946956023576,
+      "duplicate": 0,
+      "loop": 0.39516660073772075,
+      "lt_dependency": 0.7955099861510098,
+      "mode": 36,
+      "num_traces": 745,
+      "or": 0,
+      "parallel": 0.25395125332288443,
+      "sequence": 0.07748097266070544,
+      "silent": 0.6486980180162937
+    },
+    "5": {
+      "choice": 0.04490061519667506,
+      "duplicate": 0,
+      "loop": 0.8006045478861779,
+      "lt_dependency": 0.6931793973967433,
+      "mode": 32,
+      "num_traces": 607,
+      "or": 0,
+      "parallel": 0.2829401990491897,
+      "sequence": 0.520932387933135,
+      "silent": 0.3123690354358405
+    },
+    "6": {
+      "choice": 0.892855270774259,
+      "duplicate": 0,
+      "loop": 0.09625800670452529,
+      "lt_dependency": 0.7827238845235909,
+      "mode": 32,
+      "num_traces": 715,
+      "or": 0,
+      "parallel": 0.1376370346783048,
+      "sequence": 0.1696964227061463,
+      "silent": 0.14680112183512767
+    },
+    "7": {
+      "choice": 0.7180374727086953,
+      "duplicate": 0,
+      "loop": 0.38960710363751994,
+      "lt_dependency": 0.8342936470924586,
+      "mode": 28,
+      "num_traces": 612,
+      "or": 0,
+      "parallel": 0.442661634261348,
+      "sequence": 0.3700736632331964,
+      "silent": 0.2607586865143843
+    },
+    "8": {
+      "choice": 0.6494351719359895,
+      "duplicate": 0,
+      "loop": 0.9263406719097345,
+      "lt_dependency": 0.8011669785745563,
+      "mode": 19,
+      "num_traces": 656,
+      "or": 0,
+      "parallel": 0.6739314909219778,
+      "sequence": 0.11102436264054778,
+      "silent": 0.11927138975266208
+    },
+    "9": {
+      "choice": 0.6067357423109274,
+      "duplicate": 0,
+      "loop": 0.7938077877018379,
+      "lt_dependency": 0.780375183440352,
+      "mode": 10,
+      "num_traces": 116,
+      "or": 0,
+      "parallel": 0.7006548839679922,
+      "sequence": 0.5744948027137008,
+      "silent": 0.47164766512774325
+    },
+    "10": {
+      "choice": 0.5533253688880515,
+      "duplicate": 0,
+      "loop": 0.964026132896019,
+      "lt_dependency": 0.03001621346592246,
+      "mode": 9,
+      "num_traces": 511,
+      "or": 0,
+      "parallel": 0.36591282156804816,
+      "sequence": 0.322274067414942,
+      "silent": 0.6565772422107444
+    },
+    "11": {
+      "choice": 0.5494343511669278,
+      "duplicate": 0,
+      "loop": 0.5336059705553754,
+      "lt_dependency": 0.8713120267643509,
+      "mode": 39,
+      "num_traces": 657,
+      "or": 0,
+      "parallel": 0.06962321691297713,
+      "sequence": 0.44421549832769713,
+      "silent": 0.2519813360815867
+    },
+    "12": {
+      "choice": 0.4432113391500656,
+      "duplicate": 0,
+      "loop": 0.08032569761590806,
+      "lt_dependency": 0.46686456863040254,
+      "mode": 14,
+      "num_traces": 951,
+      "or": 0,
+      "parallel": 0.2182787354631025,
+      "sequence": 0.21678798853388634,
+      "silent": 0.6597662935706207
+    },
+    "13": {
+      "choice": 0.42941825134551564,
+      "duplicate": 0,
+      "loop": 0.572364115482993,
+      "lt_dependency": 0.9788321588104364,
+      "mode": 23,
+      "num_traces": 652,
+      "or": 0,
+      "parallel": 0.670099048291211,
+      "sequence": 0.9884900996786339,
+      "silent": 0.16737988780906454
+    },
+    "14": {
+      "choice": 0.20461653806325297,
+      "duplicate": 0,
+      "loop": 0.9769934773084338,
+      "lt_dependency": 0.32480334760003626,
+      "mode": 25,
+      "num_traces": 629,
+      "or": 0,
+      "parallel": 0.25626561208475845,
+      "sequence": 0.7024844825643293,
+      "silent": 0.7280017370214441
+    },
+    "15": {
+      "choice": 0.10513742381502343,
+      "duplicate": 0,
+      "loop": 0.1289945956010372,
+      "lt_dependency": 0.272735596030051,
+      "mode": 30,
+      "num_traces": 343,
+      "or": 0,
+      "parallel": 0.9532215214018152,
+      "sequence": 0.5854601439095001,
+      "silent": 0.6103292819866452
+    },
+    "16": {
+      "choice": 0.8227832975494558,
+      "duplicate": 0,
+      "loop": 0.7418709436043187,
+      "lt_dependency": 0.07350602138529651,
+      "mode": 16,
+      "num_traces": 847,
+      "or": 0,
+      "parallel": 0.5961215119591207,
+      "sequence": 0.8156598415054525,
+      "silent": 0.9565227983759916
+    },
+    "17": {
+      "choice": 0.8395654584238159,
+      "duplicate": 0,
+      "loop": 0.2899788929506455,
+      "lt_dependency": 0.5709354396645094,
+      "mode": 9,
+      "num_traces": 711,
+      "or": 0,
+      "parallel": 0.23085081631421214,
+      "sequence": 0.8822921651400499,
+      "silent": 0.4296164980725979
+    },
+    "18": {
+      "choice": 0.10613026303513065,
+      "duplicate": 0,
+      "loop": 0.04879591433177747,
+      "lt_dependency": 0.6955473981763196,
+      "mode": 29,
+      "num_traces": 104,
+      "or": 0,
+      "parallel": 0.5765293867329646,
+      "sequence": 0.4025406834385148,
+      "silent": 0.647550297237341
+    },
+    "19": {
+      "choice": 0.37503791895435445,
+      "duplicate": 0,
+      "loop": 0.6087970645475955,
+      "lt_dependency": 0.4201203645695233,
+      "mode": 38,
+      "num_traces": 118,
+      "or": 0,
+      "parallel": 0.5803957610736585,
+      "sequence": 0.30446258134658233,
+      "silent": 0.5063111381074352
+    },
+    "20": {
+      "choice": 0.6635718021177582,
+      "duplicate": 0,
+      "loop": 0.29717683113833965,
+      "lt_dependency": 0.6218352747088531,
+      "mode": 20,
+      "num_traces": 222,
+      "or": 0,
+      "parallel": 0.3052995026964705,
+      "sequence": 0.5742652615942522,
+      "silent": 0.5949640336356915
+    }
+  },
+  "config_origins": {
+    "1": "Initial Design: Sobol",
+    "2": "Initial Design: Sobol",
+    "3": "Initial Design: Sobol",
+    "4": "Initial Design: Sobol",
+    "5": "Initial Design: Sobol",
+    "6": "Acquisition Function Maximizer: Random Search (sorted)",
+    "7": "Acquisition Function Maximizer: Random Search (sorted)",
+    "8": "Acquisition Function Maximizer: Random Search (sorted)",
+    "9": "Acquisition Function Maximizer: Random Search (sorted)",
+    "10": "Acquisition Function Maximizer: Random Search (sorted)",
+    "11": "Acquisition Function Maximizer: Random Search (sorted)",
+    "12": "Acquisition Function Maximizer: Random Search (sorted)",
+    "13": "Acquisition Function Maximizer: Random Search (sorted)",
+    "14": "Acquisition Function Maximizer: Random Search (sorted)",
+    "15": "Acquisition Function Maximizer: Random Search (sorted)",
+    "16": "Acquisition Function Maximizer: Random Search (sorted)",
+    "17": "Acquisition Function Maximizer: Random Search (sorted)",
+    "18": "Acquisition Function Maximizer: Random Search (sorted)",
+    "19": "Acquisition Function Maximizer: Random Search (sorted)",
+    "20": "Random Search"
+  }
+}
