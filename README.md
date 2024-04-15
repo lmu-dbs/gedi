@@ -8,15 +8,16 @@
 - [Usage](#usage)
 - [References](#references)
 
-## Installation
-### Requirements
+## Requirements
 - [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 - Graphviz on your OS e.g.
 For MacOS:
 ```console
 brew install graphviz
+brew install swig
 ```
 
+## Installation
 - For smac:
 ```console
 conda install pyrfr swig
