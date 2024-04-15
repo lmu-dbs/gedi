@@ -1,4 +1,4 @@
-name: tag
+name: gedi
 channels:
   - conda-forge
 dependencies:
