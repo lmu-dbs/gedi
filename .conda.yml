@@ -10,7 +10,7 @@ dependencies:
   - matplotlib
   - pip
   - pip:
-    - pm4py
+    - pm4py==2.7.2
     - imblearn
     - seaborn
     - feeed
