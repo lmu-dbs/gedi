@@ -15,7 +15,6 @@ from pm4py.algo.evaluation.generalization import algorithm as generalization_eva
 from pm4py.algo.evaluation.simplicity import algorithm as simplicity_evaluator
 from pm4py.objects.bpmn.obj import BPMN
 from pm4py.objects.log.importer.xes import importer as xes_importer
-from pm4py.objects.log.obj import EventLog
 from tag.utils.io_helpers import dump_features_json
 from tqdm import tqdm
 from utils.param_keys import INPUT_PATH, OUTPUT_PATH
@@ -45,7 +44,7 @@ class BenchmarkTest:
         if True:
              num_cores = multiprocessing.cpu_count() if len(
                         event_logs) >= multiprocessing.cpu_count() else len(event_logs)
-            #  self.benchmark_wrapper(event_logs[0], miners=self.params[MINERS])# TESTING
+             #self.benchmark_wrapper(event_logs[0], miners=self.params[MINERS])# TESTING
              with multiprocessing.Pool(num_cores) as p:
                  print(f"INFO: Benchmark starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(event_logs)} files...")
                  p.map(partial(self.benchmark_wrapper, miners = self.params[MINERS]), event_logs)
