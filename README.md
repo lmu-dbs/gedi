@@ -8,15 +8,16 @@
 - [Usage](#usage)
 - [References](#references)
 
-## Installation
-### Requirements
+## Requirements
 - [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 - Graphviz on your OS e.g.
 For MacOS:
 ```console
 brew install graphviz
+brew install swig
 ```
 
+## Installation
 - For smac:
 ```console
 conda install pyrfr swig
@@ -26,7 +27,7 @@ conda install pyrfr swig
 
 ### Startup
 ```console
-conda activate tag
+conda activate gedi
 python main.py -o config_files/options/baseline.json -a config_files/algorithm/experiment_test.json
 ```
 ## Usage
@@ -40,7 +41,7 @@ We also include two notebooks, which output experimental results as in our paper
 
 To run different steps of the GEDI pipeline, please adapt the `.json` accordingly.
 ```console
-conda activate tag
+conda activate gedi
 python main.py -o config_files/options/baseline.json -a config_files/algorithm/<pipeline-step>.json
 ```
 For reference of possible keys and values for each step, please see `config_files/algorithm/experiment_test.json`.

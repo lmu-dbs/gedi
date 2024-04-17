@@ -1,4 +1,4 @@
-name: tag
+name: gedi
 channels:
   - conda-forge
 dependencies:
@@ -10,9 +10,11 @@ dependencies:
   - matplotlib
   - pip
   - pip:
-    - pm4py
+    - pm4py==2.7.2
     - imblearn
     - seaborn
     - feeed
     - smac
     - ConfigSpace
+    - tqdm
+    - Levenshtein
