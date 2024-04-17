@@ -4,7 +4,7 @@
     "output_path": "output",
     "generator_params": {
       "experiment": {
-        "input_path": "data/grid_objectives_debug.csv",
+        "input_path": "data/grid_objectives.csv",
         "objectives": ["epa_normalized_variant_entropy"],
         "objectives": ["ratio_most_common_variant", "epa_normalized_sequence_entropy"], 
         "objectives": ["ratio_top_20_variants","epa_normalized_sequence_entropy_linear_forgetting"]

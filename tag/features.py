@@ -47,6 +47,9 @@ class EventLogFeatures(EventLogFile):
                 self.filename = os.path.split(input_path)[-1]
             else:
                 self.root_path = Path(input_path)
+                # Check if directory exists, if not, create it
+                if not os.path.exists(input_path):
+                    os.makedirs(input_path)
                 self.filename = os.listdir(input_path)
 
         try:

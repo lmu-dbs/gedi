@@ -46,6 +46,7 @@
     "pipeline_step": "benchmark_test",
     "benchmark_test": "discovery",
     "input_path":"data/test_2",
+    "output_path":"output",
     "miners" : ["inductive", "heuristics", "imf", "ilp", "sm"]
   }
 ]
