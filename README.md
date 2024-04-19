@@ -34,7 +34,7 @@ python main.py -o config_files/options/baseline.json -a config_files/algorithm/e
 Our pipeline offers several pipeline steps, which can be run sequentially or partially:
 - feature_extraction
 - event_logs_generation
-- benchmark_test
+- benchmark
 - evaluation_plotter
 
 We also include two notebooks, which output experimental results as in our paper.
