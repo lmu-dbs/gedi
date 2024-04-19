@@ -24,7 +24,8 @@ jobs:
     - name: Install gedi
       run: |
         python -m pip install --upgrade pip
-        pip install .
+        conda env create -f .conda.yml
+        conda activate gedi
 
     # Running the test scripts and comparing the outputs
     - name: Run feature_extraction test
