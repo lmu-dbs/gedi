@@ -40,14 +40,15 @@ class BenchmarkTest:
         if params != None:
             self.params = params
 
+        log_counter = [*range(0,len(event_logs))]
 
         if True:
              num_cores = multiprocessing.cpu_count() if len(
                         event_logs) >= multiprocessing.cpu_count() else len(event_logs)
-             #self.benchmark_wrapper(event_logs[0], miners=self.params[MINERS])# TESTING
+             #self.benchmark_wrapper((event_logs[0],0), miners=self.params[MINERS])# TESTING
              with multiprocessing.Pool(num_cores) as p:
                  print(f"INFO: Benchmark starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(event_logs)} files...")
-                 p.map(partial(self.benchmark_wrapper, miners = self.params[MINERS]), event_logs)
+                 p.map(partial(self.benchmark_wrapper, miners = self.params[MINERS]), zip(event_logs, log_counter))
 
              # Aggregates metafeatures in saved Jsons into dataframe
              self.root_path = self.params[INPUT_PATH]
@@ -76,7 +77,10 @@ class BenchmarkTest:
               f" and {len(benchmark_results)} event-logs. Saved benchmark to {self.filepath}.")
         print("========================= ~ BenchmarkTest =============================")
 
-    def benchmark_wrapper(self, event_log="test", miners=['inductive']):
+    def benchmark_wrapper(self, event_log, miners=['inductive']):
+        log_counter = event_log[1]
+        event_log = event_log[0]
+
         dump_path = os.path.join(self.params[OUTPUT_PATH],
                                  os.path.split(self.params[INPUT_PATH])[-1])
         dump_path= os.path.join(self.params[OUTPUT_PATH],
@@ -88,8 +92,10 @@ class BenchmarkTest:
         benchmark_results = pd.DataFrame()
         # TODO: Use iteratevely generated name for log name in dataframe for passed unnamed logs instead of whole log. E.g. gen_el_1, gen_el_2,...
         if isinstance(event_log, str):
-            results = {'log': event_log.replace(".xes", "")}
+            log_name = event_log.replace(".xes", "")
+            results = {'log': log_name}
         else:
+            log_name = "gen_el_"+str(log_counter)
             results = {"log": event_log}
             
         for miner in miners:
@@ -103,8 +109,10 @@ class BenchmarkTest:
             results[f"pnsize_{miner}"]=benchmark_results[4]
             results[f"cfc_{miner}"]=benchmark_results[3]
 
+        results['log'] = log_name
+
         print(f"    SUCCESS: {miner} miner for {results} took {dt.now()-start_miner} sec.")
-        dump_features_json(results, dump_path, event_log.replace(".xes",""), content_type="benchmark")
+        dump_features_json(results, dump_path, log_name, content_type="benchmark")
         return
 
     def split_miner_wrapper(self, log_path="data/real_event_logs/BPI_Challenges/BPI_Challenge_2012.xes"):
