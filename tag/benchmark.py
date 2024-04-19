@@ -157,14 +157,14 @@ class BenchmarkTest:
                 log_path = params[INPUT_PATH]
             else:
                 log_path = os.path.join(params[INPUT_PATH], log+".xes")
-            success_msg = f"        SUCCESS: Benchmarking event-log {log} with {miner} took"# {dt.now()-start_bench} sec."
+            success_msg = f"        SUCCESS: Benchmarking event-log {log} with {miner} took "# {dt.now()-start_bench} sec."
             try:
                 log = xes_importer.apply(f"{log_path}", parameters={"show_progress_bar": False})
             except FileNotFoundError:
                 print(f"        FAILED: Cannot find {log_path}" )
         else:
             log=log
-            success_msg = f"        SUCCESS: Benchmarking one event-log with {miner} took"# {dt.now()-start_bench} sec."
+            success_msg = f"        SUCCESS: Benchmarking one event-log with {miner} took "# {dt.now()-start_bench} sec."
         if miner == 'sm':
             bpmn_graph = self.split_miner_wrapper(log_path)
             if bpmn_graph is None:
