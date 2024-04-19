@@ -47,4 +47,4 @@ For reference of possible keys and values for each step, please see `config_file
 To run the whole pipeline please create a new `.json` file, specifying all steps you want to run and specify desired keys and values for each step. 
 
 ## References
-The framework used by `GEDI` is taken directly from the original paper by [...]. If you would like to discuss the paper, or corresponding research questions on benchmarking process mining tasks please email the authors.
+The framework used by `GEDI` is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl. If you would like to discuss the paper, or corresponding research questions on benchmarking process mining tasks please email the authors.
