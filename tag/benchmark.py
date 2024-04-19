@@ -6,6 +6,7 @@ import subprocess
 
 from datetime import datetime as dt
 from functools import partial, partialmethod
+from itertools import repeat
 from pathlib import Path
 from pm4py import read_xes, convert_to_bpmn, read_bpmn, convert_to_petri_net, check_soundness
 from pm4py import discover_petri_net_inductive, discover_petri_net_ilp, discover_petri_net_heuristics
@@ -15,7 +16,6 @@ from pm4py.algo.evaluation.generalization import algorithm as generalization_eva
 from pm4py.algo.evaluation.simplicity import algorithm as simplicity_evaluator
 from pm4py.objects.bpmn.obj import BPMN
 from pm4py.objects.log.importer.xes import importer as xes_importer
-from pm4py.objects.log.obj import EventLog
 from tag.utils.io_helpers import dump_features_json
 from tqdm import tqdm
 from utils.param_keys import INPUT_PATH, OUTPUT_PATH
@@ -41,14 +41,15 @@ class BenchmarkTest:
         if params != None:
             self.params = params
 
+        log_counter = [*range(0,len(event_logs))]
 
         if True:
              num_cores = multiprocessing.cpu_count() if len(
                         event_logs) >= multiprocessing.cpu_count() else len(event_logs)
-            #  self.benchmark_wrapper(event_logs[0], miners=self.params[MINERS])# TESTING
+             #self.benchmark_wrapper((event_logs[0],0), miners=self.params[MINERS])# TESTING
              with multiprocessing.Pool(num_cores) as p:
                  print(f"INFO: Benchmark starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(event_logs)} files...")
-                 p.map(partial(self.benchmark_wrapper, miners = self.params[MINERS]), event_logs)
+                 p.starmap(self.benchmark_wrapper, zip(event_logs, log_counter, repeat(self.params[MINERS])))
 
              # Aggregates metafeatures in saved Jsons into dataframe
              self.root_path = self.params[INPUT_PATH]
@@ -77,7 +78,7 @@ class BenchmarkTest:
               f" and {len(benchmark_results)} event-logs. Saved benchmark to {self.filepath}.")
         print("========================= ~ BenchmarkTest =============================")
 
-    def benchmark_wrapper(self, event_log="test", miners=['inductive']):
+    def benchmark_wrapper(self, event_log, log_counter=0, miners=['inductive']):
         dump_path = os.path.join(self.params[OUTPUT_PATH],
                                  os.path.split(self.params[INPUT_PATH])[-1])
         dump_path= os.path.join(self.params[OUTPUT_PATH],
@@ -87,10 +88,11 @@ class BenchmarkTest:
             dump_path = os.path.split(dump_path)[0]
 
         benchmark_results = pd.DataFrame()
-        # TODO: Use iteratevely generated name for log name in dataframe for passed unnamed logs instead of whole log. E.g. gen_el_1, gen_el_2,...
         if isinstance(event_log, str):
-            results = {'log': event_log.replace(".xes", "")}
+            log_name = event_log.replace(".xes", "")
+            results = {'log': log_name}
         else:
+            log_name = "gen_el_"+str(log_counter)
             results = {"log": event_log}
             
         for miner in miners:
@@ -104,8 +106,10 @@ class BenchmarkTest:
             results[f"pnsize_{miner}"]=benchmark_results[4]
             results[f"cfc_{miner}"]=benchmark_results[3]
 
+        results['log'] = log_name
+
         print(f"    SUCCESS: {miner} miner for {results} took {dt.now()-start_miner} sec.")
-        dump_features_json(results, dump_path, event_log.replace(".xes",""), content_type="benchmark")
+        dump_features_json(results, dump_path, log_name, content_type="benchmark")
         return
 
     def split_miner_wrapper(self, log_path="data/real_event_logs/BPI_Challenges/BPI_Challenge_2012.xes"):
@@ -158,14 +162,14 @@ class BenchmarkTest:
                 log_path = params[INPUT_PATH]
             else:
                 log_path = os.path.join(params[INPUT_PATH], log+".xes")
-            success_msg = f"        SUCCESS: Benchmarking event-log {log} with {miner} took"# {dt.now()-start_bench} sec."
+            success_msg = f"        SUCCESS: Benchmarking event-log {log} with {miner} took "# {dt.now()-start_bench} sec."
             try:
                 log = xes_importer.apply(f"{log_path}", parameters={"show_progress_bar": False})
             except FileNotFoundError:
                 print(f"        FAILED: Cannot find {log_path}" )
         else:
             log=log
-            success_msg = f"        SUCCESS: Benchmarking one event-log with {miner} took"# {dt.now()-start_bench} sec."
+            success_msg = f"        SUCCESS: Benchmarking one event-log with {miner} took "# {dt.now()-start_bench} sec."
         if miner == 'sm':
             bpmn_graph = self.split_miner_wrapper(log_path)
             if bpmn_graph is None:
