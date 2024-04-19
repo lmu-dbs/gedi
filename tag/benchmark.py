@@ -6,6 +6,7 @@ import subprocess
 
 from datetime import datetime as dt
 from functools import partial, partialmethod
+from itertools import repeat
 from pathlib import Path
 from pm4py import read_xes, convert_to_bpmn, read_bpmn, convert_to_petri_net, check_soundness
 from pm4py import discover_petri_net_inductive, discover_petri_net_ilp, discover_petri_net_heuristics
@@ -48,7 +49,7 @@ class BenchmarkTest:
              #self.benchmark_wrapper((event_logs[0],0), miners=self.params[MINERS])# TESTING
              with multiprocessing.Pool(num_cores) as p:
                  print(f"INFO: Benchmark starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(event_logs)} files...")
-                 p.map(partial(self.benchmark_wrapper, miners = self.params[MINERS]), zip(event_logs, log_counter))
+                 p.starmap(self.benchmark_wrapper, zip(event_logs, log_counter, repeat(self.params[MINERS])))
 
              # Aggregates metafeatures in saved Jsons into dataframe
              self.root_path = self.params[INPUT_PATH]
@@ -77,10 +78,7 @@ class BenchmarkTest:
               f" and {len(benchmark_results)} event-logs. Saved benchmark to {self.filepath}.")
         print("========================= ~ BenchmarkTest =============================")
 
-    def benchmark_wrapper(self, event_log, miners=['inductive']):
-        log_counter = event_log[1]
-        event_log = event_log[0]
-
+    def benchmark_wrapper(self, event_log, log_counter=0, miners=['inductive']):
         dump_path = os.path.join(self.params[OUTPUT_PATH],
                                  os.path.split(self.params[INPUT_PATH])[-1])
         dump_path= os.path.join(self.params[OUTPUT_PATH],
@@ -90,7 +88,6 @@ class BenchmarkTest:
             dump_path = os.path.split(dump_path)[0]
 
         benchmark_results = pd.DataFrame()
-        # TODO: Use iteratevely generated name for log name in dataframe for passed unnamed logs instead of whole log. E.g. gen_el_1, gen_el_2,...
         if isinstance(event_log, str):
             log_name = event_log.replace(".xes", "")
             results = {'log': log_name}
