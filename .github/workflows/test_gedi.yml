@@ -64,7 +64,7 @@ jobs:
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/generation.json
 
     - name: Compare output
-      run: diff output/features/2_enself_rt20v/genEL2_02_07.json output/features/2_enself_rt20v/genEL2_02_07.json
+      run: diff output/features/2_enself_rt20v/genEL1_04_02.json output/features/2_enself_rt20v/genEL1_04_02.json
 
   test_benchmark:
     runs-on: ubuntu-latest
