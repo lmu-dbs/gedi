@@ -2,7 +2,7 @@ import json
 import os
 import warnings
 
-from tag.utils.io_helpers import sort_files
+from gedi.utils.io_helpers import sort_files
 from tqdm import tqdm
 from utils.param_keys import INPUT_NAME, FILENAME, FOLDER_PATH, PARAMS
 
@@ -63,8 +63,8 @@ def get_files_and_kwargs(params: dict):
 
     #TODO: generate parent directories if they don't exist
     if input_name == 'test':
-        filename_list = list(tqdm(sort_files(os.listdir('data/test_2'))))
-        kwargs = {FILENAME: filename_list, FOLDER_PATH: 'data/test_2'}
+        filename_list = list(tqdm(sort_files(os.listdir('data/test'))))
+        kwargs = {FILENAME: filename_list, FOLDER_PATH: 'data/test'}
     elif input_name == 'realLogs':
         filename_list = list(tqdm(sort_files(os.listdir('data/real_event_logs'))))
         kwargs = {FILENAME: filename_list, FOLDER_PATH: 'data/real_event_logs'}

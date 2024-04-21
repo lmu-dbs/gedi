@@ -1,12 +1,12 @@
 import config
 import pandas as pd
 from datetime import datetime as dt
-from tag.generator import GenerateEventLogs
-from tag.features import EventLogFeatures
-from tag.analyser import FeatureAnalyser
-from tag.augmentation import InstanceAugmentator
-from tag.benchmark import BenchmarkTest
-from tag.plotter import BenchmarkPlotter, FeaturesPlotter, AugmentationPlotter, GenerationPlotter
+from gedi.generator import GenerateEventLogs
+from gedi.features import EventLogFeatures
+from gedi.analyser import FeatureAnalyser
+from gedi.augmentation import InstanceAugmentator
+from gedi.benchmark import BenchmarkTest
+from gedi.plotter import BenchmarkPlotter, FeaturesPlotter, AugmentationPlotter, GenerationPlotter
 from utils.default_argparse import ArgParser
 from utils.param_keys import *
 from utils.param_keys.run_options import *
@@ -57,8 +57,8 @@ def run(kwargs:dict, model_paramas_list: list, filename_list:list):
 
 
 if __name__=='__main__':
-    start_tag = dt.now()
-    print(f'INFO: TAG starting {start_tag}')
+    start_gedi = dt.now()
+    print(f'INFO: GEDI starting {start_gedi}')
 
     args = ArgParser().parse('GEDI main')
     run_params = config.get_run_params(args.run_params_json)
@@ -70,4 +70,4 @@ if __name__=='__main__':
     else:
         load(args.result_load_files, kwargs)
 
-    print(f'SUCCESS: TAG took {dt.now()-start_tag} sec.')
+    print(f'SUCCESS: GEDI took {dt.now()-start_gedi} sec.')

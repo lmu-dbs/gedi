@@ -1,3 +1,7 @@
 smac3_output/
 data/
 output/
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/*
+gedi.egg-info/
+build/

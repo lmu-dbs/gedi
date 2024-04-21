@@ -16,12 +16,11 @@ For MacOS:
 brew install graphviz
 brew install swig
 ```
-
-## Installation
 - For smac:
 ```console
 conda install pyrfr swig
 ```
+## Installation
 - `conda env create -f .conda.yml`
 - Install [Feature Extractor for Event Data (feeed)](https://github.com/lmu-dbs/feeed) in the newly installed conda environment: `pip install feeed`
 
@@ -33,7 +32,7 @@ python main.py -o config_files/options/baseline.json -a config_files/algorithm/e
 ## Usage
 Our pipeline offers several pipeline steps, which can be run sequentially or partially:
 - feature_extraction
-- event_logs_generation
+- generation
 - benchmark
 - evaluation_plotter
 
