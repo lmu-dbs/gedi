@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          miniconda-version:"latest""
+          miniconda-version:"latest"
           activate-environment: gedi
           environment-file: .conda.yml
           auto-activate-base: false
