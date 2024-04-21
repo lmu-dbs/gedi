@@ -9,7 +9,7 @@ on:
 # Specifies the jobs that are to be run
 jobs:
   build-linux:
-    name: Install conda env
+    name: Test feature extraction
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
@@ -27,7 +27,18 @@ jobs:
     - name: Install dependencies
       run: |
         conda env update --file .conda.yml
-        conda activate gedi
+
+    - name: Activate env
+      shell: bash -l {0}
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        miniconda-version: "latest"
+        activate-environment: gedi
+        auto-activate-base: false
+      - run: |
+          conda info
+          conda list
+
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -40,22 +51,6 @@ jobs:
       run:
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.jso
 
-  example-3:
-    name: Install conda env
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          miniconda-version: "latest"
-          activate-environment: gedi
-          environment-file:  ${GITHUB_WORKSPACE}/.conda.yml
-          auto-activate-base: false
-      - run: |
-          conda info
-          conda list
   test:
     runs-on: ubuntu-latest
     # Setting up a python envronment  for the test script to run
