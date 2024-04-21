@@ -331,6 +331,7 @@ class FeaturesPlotter:
             fig, output_path = eval(f"self.plot_violinplot_single(features, output_path, source='{source_name}' {plot_type})")
 
         if output_path != None:
+            os.makedirs(os.path.split(output_path)[0], exist_ok=True)
             fig.savefig(output_path)
             print(f"SUCCESS: Saved {plot_type} plot in {output_path}")
 
