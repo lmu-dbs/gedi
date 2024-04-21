@@ -8,39 +8,9 @@ on:
 
 # Specifies the jobs that are to be run
 jobs:
-  build-linux:
-    name: Test feature extraction
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 5
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v3
-      with:
-        python-version: 3.x
-    - name: Add conda to system path
-      run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        echo $CONDA/bin >> $GITHUB_PATH
-    - name: Install dependencies
-      run: |
-        conda env update --file .conda.yml
-        conda info --env
-    - name: Activate gedi
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        activate-environment: gedi
-
-    - name: Run feature_extraction test
-      run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.jso
-
   test:
     runs-on: ubuntu-latest
+
     # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
@@ -51,13 +21,17 @@ jobs:
       with:
         python-version: 3.x
 
-    - name: Install gedi
+    - name: Install dependencies
+      run: |
+        sudo apt install python3-packaging
+    - name: Install feeed
       run: |
         python -m pip install --upgrade pip
+        pip install .
 
-    # Running the test scripts and comparing the outputs
     - name: Run feature_extraction test
-      run: python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.jso
+      run:
+        python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.jso
 
     - name: Compare output
       run: diff output/benchmark/test_2_benchmark.csv output/benchmark/test_2_benchmark.csv
