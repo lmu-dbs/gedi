@@ -134,6 +134,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt install python3-packaging
+        sudo apt-get install build-essential python3 python3-dev
     - name: Install feeed
       run: |
         python -m pip install --upgrade pip
