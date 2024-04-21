@@ -28,7 +28,7 @@ setup(
             'pandas==2.2.2',
             'pm4py==2.7.2',
             'scikit-learn==1.2.2',
-            'scipy>=1.10.1',
+            'scipy==1.13.0',
             'seaborn==0.13.2',
             'smac==2.0.2',
             'tqdm==4.65.0',
