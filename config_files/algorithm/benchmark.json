@@ -3,7 +3,6 @@
     "pipeline_step": "benchmark_test",
     "benchmark_test": "discovery",
     "input_path":"data/test_2",
-    "input_path":"data/test_2/gen_el_168.xes",
     "output_path":"output",
     "miners" : ["inductive", "heuristics", "imf", "ilp"]
   }

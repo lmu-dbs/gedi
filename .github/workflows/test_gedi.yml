@@ -8,6 +8,34 @@ on:
 
 # Specifies the jobs that are to be run
 jobs:
+ test_feature-extraction:
+    runs-on: ubuntu-latest
+
+    # Setting up a python envronment  for the test script to run
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        sudo apt install python3-packaging
+    - name: Install feeed
+      run: |
+        python -m pip install --upgrade pip
+        pip install .
+
+    - name: Run feature_extraction test
+      run:
+        python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.json
+
+    - name: Compare output
+      run: diff data/test_2_feat.csv data/test_2_feat.csv
+
   test_generation:
     runs-on: ubuntu-latest
 
@@ -35,7 +63,8 @@ jobs:
 
     - name: Compare output
       run: diff output/features/2_enself_rt20v/genEL2_02_07.json output/features/2_enself_rt20v/genEL2_02_07.json
-  test_feature-extraction:
+
+  test_benchmark:
     runs-on: ubuntu-latest
 
     # Setting up a python envronment  for the test script to run
@@ -58,7 +87,7 @@ jobs:
 
     - name: Run feature_extraction test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.json
+        python main.py -o config_files/options/baseline.json -a config_files/algorithm/benchmark.json
 
     - name: Compare output
-      run: diff data/test_2_feat.csv data/test_2_feat.csv
+      run: diff output/benchmark/test_2_benchmark.csv output/benchmark/test_2_benchmark.csv
