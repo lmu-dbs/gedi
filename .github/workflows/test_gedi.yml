@@ -9,8 +9,8 @@ on:
 # Specifies the jobs that are to be run
 jobs:
   example-3:
-    name: Ex3 Linux
-    runs-on: "ubuntu-latest"
+    name: Install conda env
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -el {0}
