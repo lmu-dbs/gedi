@@ -32,7 +32,7 @@ python main.py -o config_files/options/baseline.json -a config_files/algorithm/e
 ## Usage
 Our pipeline offers several pipeline steps, which can be run sequentially or partially:
 - feature_extraction
-- event_logs_generation
+- generation
 - benchmark
 - evaluation_plotter
 
