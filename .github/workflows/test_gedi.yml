@@ -28,6 +28,14 @@ jobs:
       run: |
         conda env update --file .conda.yml
         conda info --envs
+    - name: Activate env
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+          activate-environment: gedi
+          auto-activate-base: false
+      - run: |
+          conda info
+          conda list
 
     - name: Checkout code
       uses: actions/checkout@v2
