@@ -241,6 +241,7 @@ class GenerateEventLogs():
                     configspace_tuples[k] = v[0]
                 else:
                     configspace_tuples[k] = tuple(v)
+            print(configspace_tuples)
             configspace = ConfigurationSpace(configspace_tuples)
 
         if self.params.get(N_TRIALS) is None:
