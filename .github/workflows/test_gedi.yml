@@ -9,6 +9,7 @@ on:
 # Specifies the jobs that are to be run
 jobs:
   build-linux:
+    name: Install conda env
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
@@ -26,6 +27,18 @@ jobs:
     - name: Install dependencies
       run: |
         conda env update --file .conda.yml
+        conda activate gedi
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with: python-version: 3.x
+
+    - name: Run feature_extraction test
+      run:
+        python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.jso
+
   example-3:
     name: Install conda env
     runs-on: ubuntu-latest
@@ -37,7 +50,7 @@ jobs:
         with:
           miniconda-version: "latest"
           activate-environment: gedi
-          environment-file:  $GITHUB_PATH/.conda.yml
+          environment-file:  ${GITHUB_WORKSPACE}/.conda.yml
           auto-activate-base: false
       - run: |
           conda info
