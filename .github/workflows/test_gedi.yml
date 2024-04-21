@@ -27,17 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         conda env update --file .conda.yml
-
-    - name: Activate env
-      shell: bash -l {0}
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        miniconda-version: "latest"
-        activate-environment: gedi
-        auto-activate-base: false
-      - run: |
-          conda info
-          conda list
+        conda info --envs
 
     - name: Checkout code
       uses: actions/checkout@v2
