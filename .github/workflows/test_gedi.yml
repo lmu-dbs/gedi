@@ -115,7 +115,7 @@ jobs:
 
     - name: Run test
       run:
-
+        python main.py -o config_files/options/baseline.json -a config_files/algorithm/augmentation.json
   test_integration:
     runs-on: ubuntu-latest
 
