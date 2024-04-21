@@ -2,7 +2,7 @@ import json
 import os
 import warnings
 
-from tag.utils.io_helpers import sort_files
+from gedi.utils.io_helpers import sort_files
 from tqdm import tqdm
 from utils.param_keys import INPUT_NAME, FILENAME, FOLDER_PATH, PARAMS
 
