@@ -19,7 +19,7 @@ jobs:
         with:
           miniconda-version: "latest"
           activate-environment: gedi
-          environment-file: .conda.yml
+          environment-file: ../.conda.yml
           auto-activate-base: false
       - run: |
           conda info
