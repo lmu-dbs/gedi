@@ -31,7 +31,7 @@ jobs:
 
     - name: Run feature_extraction test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.jso
+        python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.json
 
     - name: Compare output
       run: diff output/benchmark/test_2_benchmark.csv output/benchmark/test_2_benchmark.csv
