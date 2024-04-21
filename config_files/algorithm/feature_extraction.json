@@ -1,7 +1,7 @@
 [
   {
     "pipeline_step": "feature_extraction",
-    "input_path": "data/test_2",
+    "input_path": "data/test",
     "feature_params": {"feature_set":["simple_stats", "trace_length", "trace_variant", "activities", "start_activities", "end_activities", "eventropies", "epa_based"]},
     "output_path": "output/plots",
     "real_eventlog_path": "data/bpic_features.csv",

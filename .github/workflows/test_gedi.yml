@@ -31,7 +31,7 @@ jobs:
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/feature_extraction.json
 
     - name: Compare output
-      run: diff data/test_2_feat.csv data/test_2_feat.csv
+      run: diff data/test_feat.csv data/test_feat.csv
 
   test_generation:
     runs-on: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/generation.json
 
     - name: Compare output
-      run: diff output/features/2_grid_test/2_enself_rt20v/genELexperiment2_07_04.json output/features/2_grid_test/2_enself_rt20v/genELexperiment2_07_04.json
+      run: diff output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
 
   test_benchmark:
     runs-on: ubuntu-latest
@@ -85,7 +85,7 @@ jobs:
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/benchmark.json
 
     - name: Compare output
-      run: diff output/benchmark/test_2_benchmark.csv output/benchmark/test_2_benchmark.csv
+      run: diff output/benchmark/test_benchmark.csv output/benchmark/test_benchmark.csv
 
   test_augmentation:
     runs-on: ubuntu-latest
