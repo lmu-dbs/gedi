@@ -24,7 +24,7 @@ setup(
             'imblearn==0.0',
             'Levenshtein==0.23.0',
             'matplotlib==3.8.4',
-            'numpy>=1.23.1',
+            'numpy==1.26.4',
             'pandas==2.2.2',
             'pm4py==2.7.2',
             'scikit-learn==1.2.2',

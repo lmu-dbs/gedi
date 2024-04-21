@@ -618,7 +618,7 @@ class AugmentationPlotter(object):
         if output_path != None:
             output_path += f"/augmentation_pca_{n_features}_{self.sampler}.jpg"
             fig.savefig(output_path)
-            print("SUCCESS: Saved augmentation pca plot at {output_path}")
+            print(f"SUCCESS: Saved augmentation pca plot at {output_path}")
 
 
 class GenerationPlotter(object):
@@ -673,7 +673,7 @@ class GenerationPlotter(object):
                 targets = orig_targets.copy()
             elif isinstance(orig_targets, defaultdict):
                 if k not in orig_targets:
-                    print("[WARNING] {k} not in targets. Only in generated features. Will continue with next feature to compare with")
+                    print(f"[WARNING] {k} not in targets. Only in generated features. Will continue with next feature to compare with")
                     continue
                 targets = orig_targets[k].copy()
             else:
