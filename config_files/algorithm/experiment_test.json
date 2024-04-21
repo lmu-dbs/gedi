@@ -15,10 +15,10 @@
       "experiment": {"input_path": "data/2_bpic_features.csv",
         "objectives": ["ratio_top_20_variants", "epa_normalized_sequence_entropy_linear_forgetting"]},
       "experiment": [
-          {"epa_normalized_sequence_entropy_linear_forgetting": 0.05, "ratio_top_20_variants": 0.4},
-          {"epa_normalized_sequence_entropy_linear_forgetting": 0.5, "ratio_top_20_variants": 0.04}
+          {"epa_normalized_sequence_entropy_linear_forgetting": 0.2, "ratio_top_20_variants": 0.4},
+          {"epa_normalized_sequence_entropy_linear_forgetting": 0.4, "ratio_top_20_variants": 0.7}
         ],
-      "experiment": {"epa_normalized_sequence_entropy_linear_forgetting": 0.05, "ratio_top_20_variants": 0.4},
+      "experiment": {"epa_normalized_sequence_entropy_linear_forgetting": 0.2, "ratio_top_20_variants": 0.4},
       "config_space": {
         "mode": [5, 20],
         "sequence": [0.01, 1],
@@ -27,7 +27,7 @@
         "loop": [0.01, 1],
         "silent": [0.01, 1],
         "lt_dependency": [0.01, 1],
-        "num_traces": [100, 10001],
+        "num_traces": [10, 100],
         "duplicate": [0],
         "or": [0]
       },
