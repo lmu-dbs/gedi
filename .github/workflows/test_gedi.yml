@@ -64,7 +64,7 @@ jobs:
     - name: Compare output
       run: diff output/features/2_enself_rt20v/genEL2_02_07.json output/features/2_enself_rt20v/genEL2_02_07.json
 
-  test_benchmark:
+ test_benchmark:
     runs-on: ubuntu-latest
 
     # Setting up a python envronment  for the test script to run
