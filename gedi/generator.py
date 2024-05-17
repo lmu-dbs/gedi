@@ -80,6 +80,7 @@ def removeextralines(elem):
             element.tail=""
         if not re.search(hasWords,str(element.text)):
             element.text = ""
+            
 def add_extension_before_traces(xes_file):
     # Register the namespace
     ET.register_namespace('', "http://www.xes-standard.org/")
@@ -124,7 +125,7 @@ def add_extension_before_traces(xes_file):
         root.insert(len(extensions), global_elem)
 
 
-    # Pretty print the XML
+    # Pretty print the Xes
     removeextralines(root)
     xml_str = minidom.parseString(ET.tostring(root)).toprettyxml()
     with open(xes_file, "w") as f:
