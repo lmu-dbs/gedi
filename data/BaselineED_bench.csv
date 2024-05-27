@@ -1,4 +1,4 @@
-log,fitness_heuristics,precision_heuristics,fscore_heuristics,size_heuristics,pnsize_heuristics,cfc_heuristics,fitness_ilp,precision_ilp,fscore_ilp,size_ilp,pnsize_ilp,cfc_ilp,fitness_imf,precision_imf,fscore_imf,size_imf,pnsize_imf,cfc_imf
+log,fitness_heu,precision_heu,fscore_heu,size_heu,pnsize_heu,cfc_heu,fitness_ilp,precision_ilp,fscore_ilp,size_ilp,pnsize_ilp,cfc_ilp,fitness_imf,precision_imf,fscore_imf,size_imf,pnsize_imf,cfc_imf
 BPIC16wm_p,0.999900004026629,1.0,0.999949999513391,5.0,4.0,2.0,0.9999495832135112,1.0,0.999974790971276,4.0,3.0,1.0,0.999900004026629,1.0,0.999949999513391,5,4,2
 BPIC13op,0.990133346397138,0.9620563035495712,0.975892918274616,12.0,7.0,7.0,0.99993033237412,0.9065645824471852,0.950961282086593,10.0,5.0,3.0,0.8513195049834781,0.9065645824471852,0.8780739493381781,17,10,8
 BPIC13cp,0.989977119234364,0.8684298767708941,0.925228660364203,14.0,9.0,8.0,0.999955347339294,0.792379879879879,0.8841476594077591,20.0,8.0,6.0,0.990412853232678,0.9470205909661912,0.9682307987170752,15,10,9

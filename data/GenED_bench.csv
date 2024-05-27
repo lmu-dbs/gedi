@@ -1,4 +1,4 @@
-log,fitness_heuristics,precision_heuristics,fscore_heuristics,size_heuristics,pnsize_heuristics,cfc_heuristics,fitness_ilp,precision_ilp,fscore_ilp,size_ilp,pnsize_ilp,cfc_ilp,fitness_imf,precision_imf,fscore_imf,size_imf,pnsize_imf,cfc_imf
+log,fitness_heu,precision_heu,fscore_heu,size_heu,pnsize_heu,cfc_heu,fitness_ilp,precision_ilp,fscore_ilp,size_ilp,pnsize_ilp,cfc_ilp,fitness_imf,precision_imf,fscore_imf,size_imf,pnsize_imf,cfc_imf
 2_ense_rmcv_genELtask_67_06_00,0.376214776532216,0.994733180959952,0.545948253307299,29.0,18.0,10.0,,,,,,,0.945685191537984,0.507638900441974,0.6606462982975451,28.0,22.0,8.0
 2_enself_rmcv_genELtask_13_01_01,0.63263614857424,0.858184089962515,0.7283484130513961,14.0,8.0,7.0,0.99997771174738,0.940229218047294,0.96918349021716,13.0,8.0,3.0,0.95097054618107,0.940229218047294,0.945569378691894,13.0,8.0,4.0
 2_rt10v_rutpt_genELtask_1_00_00,0.538653366583541,1.0,0.700162074554294,5.0,4.0,0.0,0.999955489786125,1.0,0.9999777443977612,15.0,8.0,4.0,0.999932932799884,1.0,0.999966465275402,11.0,10.0,2.0
