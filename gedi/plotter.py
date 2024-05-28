@@ -14,7 +14,7 @@ from matplotlib.lines import Line2D
 from utils.param_keys import PLOT_TYPE, PROJECTION, EXPLAINED_VAR, PLOT_3D_MAP
 from utils.param_keys import INPUT_PATH, OUTPUT_PATH, PIPELINE_STEP
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, PLOT_REFERENCE_FEATURE
-from utils.param_keys.plotter import REAL_EVENTLOG_PATH, FONT_SIZE
+from utils.param_keys.plotter import REAL_EVENTLOG_PATH, FONT_SIZE, BOXPLOT_WIDTH
 from collections import defaultdict
 
 from sklearn.preprocessing import Normalizer, StandardScaler
@@ -320,6 +320,7 @@ class FeaturesPlotter:
         output_path = params[OUTPUT_PATH] if OUTPUT_PATH in params else None
         plot_type = f", plot_type='{params[PLOT_TYPE]}'" if params.get(PLOT_TYPE) else ""
         font_size = f", font_size='{params[FONT_SIZE]}'" if params.get(FONT_SIZE) else ""
+        boxplot_w = f", boxplot_w='{params[BOXPLOT_WIDTH]}'" if params.get(BOXPLOT_WIDTH) else ""
         LEGEND = ", legend=True" if params.get(PIPELINE_STEP) else ""
 
         source_name = os.path.split(params['input_path'])[-1].replace(".csv", "")+"_"
@@ -327,9 +328,9 @@ class FeaturesPlotter:
         if REAL_EVENTLOG_PATH in params:
             real_eventlogs_path=params[REAL_EVENTLOG_PATH]
             real_eventlogs = pd.read_csv(real_eventlogs_path)
-            fig, output_path = eval(f"self.plot_violinplot_multi(features, output_path, real_eventlogs, source='{source_name}' {plot_type}{font_size}{LEGEND})")
+            fig, output_path = eval(f"self.plot_violinplot_multi(features, output_path, real_eventlogs, source='{source_name}' {plot_type}{font_size}{boxplot_w}{LEGEND})")
         else:
-            fig, output_path = eval(f"self.plot_violinplot_single(features, output_path, source='{source_name}' {plot_type}{font_size}{LEGEND})")
+            fig, output_path = eval(f"self.plot_violinplot_single(features, output_path, source='{source_name}' {plot_type}{font_size}{boxplot_w})")
 
         if output_path != None:
             os.makedirs(os.path.split(output_path)[0], exist_ok=True)
@@ -337,14 +338,14 @@ class FeaturesPlotter:
             print(f"SUCCESS: Saved {plot_type} plot in {output_path}")
 
 
-    def plot_violinplot_single(self, features, output_path=None, source="_",  plot_type="violinplot"):
+    def plot_violinplot_single(self, features, output_path=None, source="_",  plot_type="violinplot", font_size=16, boxplot_w=16):
         columns = features.columns[1:]
         df1=features.select_dtypes(exclude=['object'])
 
-        fig, axes = plt.subplots(len(df1.columns),1, figsize=(17,len(df1.columns)))
+        fig, axes = plt.subplots(len(df1.columns),1, figsize=(int(boxplot_w),len(df1.columns)))
         for i, ax in enumerate(axes):
                 eval(f"sns.{plot_type}(data=df1, x=df1[df1.columns[i]], ax=ax)")
-        fig.suptitle(f"{len(columns)} features distribution for {len(features)} generated event-logs", fontsize=16, y=1)
+        fig.suptitle(f"{len(columns)} features distribution for {len(features)} generated event-logs", fontsize=font_size, y=1)
         fig.tight_layout()
 
 
@@ -352,7 +353,8 @@ class FeaturesPlotter:
 
         return fig, output_path
 
-    def plot_violinplot_multi(self, features, output_path, real_eventlogs, source="_", plot_type="violinplot", font_size=24, legend=False):
+    def plot_violinplot_multi(self, features, output_path, real_eventlogs, source="_", plot_type="violinplot",
+                              font_size=24, legend=False, boxplot_w=16):
         LOG_NATURE = "Log Nature"
         GENERATED = "Generated"
         REAL = "Real"
@@ -375,7 +377,7 @@ class FeaturesPlotter:
         if plot_type == 'violinplot':
             inner_param = 'inner = None,'
 
-        fig, axes = plt.subplots(len(dmf1.columns),1, figsize=(16,len(dmf1.columns)*1.25), dpi=300)
+        fig, axes = plt.subplots(len(dmf1.columns),1, figsize=(int(boxplot_w),len(dmf1.columns)*1.25), dpi=300)
         if isinstance(axes, Axes): # not isinstance(axes, list):
             axes = [axes]
         #nature_types = set(['Generated', 'Real'])#set(bdf['Log Nature'].unique())
