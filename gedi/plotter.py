@@ -12,9 +12,9 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from utils.param_keys import PLOT_TYPE, PROJECTION, EXPLAINED_VAR, PLOT_3D_MAP
-from utils.param_keys import INPUT_PATH, OUTPUT_PATH
+from utils.param_keys import INPUT_PATH, OUTPUT_PATH, PIPELINE_STEP
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, PLOT_REFERENCE_FEATURE
-from utils.param_keys.plotter import REAL_EVENTLOG_PATH
+from utils.param_keys.plotter import REAL_EVENTLOG_PATH, FONT_SIZE
 from collections import defaultdict
 
 from sklearn.preprocessing import Normalizer, StandardScaler
@@ -318,16 +318,18 @@ class BenchmarkPlotter:
 class FeaturesPlotter:
     def __init__(self, features, params=None):
         output_path = params[OUTPUT_PATH] if OUTPUT_PATH in params else None
-        plot_type = f", plot_type='{params[PLOT_TYPE]}'" if PLOT_TYPE else ""
+        plot_type = f", plot_type='{params[PLOT_TYPE]}'" if params.get(PLOT_TYPE) else ""
+        font_size = f", font_size='{params[FONT_SIZE]}'" if params.get(FONT_SIZE) else ""
+        LEGEND = ", legend=True" if params.get(PIPELINE_STEP) else ""
 
         source_name = os.path.split(params['input_path'])[-1].replace(".csv", "")+"_"
         #output_path = os.path.join(output_path, source_name)
         if REAL_EVENTLOG_PATH in params:
             real_eventlogs_path=params[REAL_EVENTLOG_PATH]
             real_eventlogs = pd.read_csv(real_eventlogs_path)
-            fig, output_path = eval(f"self.plot_violinplot_multi(features, output_path, real_eventlogs, source='{source_name}' {plot_type})")
+            fig, output_path = eval(f"self.plot_violinplot_multi(features, output_path, real_eventlogs, source='{source_name}' {plot_type}{font_size}{LEGEND})")
         else:
-            fig, output_path = eval(f"self.plot_violinplot_single(features, output_path, source='{source_name}' {plot_type})")
+            fig, output_path = eval(f"self.plot_violinplot_single(features, output_path, source='{source_name}' {plot_type}{font_size}{LEGEND})")
 
         if output_path != None:
             os.makedirs(os.path.split(output_path)[0], exist_ok=True)
@@ -350,11 +352,11 @@ class FeaturesPlotter:
 
         return fig, output_path
 
-    def plot_violinplot_multi(self, features, output_path, real_eventlogs, source="_", plot_type="violinplot"):
+    def plot_violinplot_multi(self, features, output_path, real_eventlogs, source="_", plot_type="violinplot", font_size=24, legend=False):
         LOG_NATURE = "Log Nature"
         GENERATED = "Generated"
         REAL = "Real"
-        FONT_SIZE=24
+        FONT_SIZE=font_size
         alpha = 0.7
         color = sns.color_palette("bright")
         markers = ['o','X']
@@ -399,11 +401,13 @@ class FeaturesPlotter:
             ax.tick_params(axis='both', which='minor', labelsize=FONT_SIZE)
             ax.set_xlabel(dmf1.columns[i], fontsize=FONT_SIZE)
 
-        fig.legend(custom_lines, nature_types, loc='upper right', ncol=len(nature_types), prop={'size': FONT_SIZE})
+
+        if legend:
+            fig.legend(custom_lines, nature_types, loc='upper right', ncol=len(nature_types), prop={'size': FONT_SIZE})
+            plt.legend(fontsize=FONT_SIZE)
         #fig.suptitle(f"{len(features.columns)-2} features distribution for {len(real_eventlogs[real_eventlogs['Log Nature'].isin(nature_types)])} real and {len(features)} generated event-logs", fontsize=16, y=1)
         plt.yticks(fontsize=FONT_SIZE)
         plt.xticks(fontsize=FONT_SIZE)
-        plt.legend(fontsize=FONT_SIZE)
 
         fig.tight_layout()
 
@@ -625,7 +629,6 @@ class AugmentationPlotter(object):
 
 
 class GenerationPlotter(object):
-
     def __init__(self, gen_cfg, model_params, output_path, input_path=None):
         print(f"Running plotter for {len(gen_cfg)} genEL, params {model_params}, output path: {output_path}")
         self.output_path = output_path
