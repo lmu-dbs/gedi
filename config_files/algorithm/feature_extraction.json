@@ -6,6 +6,7 @@
     "output_path": "output/plots",
     "real_eventlog_path": "data/BaselineED_feat.csv",
     "plot_type": "boxplot",
-    "font_size": 24
+    "font_size": 24,
+    "boxplot_width":10
   }
 ]
