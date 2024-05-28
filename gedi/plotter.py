@@ -323,7 +323,6 @@ class FeaturesPlotter:
         source_name = os.path.split(params['input_path'])[-1].replace(".csv", "")+"_"
         #output_path = os.path.join(output_path, source_name)
         if REAL_EVENTLOG_PATH in params:
-            #real_eventlogs_path != None:
             real_eventlogs_path=params[REAL_EVENTLOG_PATH]
             real_eventlogs = pd.read_csv(real_eventlogs_path)
             fig, output_path = eval(f"self.plot_violinplot_multi(features, output_path, real_eventlogs, source='{source_name}' {plot_type})")
@@ -355,7 +354,7 @@ class FeaturesPlotter:
         LOG_NATURE = "Log Nature"
         GENERATED = "Generated"
         REAL = "Real"
-        FONT_SIZE=20
+        FONT_SIZE=24
         alpha = 0.7
         color = sns.color_palette("bright")
         markers = ['o','X']
@@ -374,7 +373,7 @@ class FeaturesPlotter:
         if plot_type == 'violinplot':
             inner_param = 'inner = None,'
 
-        fig, axes = plt.subplots(len(dmf1.columns),1, figsize=(12,len(dmf1.columns)*1.25), dpi=100)
+        fig, axes = plt.subplots(len(dmf1.columns),1, figsize=(16,len(dmf1.columns)*1.25), dpi=300)
         if isinstance(axes, Axes): # not isinstance(axes, list):
             axes = [axes]
         #nature_types = set(['Generated', 'Real'])#set(bdf['Log Nature'].unique())
@@ -402,6 +401,10 @@ class FeaturesPlotter:
 
         fig.legend(custom_lines, nature_types, loc='upper right', ncol=len(nature_types), prop={'size': FONT_SIZE})
         #fig.suptitle(f"{len(features.columns)-2} features distribution for {len(real_eventlogs[real_eventlogs['Log Nature'].isin(nature_types)])} real and {len(features)} generated event-logs", fontsize=16, y=1)
+        plt.yticks(fontsize=FONT_SIZE)
+        plt.xticks(fontsize=FONT_SIZE)
+        plt.legend(fontsize=FONT_SIZE)
+
         fig.tight_layout()
 
         output_path = output_path+f"/{plot_type}s_{source}{len(columns)}fts_{len(features)}gEL_of{len(bdf[bdf['Log Nature'].isin(nature_types)])}.jpg"
