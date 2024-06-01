@@ -1,4 +1,4 @@
-task,ratio_unique_traces_per_trace
+task,ratio_variants_per_number_of_traces
 task_1,0.0
 task_2,0.1
 task_3,0.2
