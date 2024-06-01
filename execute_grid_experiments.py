@@ -13,7 +13,7 @@ def multi_experiment_wrapper(config_file, i=0):
     print(f"=========================FINISHED EXPERIMENT #{i+1}=======================")
 
 if __name__ == '__main__':
-    EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','34_bpic_features')
+    EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','BaselineED_feat')
     EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','grid_1obj')
     EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','grid_experiments')
     EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','test')
