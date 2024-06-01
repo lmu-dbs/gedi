@@ -37,7 +37,12 @@ class EventLogFeatures(EventLogFile):
         elif ft_params.get(FEATURE_PARAMS) == None:
             self.params = {FEATURE_SET: None}
         else:
+            #TODO: Replace hotfix
             self.params=ft_params.get(FEATURE_PARAMS)
+            if 'ratio_variants_per_number_of_traces' in self.params.get(FEATURE_SET):#HOTFIX
+                self.params[FEATURE_SET] = ['ratio_unique_traces_per_trace'\
+                                                if feat=='ratio_variants_per_number_of_traces'\
+                                                else feat for feat in self.params.get(FEATURE_SET)]
 
         # TODO: handle parameters in main, not in features. Move to main.py
         if ft_params[INPUT_PATH]:
@@ -143,7 +148,8 @@ class EventLogFeatures(EventLogFile):
             file_path = os.path.join(self.root_path, file)
             print(f"  INFO: Starting FEEED for {file_path} and {feature_set}")
             features = extract_features(file_path, feature_set)
-            if features.get('ratio_unique_traces_per_trace'):
+            #TODO: Replace hotfix
+            if features.get('ratio_unique_traces_per_trace'):#HOTFIX
                 features['ratio_variants_per_number_of_traces']=features.pop('ratio_unique_traces_per_trace')
 
         except Exception as e:
