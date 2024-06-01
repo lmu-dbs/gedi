@@ -113,7 +113,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/augmentation.json
+        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/augmentation.json
 
   test_evaluation-plotter:
     runs-on: ubuntu-latest
