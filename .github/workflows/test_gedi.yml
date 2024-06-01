@@ -194,7 +194,7 @@ jobs:
 
     - name: Run test
       run:
-        python execute_grid_experiments.py
+        python execute_grid_experiments.py config_files/algorithm/test
 
     - name: Convert output and validation to same encoding
       run: iconv -f UTF-8 -t ASCII output/features/generated/2_bpic_features/2_ense_enseef_feat.csv > data/validation/2_ense_enseef_feat.csv
