@@ -46,6 +46,14 @@ python main.py -o config_files/options/baseline.json -a config_files/algorithm/<
 For reference of possible keys and values for each step, please see `config_files/algorithm/experiment_test.json`.
 To run the whole pipeline please create a new `.json` file, specifying all steps you want to run and specify desired keys and values for each step. 
 
+## Evaluation real targets
+In order to execute the experiments with real targets,we employ the config file `config_files/algorithm/experiment_real_targets.json`. The script's pipeline will output the generated event logs with meta features values being optimized towards meta features of real-world benchmark datasets. Furthermore, it will output the respective feature values in the `\output`folder as well as the benchmark values.
+
+```console
+conda activate gedi
+python main.py -o config_files/options/baseline.json -a config_files/algorithm/experiment_real_targets.json.json
+```
+
 ## Result plotting
 In the following, we describe the ipynb in the folder `\notebooks` to reproduce the illustrations from our paper. 
 
