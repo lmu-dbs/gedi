@@ -39,7 +39,7 @@
     "input_path": "data/test",
     "feature_params": {"feature_set":["trace_length"]},
     "output_path": "output/plots",
-    "real_eventlog_path": "data/bpic_features.csv",
+    "real_eventlog_path": "data/BaselineED_feat.csv",
     "plot_type": "boxplot"
   },
   {
