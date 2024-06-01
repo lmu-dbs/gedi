@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - main
+      - bpm24
 
 # Specifies the jobs that are to be run
 jobs:
