@@ -34,7 +34,7 @@ class BenchmarkTest:
                 event_logs = [""]
             else:
                 try:
-                    event_logs =[filename for filename in os.listdir(log_path) if filename.endswith(".xes")]
+                    event_logs =sorted([filename for filename in os.listdir(log_path) if filename.endswith(".xes")])
                 except FileNotFoundError:
                     print(f"        FAILED: Cannot find {params[INPUT_PATH]}" )
                     return
