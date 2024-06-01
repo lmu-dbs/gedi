@@ -985,10 +985,10 @@ class GenerationPlotter(object):
             print(e)
         ratio_most_common_variant = 2.021278 / 11.0
         ratio_top_10_variants = 0.07378 / 11.0
-        ratio_unique_traces_per_trace = 0.016658 / 11.0
+        ratio_variants_per_number_of_traces = 0.016658 / 11.0
         result_df['ratio_most_common_variant']['ratio_most_common_variant'] = ratio_most_common_variant
         result_df['ratio_top_10_variants']['ratio_top_10_variants'] = ratio_top_10_variants
-        result_df['ratio_unique_traces_per_trace']['ratio_unique_traces_per_trace'] = ratio_unique_traces_per_trace
+        result_df['ratio_variants_per_number_of_traces']['ratio_variants_per_number_of_traces'] = ratio_variants_per_number_of_traces
 
         abbrvs_key = get_keys_abbreviation(keys)
         result_df.columns = abbrvs_key.split("_")
