@@ -154,6 +154,10 @@ class GenerateEventLogs():
         write_xes(log_config['log'], save_path)
         print("SUCCESS: Saved generated event log in", save_path)
         features_to_dump = log_config['metafeatures']
+
+        #TODO: Replace hotfix
+        if features_to_dump.get('ratio_unique_traces_per_trace'):#HOTFIX
+            features_to_dump['ratio_variants_per_number_of_traces']=features_to_dump.pop('ratio_unique_traces_per_trace')
         features_to_dump['log'] = identifier.replace('genEL', '')
         dump_features_json(features_to_dump, self.output_path, identifier, objectives=self.objectives)
         return log_config
