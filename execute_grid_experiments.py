@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     experiment_list = list(tqdm(sort_files(os.listdir(EXPERIMENTS_FOLDER))))
     experiment_list = [os.path.join(EXPERIMENTS_FOLDER, config_file) for config_file in experiment_list]
-    experiment_list = experiment_list[:10]
+    #experiment_list = experiment_list[:10]
 
     print(f"========================STARTING MULTIPLE EXPERIMENTS=========================")
     print(f"INFO: {EXPERIMENTS_FOLDER} contains config files for {len(experiment_list)}.")
