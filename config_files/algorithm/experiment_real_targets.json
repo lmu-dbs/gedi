@@ -24,7 +24,7 @@
   },
   {
     "pipeline_step": "feature_extraction",
-    "input_path": "output/generated/BaselineED_feat/7_ense_enseef_enself_enve_rmcv_rt10v_rutpt/",
+    "input_path": "output/BaselineED_feat/7_ense_enseef_enself_enve_rmcv_rt10v_rutpt/",
     "input_path": "output/features/BaselineED_feat/7_ense_enseef_enself_enve_rmcv_rt10v_rutpt/",
     "feature_params": {"feature_set":["ratio_variants_per_number_of_traces","ratio_most_common_variant","ratio_top_10_variants","epa_normalized_variant_entropy","epa_normalized_sequence_entropy","epa_normalized_sequence_entropy_linear_forgetting","epa_normalized_sequence_entropy_exponential_forgetting"]},
     "output_path": "output/plots",
@@ -34,7 +34,7 @@
   {
     "pipeline_step": "benchmark_test",
     "benchmark_test": "discovery",
-    "input_path": "output/generated/BaselineED_feat/7_ense_enseef_enself_enve_rmcv_rt10v_rutpt/",
+    "input_path": "output/BaselineED_feat/7_ense_enseef_enself_enve_rmcv_rt10v_rutpt/",
     "output_path":"output",
     "miners" : ["heu", "imf", "ilp"]
   }
