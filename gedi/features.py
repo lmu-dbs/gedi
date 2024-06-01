@@ -85,6 +85,7 @@ class EventLogFeatures(EventLogFile):
                     self.filename = [ filename for filename in self.filename if filename.endswith(".xes")]
 
                 # TODO: only include xes logs in self.filename, otherwise it will result in less rows. Implement skip exception with warning
+                #self.extract_features_wrapper(self.filename[0], feature_set=self.params[FEATURE_SET]) #TESTING ONLY
                 try:
                     num_cores = multiprocessing.cpu_count() if len(
                         self.filename) >= multiprocessing.cpu_count() else len(self.filename)
@@ -142,6 +143,8 @@ class EventLogFeatures(EventLogFile):
             file_path = os.path.join(self.root_path, file)
             print(f"  INFO: Starting FEEED for {file_path} and {feature_set}")
             features = extract_features(file_path, feature_set)
+            if features.get('ratio_unique_traces_per_trace'):
+                features['ratio_variants_per_number_of_traces']=features.pop('ratio_unique_traces_per_trace')
 
         except Exception as e:
             print("ERROR: for ",file.rsplit(".", 1)[0], feature_set, "skipping and continuing with next log.")
