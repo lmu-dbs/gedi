@@ -196,5 +196,8 @@ jobs:
       run:
         python execute_grid_experiments.py
 
+    - name: Convert output and validation to same encoding
+      run: iconv -f UTF-8 -t ASCII output/features/generated/2_bpic_features/2_ense_enseef_feat.csv > data/validation/2_ense_enseef_feat.csv
+
     - name: Compare output
       run: diff data/validation/2_ense_enseef_feat.csv output/features/generated/2_bpic_features/2_ense_enseef_feat.csv
