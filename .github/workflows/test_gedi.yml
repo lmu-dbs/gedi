@@ -58,10 +58,12 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/generation.json
+        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/generation.json
 
     - name: Compare output
-      run: diff output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
+      run: 
+        diff data/validation/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
+        diff data/validation/genELexperiment1_04_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment1_04_02.json
 
   test_benchmark:
     runs-on: ubuntu-latest
