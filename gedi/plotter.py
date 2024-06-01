@@ -263,7 +263,7 @@ class BenchmarkPlotter:
         corr = df.corr()
 
         if mean == 'methods':
-            for method in ['inductive', 'heuristics', 'ilp']:
+            for method in ['inductive', 'heu', 'ilp']:
                 method_cols = [col for col in corr.columns if col.startswith(method)]
                 corr[method+'_avg'] = corr.loc[:, corr.columns.isin(method_cols)].mean(axis=1)
         elif mean == 'metrics':
@@ -274,7 +274,7 @@ class BenchmarkPlotter:
         avg_cols = [col for col in corr.columns if col.endswith('_avg')]
 
         benchmark_result_cols = [col for col in corr.columns if col.startswith('inductive')
-                                or col.startswith('heuristics') or col.startswith('ilp')]
+                                or col.startswith('heu') or col.startswith('ilp')]
 
         corr = corr[:][~corr.index.isin(benchmark_result_cols)]
 
@@ -298,7 +298,7 @@ class BenchmarkPlotter:
 
     def plot_miners_correlation(self, benchmark, output_path=None):
         benchmark_result_cols = [col for col in benchmark.columns if col.startswith('inductive')
-                                or col.startswith('heuristics') or col.startswith('ilp')]
+                                or col.startswith('heu') or col.startswith('ilp')]
         df = benchmark.loc[:, benchmark.columns!='log']
         df = df.loc[:, df.columns.isin(benchmark_result_cols)]
 

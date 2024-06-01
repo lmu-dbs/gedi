@@ -94,7 +94,7 @@ class BenchmarkTest:
         else:
             log_name = "gen_el_"+str(log_counter)
             results = {"log": event_log}
-            
+
         for miner in miners:
             miner_cols = [f"fitness_{miner}", f"precision_{miner}", f"fscore_{miner}", f"size_{miner}", f"cfc_{miner}", f"pnsize_{miner}"]# f"generalization_{miner}",f"simplicity_{miner}"]
             start_miner = dt.now()
@@ -186,6 +186,8 @@ class BenchmarkTest:
             if miner == 'imf':
                 miner = 'inductive'
                 miner_params = f', noise_threshold={NOISE_THRESHOLD}'
+            elif miner == 'heu':
+                miner = 'heuristics'
             net, im, fm = eval(f"discover_petri_net_{miner}(log {miner_params})")
             bpmn_graph = convert_to_bpmn(net, im, fm)
         fitness = fitness_alignments(log, net, im, fm)['log_fitness']
