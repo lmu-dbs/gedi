@@ -55,7 +55,7 @@ class EventLogFeatures(EventLogFile):
                 # Check if directory exists, if not, create it
                 if not os.path.exists(input_path):
                     os.makedirs(input_path)
-                self.filename = os.listdir(input_path)
+                self.filename = sorted(os.listdir(input_path))
 
         try:
             start = dt.now()
