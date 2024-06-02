@@ -140,7 +140,7 @@ In this repository, experiments can be run selectively or from scratch, as prefe
 We present two settings for generating intentional event logs, using [real targets](#generating-data-with-real-targets) or using [grid targets](#generating-data-with-grid-targets). Both settings output `.xes` event logs, `.json` and `.csv` files containing feature values, as well as evaluation results, from running a [process discovery benchmark](#benchmark), for the generated event logs.
 
 ### Generating data with real targets
-To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/algorithm/experiment_real_targets.json). The script's pipeline will output the [generated event logs](data/event_logs/GenBaselineED.zip), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
+To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/algorithm/experiment_real_targets.json). The script's pipeline will output the [generated event logs (GenBaselineED)](data/event_logs/GenBaselineED), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
 
 ```console
 conda activate gedi
@@ -148,7 +148,7 @@ python main.py -o config_files/options/baseline.json -a config_files/algorithm/e
 ```
 
 ### Generating data with grid targets
-To execute the experiments with grid targets, a single [configuration](config_files/algorithm/grid_2obj) can be selected or all [grid objectives](data/grid_2obj) can be run with one command using the following script. This script will output the [generated event logs](data/event_logs/GenED.zip), alongside their respectively measured [feature values](data/GenED_feat.csv) and [benchmark metrics values](data/GenED_bench.csv).
+To execute the experiments with grid targets, a single [configuration](config_files/algorithm/grid_2obj) can be selected or all [grid objectives](data/grid_2obj) can be run with one command using the following script. This script will output the [generated event logs (GenED)](data/event_logs/GenED), alongside their respectively measured [feature values](data/GenED_feat.csv) and [benchmark metrics values](data/GenED_bench.csv).
 ```
 conda activate gedi
 python execute_grid_experiments.py config_files/algorithm/grid_2obj
