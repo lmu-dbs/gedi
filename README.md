@@ -36,7 +36,7 @@ Our pipeline offers several pipeline steps, which can be run sequentially or par
 - [Feature Extraction](#feature-extraction)
 - [Generation](#generation)
 - [Benchmark](#benchmark)
-- [Evaluation Plotter](#evaluation_plotter)
+- [Evaluation Plotter](#evaluation_plotting)
 
 To run different steps of the GEDI pipeline, please adapt the `.json` accordingly.
 ```console
@@ -140,7 +140,7 @@ In this repository, experiments can be run selectively or from scratch, as prefe
 We present two settings for generating intentional event logs, using [real targets](#generating-data-with-real-targets) or using [grid targets](#generating-data-with-grid-targets). Both settings output `.xes` event logs, `.json` and `.csv` files containing feature values, as well as evaluation results, from running a [process discovery benchmark](#benchmark), for the generated event logs.
 
 ### Generating data with real targets
-To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/algorithm/experiment_real_targets.json). The script's pipeline will output the [generated event logs](data/event_logs/GenBaselineED.zip), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaslineED_bench.csv).
+To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/algorithm/experiment_real_targets.json). The script's pipeline will output the [generated event logs](data/event_logs/GenBaselineED.zip), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
 
 ```console
 conda activate gedi
