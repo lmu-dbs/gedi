@@ -37,7 +37,12 @@ class EventLogFeatures(EventLogFile):
         elif ft_params.get(FEATURE_PARAMS) == None:
             self.params = {FEATURE_SET: None}
         else:
+            #TODO: Replace hotfix
             self.params=ft_params.get(FEATURE_PARAMS)
+            if 'ratio_variants_per_number_of_traces' in self.params.get(FEATURE_SET):#HOTFIX
+                self.params[FEATURE_SET] = ['ratio_unique_traces_per_trace'\
+                                                if feat=='ratio_variants_per_number_of_traces'\
+                                                else feat for feat in self.params.get(FEATURE_SET)]
 
         # TODO: handle parameters in main, not in features. Move to main.py
         if ft_params[INPUT_PATH]:
@@ -50,7 +55,7 @@ class EventLogFeatures(EventLogFile):
                 # Check if directory exists, if not, create it
                 if not os.path.exists(input_path):
                     os.makedirs(input_path)
-                self.filename = os.listdir(input_path)
+                self.filename = sorted(os.listdir(input_path))
 
         try:
             start = dt.now()
@@ -85,6 +90,7 @@ class EventLogFeatures(EventLogFile):
                     self.filename = [ filename for filename in self.filename if filename.endswith(".xes")]
 
                 # TODO: only include xes logs in self.filename, otherwise it will result in less rows. Implement skip exception with warning
+                #self.extract_features_wrapper(self.filename[0], feature_set=self.params[FEATURE_SET]) #TESTING ONLY
                 try:
                     num_cores = multiprocessing.cpu_count() if len(
                         self.filename) >= multiprocessing.cpu_count() else len(self.filename)
@@ -142,6 +148,9 @@ class EventLogFeatures(EventLogFile):
             file_path = os.path.join(self.root_path, file)
             print(f"  INFO: Starting FEEED for {file_path} and {feature_set}")
             features = extract_features(file_path, feature_set)
+            #TODO: Replace hotfix
+            if features.get('ratio_unique_traces_per_trace'):#HOTFIX
+                features['ratio_variants_per_number_of_traces']=features.pop('ratio_unique_traces_per_trace')
 
         except Exception as e:
             print("ERROR: for ",file.rsplit(".", 1)[0], feature_set, "skipping and continuing with next log.")
