@@ -2,7 +2,6 @@ import multiprocessing
 import os
 import pandas as pd
 import random
-
 from ConfigSpace import Configuration, ConfigurationSpace
 from datetime import datetime as dt
 from feeed.activities import Activities as activities
@@ -21,8 +20,9 @@ from smac import HyperparameterOptimizationFacade, Scenario
 from utils.param_keys import OUTPUT_PATH, INPUT_PATH
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG_SPACE, N_TRIALS
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, read_csvs
-
-
+import xml.etree.ElementTree as ET
+import re
+from xml.dom import minidom
 
 """
    Parameters
@@ -72,13 +72,72 @@ def get_tasks(experiment, output_path="", reference_feature=None):
         raise FileNotFoundError(f"{experiment} not found. Please check path in filesystem.")
     return tasks, output_path
 
+
+def removeextralines(elem):
+    hasWords = re.compile("\\w")
+    for element in elem.iter():
+        if not re.search(hasWords,str(element.tail)):
+            element.tail=""
+        if not re.search(hasWords,str(element.text)):
+            element.text = ""
+            
+def add_extension_before_traces(xes_file):
+    # Register the namespace
+    ET.register_namespace('', "http://www.xes-standard.org/")
+
+    # Parse the original XML
+    tree = ET.parse(xes_file)
+    root = tree.getroot()
+
+    # Add extensions
+    extensions = [
+        {'name': 'Lifecycle', 'prefix': 'lifecycle', 'uri': 'http://www.xes-standard.org/lifecycle.xesext'},
+        {'name': 'Time', 'prefix': 'time', 'uri': 'http://www.xes-standard.org/time.xesext'},
+        {'name': 'Concept', 'prefix': 'concept', 'uri': 'http://www.xes-standard.org/concept.xesext'}
+    ]
+
+    for ext in extensions:
+        extension_elem = ET.Element('extension', ext)
+        root.insert(0, extension_elem)
+
+    # Add global variables
+    globals = [
+        {
+            'scope': 'event',
+            'attributes': [
+                {'key': 'lifecycle:transition', 'value': 'complete'},
+                {'key': 'concept:name', 'value': '__INVALID__'},
+                {'key': 'time:timestamp', 'value': '1970-01-01T01:00:00.000+01:00'}
+            ]
+        },
+        {
+            'scope': 'trace',
+            'attributes': [
+                {'key': 'concept:name', 'value': '__INVALID__'}
+            ]
+        }
+    ]
+
+    for global_var in globals:
+        global_elem = ET.Element('global', {'scope': global_var['scope']})
+        for attr in global_var['attributes']:
+            string_elem = ET.SubElement(global_elem, 'string', {'key': attr['key'], 'value': attr['value']})
+        root.insert(len(extensions), global_elem)
+
+
+    # Pretty print the Xes
+    removeextralines(root)
+    xml_str = minidom.parseString(ET.tostring(root)).toprettyxml()
+    with open(xes_file, "w") as f:
+        f.write(xml_str)
+
 class GenerateEventLogs():
     # TODO: Clarify nomenclature: experiment, task, objective as in notebook (https://github.com/lmu-dbs/gedi/blob/main/notebooks/grid_objectives.ipynb)
     def __init__(self, params):
         print("=========================== Generator ==========================")
         print(f"INFO: Running with {params}")
         start = dt.now()
-        if params.get(OUTPUT_PATH) == None:
+        if params.get(OUTPUT_PATH) is None:
             self.output_path = 'data/generated'
         else:
             self.output_path = params.get(OUTPUT_PATH)
@@ -91,8 +150,7 @@ class GenerateEventLogs():
 
         self.params = params.get(GENERATOR_PARAMS)
         experiment = self.params.get(EXPERIMENT)
-
-        if experiment!= None:
+        if experiment is not None:
             tasks, output_path = get_tasks(experiment, self.output_path)
             self.output_path = output_path
 
@@ -122,6 +180,7 @@ class GenerateEventLogs():
             save_path = get_output_key_value_location(self.params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
+            add_extension_before_traces(save_path)
             print("SUCCESS: Saved generated event log in", save_path)
         print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.log_config)} event logs.")
         print(f"         Saved generated logs in {self.output_path}")
@@ -152,6 +211,7 @@ class GenerateEventLogs():
                                          self.output_path, identifier)+".xes"
 
         write_xes(log_config['log'], save_path)
+        add_extension_before_traces(save_path)
         print("SUCCESS: Saved generated event log in", save_path)
         features_to_dump = log_config['metafeatures']
 
@@ -181,9 +241,10 @@ class GenerateEventLogs():
         log = play_out(tree, parameters={"num_traces": config["num_traces"]})
 
         for i, trace in enumerate(log):
-            trace.attributes['concept:name']=str(i)
+            trace.attributes['concept:name'] = str(i)
             for j, event in enumerate(trace):
-                event['time:timestamp']=dt.now()
+                event['time:timestamp'] = dt.now()
+                event['lifecycle:transition'] = "complete"
         random.seed(RANDOM_SEED)
         metafeatures = self.compute_metafeatures(log)
         return {
@@ -219,6 +280,7 @@ class GenerateEventLogs():
             trace.attributes['concept:name'] = str(i)
             for j, event in enumerate(trace):
                 event['time:timestamp'] = dt.fromtimestamp(j * 1000)
+                event['lifecycle:transition'] = "complete"
 
         metafeatures_computation = {}
         for ft_name in self.objectives.keys():
@@ -235,7 +297,7 @@ class GenerateEventLogs():
         return log_evaluation
 
     def optimize(self):
-        if self.params.get(CONFIG_SPACE) ==  None:
+        if self.params.get(CONFIG_SPACE) is None:
             configspace = ConfigurationSpace({
                 "mode": (5, 40),
                 "sequence": (0.01, 1),
