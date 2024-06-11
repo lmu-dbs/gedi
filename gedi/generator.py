@@ -154,6 +154,9 @@ class GenerateEventLogs():
             tasks, output_path = get_tasks(experiment, self.output_path)
             self.output_path = output_path
 
+        if 'ratio_variants_per_number_of_traces' in tasks.columns:#HOTFIX
+            tasks=tasks.rename(columns={"ratio_variants_per_number_of_traces": "ratio_unique_traces_per_trace"})
+
         if tasks is not None:
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
             #self.generator_wrapper([*tasks.iterrows()][0])# For testing
@@ -170,6 +173,10 @@ class GenerateEventLogs():
                 self.configs = [self.configs]
             temp = self.generate_optimized_log(self.configs[0])
             self.log_config = [temp]
+            #TODO: Replace hotfix
+            if self.params[EXPERIMENT].get('ratio_unique_traces_per_trace'):#HOTFIX
+                self.params[EXPERIMENT]['ratio_variants_per_number_of_traces']=self.params[EXPERIMENT].pop('ratio_unique_traces_per_trace')
+
             save_path = get_output_key_value_location(self.params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
@@ -196,6 +203,10 @@ class GenerateEventLogs():
             log_config = self.generate_optimized_log(self.configs)
 
         identifier = 'genEL'+str(identifier)
+        #TODO: Replace hotfix
+        if self.objectives.get('ratio_unique_traces_per_trace'):#HOTFIX
+            self.objectives['ratio_variants_per_number_of_traces']=self.objectives.pop('ratio_unique_traces_per_trace')
+
         save_path = get_output_key_value_location(self.objectives,
                                          self.output_path, identifier)+".xes"
 
@@ -203,6 +214,10 @@ class GenerateEventLogs():
         add_extension_before_traces(save_path)
         print("SUCCESS: Saved generated event log in", save_path)
         features_to_dump = log_config['metafeatures']
+
+        #TODO: Replace hotfix
+        if features_to_dump.get('ratio_unique_traces_per_trace'):#HOTFIX
+            features_to_dump['ratio_variants_per_number_of_traces']=features_to_dump.pop('ratio_unique_traces_per_trace')
         features_to_dump['log'] = identifier.replace('genEL', '')
         dump_features_json(features_to_dump, self.output_path, identifier, objectives=self.objectives)
         return log_config
