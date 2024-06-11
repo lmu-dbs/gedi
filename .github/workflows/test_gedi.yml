@@ -34,6 +34,7 @@ jobs:
     - name: Compare output
       run: diff data/validation/test_feat.csv data/test_feat.csv
 
+
   test_generation:
     runs-on: ubuntu-latest
 
@@ -96,6 +97,7 @@ jobs:
     - name: Compare output
       run: diff data/validation/test_benchmark.csv output/benchmark/test_benchmark.csv
 
+
   test_augmentation:
     runs-on: ubuntu-latest
 
@@ -142,6 +144,7 @@ jobs:
 
     - name: Run test
       run:
+
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/evaluation_plotter.json
 
   test_integration:
