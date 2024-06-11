@@ -168,9 +168,5 @@ This notebook is used to visualize the metric distribution of real event logs co
 
 This notebook is used to answer the question if there is a statistically significant relation between feature similarity and performance metrics for the downstream tasks of process discovery. For that, we compute the pearson coefficient, as well as the kendall's tau coefficient. This elucidates the correlation between the features with metric scores being used for process discovery. Each coefficient is calculated for three different settings: i) real-world datasets; ii) synthesized event log data with real-world targets; iii) synthesized event log data with grid objectives. Figures 7 and 8 shown in the paper refer to this notebook.
 
-#### [Fig. 9 Consistency and fig. 10 Limitations](notebooks/gedi_figs9and10_consistency.ipynb)
-Likewise to the evaluation on the statistical tests in notebook `gedi_figs7and8_benchmarking_statisticalTests.ipynb`, this notebook is used to compute the differences between two correlation matrices $\Delta C = C_1 - C_2$. This logic is employed to evaluate and visualize the distance of two correlation matrices. Furthermore, we show how significant scores are retained from the correlations being evaluated on real-world datasets coompared to synthesized event log datasets with real-world targets. In Fig. 9 and 10 in the paper, the results of the notebook are shown. 
-
-
 ## References
 The framework used by `GEDI` is taken directly from the original paper by [...]. If you would like to discuss the paper, or corresponding research questions on benchmarking process mining tasks please email the authors.
