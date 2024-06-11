@@ -3,7 +3,7 @@
     "pipeline_step": "instance_augmentation",
     "augmentation_params":{"method":"SMOTE", "no_samples":2,
         "feature_selection": ["ratio_top_20_variants", "epa_normalized_sequence_entropy_linear_forgetting"]},
-    "input_path": "data/bpic_features.csv",
+    "input_path": "data/test/bpic_features.csv",
     "output_path": "output"
   },
   {
@@ -39,7 +39,7 @@
     "input_path": "data/test",
     "feature_params": {"feature_set":["trace_length"]},
     "output_path": "output/plots",
-    "real_eventlog_path": "data/bpic_features.csv",
+    "real_eventlog_path": "data/BaselineED_feat.csv",
     "plot_type": "boxplot"
   },
   {
@@ -47,6 +47,6 @@
     "benchmark_test": "discovery",
     "input_path":"data/test",
     "output_path":"output",
-    "miners" : ["inductive", "heuristics", "imf", "ilp"]
+    "miners" : ["inductive", "heu", "imf", "ilp"]
   }
 ]
