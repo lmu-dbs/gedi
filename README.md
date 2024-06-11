@@ -173,5 +173,4 @@ Likewise to the evaluation on the statistical tests in notebook `gedi_figs7and8_
 
 
 ## References
-## References
 The framework used by `GEDI` is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl. If you would like to discuss the paper, or corresponding research questions on benchmarking process mining tasks please email the authors.
