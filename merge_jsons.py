@@ -21,8 +21,6 @@ def json_to_csv(json_dir, output_csv):
                                                         
     # Extract the headers from the first JSON object
     if all_data:
-        import pdb
-        pdb.set_trace()
         headers = all_data[0].keys()
     else:
         raise ValueError("No data found in JSON files")
