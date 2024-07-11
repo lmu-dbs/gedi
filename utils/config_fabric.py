@@ -1,6 +1,6 @@
 from copy import deepcopy
 from importlib import reload
-from itertools import product
+from itertools import product, combinations
 from pylab import *
 import itertools
 import json
@@ -97,7 +97,24 @@ def set_up(generator_params):
                 stats[str(int(add_quantile))+"%"] = df.quantile(q=add_quantile/100)
                 view(stats)
                 tuple_values = st.multiselect("Tuples including", list(stats.columns)[3:], default=['min', 'max'])
-                experiments = create_objectives_grid(stats, tuple_values, n_para_obj=len(tuple_values))
+                triangular_option = double_switch("Square", "Triangular")
+                if triangular_option:
+                    elements = sel_features
+                    # List to store all combinations
+                    all_combinations = []
+
+                    # Generate combinations of length 1, 2, and 3
+                    for r in range(1, len(elements) + 1):
+                        # Generate combinations of length r
+                        combinations_r = list(combinations(elements, r))
+                        # Extend the list of all combinations
+                        all_combinations.extend(combinations_r)
+                    # Print or use the result as needed
+                    for comb in all_combinations:
+                        sel_stats = stats.loc[list(comb)]
+                        experiments += create_objectives_grid(sel_stats, tuple_values, n_para_obj=len(tuple_values))
+                else:
+                    experiments = create_objectives_grid(stats, tuple_values, n_para_obj=len(tuple_values))
             else:
                 view(df)
                 experiments = df.to_dict(orient='records')
