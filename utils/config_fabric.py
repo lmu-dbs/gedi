@@ -46,36 +46,30 @@ def get_ranges(stats, tuple_values):
     result = ", ".join(result)
     return result
 
-def create_objectives_grid(df, objectives, n_para_obj=2):
-    parameters_o = "objectives, "
-    sel_features = df.index.to_list()
-    if n_para_obj==len(objectives):
-        parameters = get_ranges(df, sorted(objectives))
-        tasks = eval(f"list(itertools.product({parameters}))")[0]
-        cartesian_product = list(product(*tasks))
+def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial"):
+        if method=="combinatorial":
+        #if n_para_obj==len(objectives):
+            sel_features = df.index.to_list()
+            parameters_o = "objectives, "
+            parameters = get_ranges(df, sorted(objectives))
+            tasks = f"list(itertools.product({parameters}))[0]"
+
+        else:
+            sel_features = objectives
+            tasks = ""
+            for objective in objectives:
+                min_col, max_col, step_col = st.columns(3)
+                with min_col:
+                    selcted_min = st.slider(objective+': min', min_value=float(df[objective].min()), max_value=float(df[objective].max()), value=df[objective].quantile(0.1), step=0.1, key=objective+"min")
+                with max_col:
+                    selcted_max = st.slider('max', min_value=selcted_min, max_value=float(df[objective].max()), value=df[objective].quantile(0.9), step=0.1, key=objective+"max")
+                with step_col:
+                    step_value = st.slider('step', min_value=float(df[objective].min()), max_value=float(df[objective].quantile(0.9)), value=df[objective].median()/df[objective].min(), step=0.01, key=objective+"step")
+                tasks += f"np.around(np.arange({selcted_min}, {selcted_max}+{step_value}, {step_value}),2), "
+
+        cartesian_product = list(product(*eval(tasks)))
         experiments = [{key: value[idx] for idx, key in enumerate(sel_features)} for value in cartesian_product]
         return experiments
-    else:
-        if n_para_obj==1:
-            experiments = [[exp] for exp in objectives]
-        else:
-            experiments = eval(f"[exp for exp in list(itertools.product({(parameters_o*n_para_obj)[:-2]})) if exp[0]!=exp[1]]")
-        experiments = list(set([tuple(sorted(exp)) for exp in experiments]))
-        parameters = "np.around(np.arange(0.0, 1.5,0.5),2), "
-        tasks = eval(f"list(itertools.product({(parameters*n_para_obj)[:-2]}))")
-    print("TASKS", tasks,  type(parameters), type(n_para_obj), parameters*n_para_obj)
-    #print(len(experiments), experiments)
-
-    print(len(tasks))
-
-    for exp in experiments:
-        df = pd.DataFrame(data=tasks, columns=["task", *exp])
-        #experiment_path = os.path.join('..','data', f'grid_{n_para_obj}obj')
-        #os.makedirs(experiment_path, exist_ok=True)
-        #experiment_path = os.path.join(experiment_path, f"grid_{len(df.columns)-1}objectives_{abbrev_obj_keys(exp)}.csv") 
-        #df.to_csv(experiment_path, index=False)
-        #print(f"Saved experiment in {experiment_path}")
-        #write_generator_experiment(experiment_path, objectives=exp)
 
 def set_up(generator_params):
     create_button = False
@@ -90,38 +84,44 @@ def set_up(generator_params):
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
             sel_features = st.multiselect("Selected features", list(df.columns))
-            df = df[sel_features]
-            if grid_option:
-                add_quantile = st.slider('Add %-quantile', min_value=0.0, max_value=100.0, value=50.0, step=5.0)
-                stats = df.describe().transpose()
-                stats[str(int(add_quantile))+"%"] = df.quantile(q=add_quantile/100)
-                view(stats)
-                tuple_values = st.multiselect("Tuples including", list(stats.columns)[3:], default=['min', 'max'])
-                triangular_option = double_switch("Square", "Triangular")
-                if triangular_option:
-                    elements = sel_features
-                    # List to store all combinations
-                    all_combinations = []
+            if sel_features:
+                df = df[sel_features]
+                if grid_option:
+                    combinatorial = double_switch("Range", "Combinatorial")
+                    if combinatorial:
+                        add_quantile = st.slider('Add %-quantile', min_value=0.0, max_value=100.0, value=50.0, step=5.0)
+                        stats = df.describe().transpose()
+                        stats[str(int(add_quantile))+"%"] = df.quantile(q=add_quantile/100)
+                        view(stats)
+                        tuple_values = st.multiselect("Tuples including", list(stats.columns)[3:], default=['min', 'max'])
+                        triangular_option = double_switch("Square", "Triangular")
+                        if triangular_option:
+                            elements = sel_features
+                            # List to store all combinations
+                            all_combinations = []
 
-                    # Generate combinations of length 1, 2, and 3
-                    for r in range(1, len(elements) + 1):
-                        # Generate combinations of length r
-                        combinations_r = list(combinations(elements, r))
-                        # Extend the list of all combinations
-                        all_combinations.extend(combinations_r)
-                    # Print or use the result as needed
-                    for comb in all_combinations:
-                        sel_stats = stats.loc[list(comb)]
-                        experiments += create_objectives_grid(sel_stats, tuple_values, n_para_obj=len(tuple_values))
+                            # Generate combinations of length 1, 2, and 3
+                            for r in range(1, len(elements) + 1):
+                                # Generate combinations of length r
+                                combinations_r = list(combinations(elements, r))
+                                # Extend the list of all combinations
+                                all_combinations.extend(combinations_r)
+                            # Print or use the result as needed
+                            for comb in all_combinations:
+                                sel_stats = stats.loc[list(comb)]
+                                experiments += create_objectives_grid(sel_stats, tuple_values, n_para_obj=len(tuple_values))
+                        else:
+                            experiments = create_objectives_grid(stats, tuple_values, n_para_obj=len(tuple_values))
+                    else:
+                        experiments = create_objectives_grid(df, sel_features, n_para_obj=len(sel_features), method="range")
                 else:
-                    experiments = create_objectives_grid(stats, tuple_values, n_para_obj=len(tuple_values))
-            else:
-                view(df)
-                experiments = df.to_dict(orient='records')
+                    view(df)
+                    experiments = df.to_dict(orient='records')
     else:
         sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
-        for sel_feature in sel_features:
-            generator_params['experiment'][sel_feature] = float(st.text_input(sel_feature, generator_params['experiment'][sel_feature]))
+        if sel_features != None:
+            for sel_feature in sel_features:
+                generator_params['experiment'][sel_feature] = float(st.text_input(sel_feature, generator_params['experiment'][sel_feature]))
     generator_params['experiment'] = experiments
     st.write(f"...result in {len(generator_params['experiment'])} experiments")
 
