@@ -114,60 +114,63 @@ def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial")
         return experiments
 
 def set_generator_experiments(generator_params):
-    create_button = False
-    experiments = []
-
-    grid_option, csv_option = double_switch("Point-", "Grid-based", third_label="Manual", fourth_label="From CSV")
-    if csv_option:
-        uploaded_file = st.file_uploader(f"Pick a csv-file containing feature values for features:", type="csv")
+    def handle_csv_file(grid_option):
+        uploaded_file = st.file_uploader("Pick a csv-file containing feature values for features:", type="csv")
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
             sel_features = st.multiselect("Selected features", list(df.columns))
             if sel_features:
                 df = df[sel_features]
-                if grid_option:
-                    combinatorial = double_switch("Range", "Combinatorial")
-                    if combinatorial:
-                        add_quantile = st.slider('Add %-quantile', min_value=0.0, max_value=100.0, value=50.0, step=5.0)
-                        stats = df.describe().transpose()
-                        stats[str(int(add_quantile))+"%"] = df.quantile(q=add_quantile/100)
-                        st.write(stats)
-                        tuple_values = st.multiselect("Tuples including", list(stats.columns)[3:], default=['min', 'max'])
-                        triangular_option = double_switch("Square", "Triangular")
-                        if triangular_option:
-                            elements = sel_features
-                            # List to store all combinations
-                            all_combinations = []
+                return df, sel_features
+        return None, None
 
-                            # Generate combinations of length 1, 2, ... and len(elements)
-                            for r in range(1, len(elements) + 1):
-                                # Generate combinations of length r
-                                combinations_r = list(combinations(elements, r))
-                                # Extend the list of all combinations
-                                all_combinations.extend(combinations_r)
-                            # Print or use the result as needed
-                            for comb in all_combinations:
-                                sel_stats = stats.loc[list(comb)]
-                                experiments += create_objectives_grid(sel_stats, tuple_values, n_para_obj=len(tuple_values), method="combinatorial")
-                        else: #Square
-                            experiments = create_objectives_grid(stats, tuple_values, n_para_obj=len(tuple_values), method="combinatorial")
-                    else: #Range
-                        experiments = create_objectives_grid(df, sel_features, n_para_obj=len(sel_features), method="range-from-csv")
-                else: #Point
-                    st.write(df)
-                    experiments = df.to_dict(orient='records')
-    #Manual
-    else:
-        sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
-        experitments = []
-        if sel_features != None:
+    def handle_combinatorial(sel_features, stats, tuple_values):
+        triangular_option = double_switch("Square", "Triangular")
+        all_combinations = [combinations(sel_features, r) for r in range(1, len(sel_features) + 1)]
+        all_combinations = [comb for sublist in all_combinations for comb in sublist]
+
+        for comb in all_combinations:
+            sel_stats = stats.loc[list(comb)]
+            experiments = create_objectives_grid(sel_stats, tuple_values, n_para_obj=len(tuple_values), method="combinatorial")
+        return experiments
+
+    def handle_grid_option(grid_option, df, sel_features):
+        if grid_option:
+            combinatorial = double_switch("Range", "Combinatorial")
+            if combinatorial:
+                add_quantile = st.slider('Add %-quantile', min_value=0.0, max_value=100.0, value=50.0, step=5.0)
+                stats = df.describe().transpose()
+                stats[f"{int(add_quantile)}%"] = df.quantile(q=add_quantile / 100)
+                st.write(stats)
+                tuple_values = st.multiselect("Tuples including", list(stats.columns)[3:], default=['min', 'max'])
+                return handle_combinatorial(sel_features, stats, tuple_values)
+            else:  # Range
+                return create_objectives_grid(df, sel_features, n_para_obj=len(sel_features), method="range-from-csv")
+        else:  # Point
+            st.write(df)
+            return df.to_dict(orient='records')
+
+    def handle_manual_option(sel_features, grid_option):
+        if sel_features:
             if grid_option:
-                experiments = create_objectives_grid(generator_params['experiment'], sel_features, n_para_obj=len(sel_features), method="range-manual")
+                return create_objectives_grid(generator_params['experiment'], sel_features, n_para_obj=len(sel_features), method="range-manual")
             else:
-                experiment = {}
-                for sel_feature in sel_features:
-                    experiment[sel_feature] = float(st.text_input(sel_feature, generator_params['experiment'][sel_feature]))
-                experiments.append(experiment)
+                experiment = {sel_feature: float(st.text_input(sel_feature, generator_params['experiment'][sel_feature])) for sel_feature in sel_features}
+                return [experiment]
+        return []
+
+    grid_option, csv_option = double_switch("Point-", "Grid-based", third_label="Manual", fourth_label="From CSV")
+
+    if csv_option:
+        df, sel_features = handle_csv_file(grid_option)
+        if df is not None and sel_features is not None:
+            experiments = handle_grid_option(grid_option, df, sel_features)
+        else:
+            experiments = []
+    else:  # Manual
+        sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
+        experiments = handle_manual_option(sel_features, grid_option)
+
     generator_params['experiment'] = experiments
     st.write(f"...result in {len(generator_params['experiment'])} experiment(s)")
 
@@ -178,6 +181,7 @@ def set_generator_experiments(generator_params):
     for key, new_value in zip(generator_params['config_space'].keys(), updated_values):
         generator_params['config_space'][key] = new_value
     generator_params['n_trials'] = int(st.text_input('n_trials', generator_params['n_trials']))
+
     return generator_params
 
 if __name__ == '__main__':
