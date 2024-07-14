@@ -148,6 +148,7 @@ def set_generator_experiments(generator_params):
                 add_quantile = st.slider('Add %-quantile', min_value=0.0, max_value=100.0, value=50.0, step=5.0)
                 stats = df.describe().transpose().sort_index()
                 stats[f"{int(add_quantile)}%"] = df.quantile(q=add_quantile / 100)
+                st.write(stats)
                 tuple_values = st.multiselect("Tuples including", list(stats.columns)[3:], default=['min', 'max'])
                 return handle_combinatorial(sel_features, stats, tuple_values)
             else:  # Range
