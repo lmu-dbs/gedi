@@ -81,7 +81,6 @@ def get_ranges_from_stats(stats, tuple_values):
 
 def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial"):
         if method=="combinatorial":
-        #if n_para_obj==len(objectives):
             sel_features = df.index.to_list()
             parameters_o = "objectives, "
             parameters = get_ranges_from_stats(df, sorted(objectives))
@@ -131,21 +130,12 @@ def set_generator_experiments(generator_params):
             experiments = []
             elements = sel_features
             # List to store all combinations
-            all_combinations = []
-
-            # Generate combinations of length 1, 2, and 3
-            for r in range(1, len(elements) + 1):
-                # Generate combinations of length r
-                combinations_r = list(combinations(elements, r))
-                # Extend the list of all combinations
-                all_combinations.extend(combinations_r)
-            st.write(all_combinations)
             all_combinations = [combinations(sel_features, r) for r in range(1, len(sel_features) + 1)]
             all_combinations = [comb for sublist in all_combinations for comb in sublist]
 
             # Print or use the result as needed
             for comb in all_combinations:
-                sel_stats = stats.loc[list(comb)]
+                sel_stats = stats.loc[sorted(list(comb))]
                 experiments += create_objectives_grid(sel_stats, tuple_values, n_para_obj=len(tuple_values), method="combinatorial")
         else:
             experiments = create_objectives_grid(stats, tuple_values, n_para_obj=len(tuple_values))
@@ -158,7 +148,6 @@ def set_generator_experiments(generator_params):
                 add_quantile = st.slider('Add %-quantile', min_value=0.0, max_value=100.0, value=50.0, step=5.0)
                 stats = df.describe().transpose().sort_index()
                 stats[f"{int(add_quantile)}%"] = df.quantile(q=add_quantile / 100)
-                st.write(stats)
                 tuple_values = st.multiselect("Tuples including", list(stats.columns)[3:], default=['min', 'max'])
                 return handle_combinatorial(sel_features, stats, tuple_values)
             else:  # Range
