@@ -1,0 +1,22 @@
+name: gedi
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - numpy=1.23.1
+  - scikit-learn=1.2.2
+  - scipy
+  - pandas
+  - matplotlib
+  - pip
+  - pip:
+    - pm4py==2.7.2
+    - imblearn
+    - seaborn
+    - feeed
+    - smac
+    - ConfigSpace
+    - tqdm
+    - Levenshtein
+    - streamlit
+    - streamlit-toggle-switch
