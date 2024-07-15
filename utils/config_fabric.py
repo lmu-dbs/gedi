@@ -1,6 +1,7 @@
 from copy import deepcopy
 from importlib import reload
-from itertools import product, combinations
+from itertools import product as cproduct
+from itertools import combinations
 from pylab import *
 import itertools
 import json
@@ -85,7 +86,7 @@ def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial")
             parameters_o = "objectives, "
             parameters = get_ranges_from_stats(df, sorted(objectives))
             objectives = sorted(sel_features)
-            tasks = f"list(itertools.product({parameters}))[0]"
+            tasks = f"list(cproduct({parameters}))[0]"
 
         elif method=="range-from-csv":
             tasks = ""
@@ -96,20 +97,21 @@ def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial")
                 with max_col:
                     selcted_max = st.slider('max', min_value=selcted_min, max_value=float(df[objective].max()), value=df[objective].quantile(0.9), step=0.1, key=objective+"max")
                 with step_col:
-                    step_value = st.slider('step', min_value=float(df[objective].min()), max_value=float(df[objective].quantile(0.9)), value=df[objective].median()/df[objective].min(), step=0.01, key=objective+"step")
+                    step_value = st.slider('step', min_value=float(df[objective].min()), max_value=float(df[objective].quantile(0.9)), value=df[objective].median()/(df[objective].min()+0.0001), step=0.01, key=objective+"step")
                 tasks += f"np.around(np.arange({selcted_min}, {selcted_max}+{step_value}, {step_value}),2), "
         else :#method=="range-manual":
             experitments = []
             tasks=""
             if objectives != None:
-                cross_labels =  [feature[0]+': '+feature[1] for feature in list(product(objectives,['min', 'max', 'step']))]
-                cross_values = [round(eval(str(combination[0])+combination[1]), 2) for combination in list(product(list(df.values()), ['*1', '*2', '/3']))]
+                cross_labels =  [feature[0]+': '+feature[1] for feature in list(cproduct(objectives,['min', 'max', 'step']))]
+                cross_values = [round(eval(str(combination[0])+combination[1]), 2) for combination in list(cproduct(list(df.values()), ['*1', '*2', '/3']))]
                 ranges = zip(objectives, split_list(list(input_multicolumn(cross_labels, cross_values, n_cols=3)), n_para_obj))
                 for objective, range_value in ranges:
                     selcted_min, selcted_max, step_value = range_value
                     tasks += f"np.around(np.arange({selcted_min}, {selcted_max}+{step_value}, {step_value}),2), "
 
-        cartesian_product = list(product(*eval(tasks)))
+        #import pdb; pdb.set_trace()
+        cartesian_product = list(cproduct(*eval(tasks)))
         experiments = [{key: value[idx] for idx, key in enumerate(objectives)} for value in cartesian_product]
         return experiments
 
