@@ -186,7 +186,7 @@ def set_generator_experiments(generator_params):
     """
     updated_values = input_multicolumn(generator_params['config_space'].keys(), generator_params['config_space'].values())
     for key, new_value in zip(generator_params['config_space'].keys(), updated_values):
-        generator_params['config_space'][key] = new_value
+        generator_params['config_space'][key] = eval(new_value)
     generator_params['n_trials'] = int(st.text_input('n_trials', generator_params['n_trials']))
 
     return generator_params
