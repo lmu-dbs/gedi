@@ -214,7 +214,6 @@ if __name__ == '__main__':
                     layout_features = list(step_config[step_key]['feature_set'])
                     step_config[step_key]["feature_set"] = st.multiselect(
                             "features to extract",
-                            layout_features,
                             layout_features)
                 elif step_key != "pipeline_step":
                     step_config[step_key] = st.text_input(step_key, step_config[step_key])
