@@ -210,6 +210,12 @@ if __name__ == '__main__':
                 if step_key == "generator_params":
                     st.subheader("Set-up experiments")
                     step_config[step_key] = set_generator_experiments(step_config[step_key])
+                elif step_key == "feature_params":
+                    layout_features = list(step_config[step_key]['feature_set'])
+                    step_config[step_key]["feature_set"] = st.multiselect(
+                            "features to extract",
+                            layout_features,
+                            layout_features)
                 elif step_key != "pipeline_step":
                     step_config[step_key] = st.text_input(step_key, step_config[step_key])
         with view_col:
