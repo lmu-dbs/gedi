@@ -63,7 +63,7 @@ The JSON file consists of the following key-value pairs:
 - real_eventlog_path: defines the file with the features extracted from the real event logs
 - plot_type: defines the style of the output plotting (possible values: violinplot, boxplot)
 - font_size: label font size of the output plot
-- boxplot_widht: width of the violinplot/boxplot
+- boxplot_width: width of the violinplot/boxplot
 
 
 ### Generation
@@ -153,8 +153,16 @@ To execute the experiments with grid targets, a single [configuration](config_fi
 conda activate gedi
 python execute_grid_experiments.py config_files/algorithm/grid_2obj
 ```
-We employ the [experiment_grid_2obj_configfiles_fabric.ipynb](notebooks/experiment_grid_2obj_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/algorithm/grid_2obj) and [objective](data/grid_2obj) files for this experiment. For more details about these config_files, please refer to [Feature Extraction](#feature-extraction), [Generation](#generation), and [Benchmark](#benchmark).
+We employ the [experiment_grid_2obj_configfiles_fabric.ipynb](notebooks/experiment_grid_2obj_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/algorithm/grid_2obj) and [objective](data/grid_2obj) files for this experiment.
+For more details about these config_files, please refer to [Feature Extraction](#feature-extraction), [Generation](#generation), and [Benchmark](#benchmark).
+To create configuration files for grid objectives interactively, you can use the start the following dashboard:
+```
+streamlit run utils/config_fabric.py # To tunnel to local machine add: --server.port 8501 --server.headless true
 
+# In local machine (only in case you are tunneling):
+ssh -N -f -L 9000:localhost:8501 <user@remote_machine.com>
+open "http://localhost:9000/"
+```
 ### Visualizations
 To run the visualizations, we employ [jupyter notebooks](https://jupyter.org/install) and [add the installed environment to the jupyter notebook](https://medium.com/@nrk25693/how-to-add-your-conda-environment-to-your-jupyter-notebook-in-just-4-steps-abeab8b8d084). We then start all visualizations by running e.g.: `jupyter noteboook`. In the following, we describe the `.ipynb`-files in the folder `\notebooks` to reproduce the figures from our paper. 
 
