@@ -15,7 +15,7 @@ dependencies:
     - seaborn
     - feeed
     - smac
-    - ConfigSpace
+    - ConfigSpace==0.7.1
     - tqdm
     - Levenshtein
     - streamlit
