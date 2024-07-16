@@ -11,6 +11,7 @@ import pandas as pd
 import pm4py
 import random
 import streamlit as st
+import subprocess
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
@@ -53,6 +54,13 @@ def double_switch(label_left, label_right, third_label=None, fourth_label=None):
         with col7:
             st.write(fourth_label)
         return toggle_option, toggle_option_2
+
+def multi_button(labels):
+    cols = st.columns(len(labels))
+    activations = []
+    for col, label in zip(cols, labels):
+        activations.append(col.button(label))
+    return activations
 
 def input_multicolumn(labels, default_values, n_cols=5):
     result = {}
@@ -225,7 +233,26 @@ if __name__ == '__main__':
     config_file = json.dumps(step_configs, indent=4)
     output_path = st.text_input("Output file path", "config_files/experiment_config.json")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    create_button = st.button("Save config file")
-    if create_button:
+    save_labels = ["Save config file", "Save and run config_file"]
+    save_labels = ["Save configuration file"]
+    #create_button, create_run_button = multi_button(save_labels)
+    create_button = multi_button(save_labels)
+    if create_button: # or create_run_button:
         with open(output_path, "w") as f:
             f.write(config_file)
+        st.write("Saved configuration in ", output_path, ". Run command:")
+        #if create_run_button:
+        if True:
+            options_path = os.path.join("config_files", "options", "baseline.json")
+            var = f"python -W ignore main.py -o {options_path} -a {output_path}"
+            st.code(var, language='bash')
+        if False: #FIXME: Command fails when using multiprocessing 
+            command = var.split()
+
+            # Run the command
+            result = subprocess.run(command, capture_output=True, text=True)
+
+            if len(result.stderr)==0:
+                st.write(result.stdout)
+            else:
+                st.write("ERROR: ", result.stderr)
