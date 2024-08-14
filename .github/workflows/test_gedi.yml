@@ -12,23 +12,23 @@ jobs:
   test_feature-extraction:
     runs-on: ubuntu-latest
 
-    # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
 
-    - name: Install feeed
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+    - name: Create conda environment
+      run: conda env create -f .conda.yml
+
+    - name: Activate conda environment
+      run: echo "conda activate gedi" >> $GITHUB_ENV
+      shell: bash
 
     - name: Run test
-      run:
+      run: |
+        conda activate gedi
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/feature_extraction.json
 
     - name: Compare output
@@ -38,65 +38,58 @@ jobs:
   test_generation:
     runs-on: ubuntu-latest
 
-    # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get install build-essential python3 python3-dev
+    - name: Create conda environment
+      run: conda env create -f .conda.yml
 
-    - name: Install feeed
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+    - name: Activate conda environment
+      run: echo "conda activate gedi" >> $GITHUB_ENV
+      shell: bash
 
     - name: Run test
-      run:
+      run: |
+        conda activate gedi
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/generation.json
 
     - name: Compare output 1
-      run: 
-        diff data/validation/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
+      run: diff data/validation/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
 
     - name: Compare output 2
-      run: 
-        diff data/validation/genELexperiment1_04_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment1_04_02.json
+      run: diff data/validation/genELexperiment1_04_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment1_04_02.json
 
     - name: Compare output 3
-      run: 
-        diff data/validation/genELexperiment3_04.json output/features/grid_feat/1_enself/genELexperiment3_04.json
+      run: diff data/validation/genELexperiment3_04.json output/features/grid_feat/1_enself/genELexperiment3_04.json
 
     - name: Compare output 4
-      run: 
-        diff data/validation/genELexperiment4_02.json output/features/grid_feat/1_rt20v/genELexperiment4_02.json
+      run: diff data/validation/genELexperiment4_02.json output/features/grid_feat/1_rt20v/genELexperiment4_02.json
+
 
   test_benchmark:
     runs-on: ubuntu-latest
 
-    # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
 
-    - name: Install feeed
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+    - name: Create conda environment
+      run: conda env create -f .conda.yml
+
+    - name: Activate conda environment
+      run: echo "conda activate gedi" >> $GITHUB_ENV
+      shell: bash
 
     - name: Run test
-      run:
+      run: |
+        conda activate gedi
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/benchmark.json
 
     - name: Convert output and validation to same encoding
@@ -109,102 +102,92 @@ jobs:
   test_augmentation:
     runs-on: ubuntu-latest
 
-    # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
 
-    - name: Install feeed
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+    - name: Create conda environment
+      run: conda env create -f .conda.yml
+
+    - name: Activate conda environment
+      run: echo "conda activate gedi" >> $GITHUB_ENV
+      shell: bash
 
     - name: Run test
-      run:
+      run: |
+        conda activate gedi
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/augmentation.json
+
 
   test_evaluation-plotter:
     runs-on: ubuntu-latest
 
-    # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get install build-essential python3 python3-dev
+    - name: Create conda environment
+      run: conda env create -f .conda.yml
 
-    - name: Install feeed
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+    - name: Activate conda environment
+      run: echo "conda activate gedi" >> $GITHUB_ENV
+      shell: bash
 
     - name: Run test
-      run:
-
+      run: |
+        conda activate gedi
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/evaluation_plotter.json
+
 
   test_integration:
     runs-on: ubuntu-latest
 
-    # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get install build-essential python3 python3-dev
+    - name: Create conda environment
+      run: conda env create -f .conda.yml
 
-    - name: Install feeed
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+    - name: Activate conda environment
+      run: echo "conda activate gedi" >> $GITHUB_ENV
+      shell: bash
 
     - name: Run test
-      run:
+      run: |
+        conda activate gedi
         python main.py -o config_files/options/baseline.json -a config_files/algorithm/experiment_test.json
+
 
   test_grid_experiments_script:
     runs-on: ubuntu-latest
 
-    # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get install build-essential python3 python3-dev
+    - name: Create conda environment
+      run: conda env create -f .conda.yml
 
-    - name: Install feeed
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+    - name: Activate conda environment
+      run: echo "conda activate gedi" >> $GITHUB_ENV
+      shell: bash
 
     - name: Run test
-      run:
+      run: |
+        conda activate gedi
         python execute_grid_experiments.py config_files/algorithm/test
 
     - name: Convert output and validation to same encoding
