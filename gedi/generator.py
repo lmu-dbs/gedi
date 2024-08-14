@@ -163,7 +163,7 @@ class GenerateEventLogs():
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
-                log_config = p.map(self.generator_wrapper, tasks.iterrows())
+                log_config = p.map(self.generator_wrapper, [(index, row.dropna()) for index, row in tasks.iterrows()])
             self.log_config = log_config
 
         else:
