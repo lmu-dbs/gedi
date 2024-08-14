@@ -1,4 +1,4 @@
-name: gedi_test
+name: gedi
 channels:
   - conda-forge
   - defaults
