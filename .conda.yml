@@ -78,4 +78,3 @@ dependencies:
       - typing-extensions==4.10.0
       - urllib3==2.2.1
       - zict==3.0.0
-prefix: /home/maldonado/miniconda3/envs/tag
