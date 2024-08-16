@@ -19,7 +19,8 @@ from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
 from utils.param_keys import OUTPUT_PATH, INPUT_PATH
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG_SPACE, N_TRIALS
-from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, read_csvs
+from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json
+from gedi.utils.io_helpers import read_csvs
 import xml.etree.ElementTree as ET
 import re
 from xml.dom import minidom
@@ -80,7 +81,7 @@ def removeextralines(elem):
             element.tail=""
         if not re.search(hasWords,str(element.text)):
             element.text = ""
-            
+
 def add_extension_before_traces(xes_file):
     # Register the namespace
     ET.register_namespace('', "http://www.xes-standard.org/")
@@ -158,6 +159,7 @@ class GenerateEventLogs():
             tasks=tasks.rename(columns={"ratio_variants_per_number_of_traces": "ratio_unique_traces_per_trace"})
 
         if tasks is not None:
+            self.feature_keys = tasks.columns.tolist()
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
             #self.generator_wrapper([*tasks.iterrows()][0])# For testing
             with multiprocessing.Pool(num_cores) as p:
@@ -208,7 +210,7 @@ class GenerateEventLogs():
             self.objectives['ratio_variants_per_number_of_traces']=self.objectives.pop('ratio_unique_traces_per_trace')
 
         save_path = get_output_key_value_location(self.objectives,
-                                         self.output_path, identifier)+".xes"
+                                         self.output_path, identifier, self.feature_keys)+".xes"
 
         write_xes(log_config['log'], save_path)
         add_extension_before_traces(save_path)
@@ -219,7 +221,7 @@ class GenerateEventLogs():
         if features_to_dump.get('ratio_unique_traces_per_trace'):#HOTFIX
             features_to_dump['ratio_variants_per_number_of_traces']=features_to_dump.pop('ratio_unique_traces_per_trace')
         features_to_dump['log'] = identifier.replace('genEL', '')
-        dump_features_json(features_to_dump, self.output_path, identifier, objectives=self.objectives)
+        dump_features_json(features_to_dump, self.output_path, identifier, objectives=self.objectives, obj_keys=self.feature_keys)
         return log_config
 
     def generate_optimized_log(self, config):

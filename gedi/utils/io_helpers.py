@@ -52,9 +52,10 @@ def get_keys_abbreviation(obj_keys):
         abbreviated_keys.append(abbreviated_key)
     return '_'.join(abbreviated_keys)
 
-def get_output_key_value_location(obj, output_path, identifier):
+def get_output_key_value_location(obj, output_path, identifier, obj_keys=None):
     obj_sorted = dict(sorted(obj.items()))
-    obj_keys = [*obj_sorted.keys()]
+    if obj_keys is None:
+        obj_keys = [*obj_sorted.keys()]
 
     obj_values = [round(x, 4) for x in [*obj_sorted.values()]]
 
@@ -71,13 +72,13 @@ def get_output_key_value_location(obj, output_path, identifier):
     save_path = os.path.join(folder_path, generated_file_name)
     return save_path
 
-def dump_features_json(features: dict, output_path, identifier, objectives=None, content_type="features"):
+def dump_features_json(features: dict, output_path, identifier, objectives=None, content_type="features", obj_keys=None):
     output_parts = PurePath(output_path).parts
     feature_dir = os.path.join(output_parts[0], content_type,
                                    *output_parts[1:])
     if objectives is not None:
         json_path = get_output_key_value_location(objectives,
-                                                feature_dir, identifier)+".json"
+                                                feature_dir, identifier, obj_keys)+".json"
     else:
         json_path = os.path.join(feature_dir, identifier)+".json"
 
