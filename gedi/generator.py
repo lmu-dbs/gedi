@@ -159,7 +159,7 @@ class GenerateEventLogs():
             tasks=tasks.rename(columns={"ratio_variants_per_number_of_traces": "ratio_unique_traces_per_trace"})
 
         if tasks is not None:
-            self.feature_keys = tasks.columns.tolist()
+            self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
             #self.generator_wrapper([*tasks.iterrows()][0])# For testing
             with multiprocessing.Pool(num_cores) as p:
