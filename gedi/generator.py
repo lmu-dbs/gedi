@@ -165,7 +165,7 @@ class GenerateEventLogs():
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
-                log_config = p.map(self.generator_wrapper, [(index, row.dropna()) for index, row in tasks.iterrows()])
+                log_config = p.map(self.generator_wrapper, [(index, row) for index, row in tasks.iterrows()])
             self.log_config = log_config
 
         else:
@@ -194,7 +194,7 @@ class GenerateEventLogs():
         except IndexError:
             identifier = task[0]+1
         task = task[1].loc[lambda x, identifier=identifier: x!=identifier]
-        self.objectives = task.to_dict()
+        self.objectives = task.dropna().to_dict()
         random.seed(RANDOM_SEED)
         self.configs = self.optimize()
 
@@ -209,7 +209,7 @@ class GenerateEventLogs():
         if self.objectives.get('ratio_unique_traces_per_trace'):#HOTFIX
             self.objectives['ratio_variants_per_number_of_traces']=self.objectives.pop('ratio_unique_traces_per_trace')
 
-        save_path = get_output_key_value_location(self.objectives,
+        save_path = get_output_key_value_location(task.to_dict(),
                                          self.output_path, identifier, self.feature_keys)+".xes"
 
         write_xes(log_config['log'], save_path)
@@ -221,7 +221,7 @@ class GenerateEventLogs():
         if features_to_dump.get('ratio_unique_traces_per_trace'):#HOTFIX
             features_to_dump['ratio_variants_per_number_of_traces']=features_to_dump.pop('ratio_unique_traces_per_trace')
         features_to_dump['log'] = identifier.replace('genEL', '')
-        dump_features_json(features_to_dump, self.output_path, identifier, objectives=self.objectives, obj_keys=self.feature_keys)
+        dump_features_json(features_to_dump, save_path)
         return log_config
 
     def generate_optimized_log(self, config):

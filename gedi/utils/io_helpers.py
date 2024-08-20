@@ -72,15 +72,11 @@ def get_output_key_value_location(obj, output_path, identifier, obj_keys=None):
     save_path = os.path.join(folder_path, generated_file_name)
     return save_path
 
-def dump_features_json(features: dict, output_path, identifier, objectives=None, content_type="features", obj_keys=None):
-    output_parts = PurePath(output_path).parts
-    feature_dir = os.path.join(output_parts[0], content_type,
+def dump_features_json(features: dict, output_path, content_type="features"):
+    output_parts = PurePath(output_path.split(".xes")[0]).parts
+    features_path = os.path.join(output_parts[0], content_type,
                                    *output_parts[1:])
-    if objectives is not None:
-        json_path = get_output_key_value_location(objectives,
-                                                feature_dir, identifier, obj_keys)+".json"
-    else:
-        json_path = os.path.join(feature_dir, identifier)+".json"
+    json_path = features_path+'.json'
 
     os.makedirs(os.path.split(json_path)[0], exist_ok=True)
     with open(json_path, 'w') as fp:
