@@ -10,7 +10,7 @@ from tqdm import tqdm
 def multi_experiment_wrapper(config_file, i=0):
     print(f"=========================STARTING EXPERIMENT #{i+1}=======================")
     print(f"INFO: Executing with {config_file}")
-    os.system(f"python -W ignore main.py -o config_files/options/baseline.json -a {config_file}")
+    os.system(f"python -W ignore main.py -a {config_file}")
     print(f"=========================FINISHED EXPERIMENT #{i+1}=======================")
 
 if __name__ == '__main__':

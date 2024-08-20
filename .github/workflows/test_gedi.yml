@@ -29,7 +29,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/feature_extraction.json
+        python main.py -a config_files/pipeline_steps/feature_extraction.json
 
     - name: Compare output
       run: diff data/validation/test_feat.csv data/test_feat.csv
@@ -59,7 +59,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/generation.json
+        python main.py -a config_files/pipeline_steps/generation.json
 
     - name: Compare output 1
       run: 
@@ -97,7 +97,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/benchmark.json
+        python main.py -a config_files/pipeline_steps/benchmark.json
 
     - name: Convert output and validation to same encoding
       run: iconv -f UTF-8 -t ASCII output/benchmark/test_benchmark.csv > data/validation/test_benchmark.csv
@@ -126,7 +126,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/augmentation.json
+        python main.py -a config_files/pipeline_steps/augmentation.json
 
   test_evaluation-plotter:
     runs-on: ubuntu-latest
@@ -153,7 +153,7 @@ jobs:
     - name: Run test
       run:
 
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/evaluation_plotter.json
+        python main.py -a config_files/pipeline_steps/evaluation_plotter.json
 
   test_integration:
     runs-on: ubuntu-latest
@@ -179,7 +179,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/experiment_test.json
+        python main.py -a config_files/test/experiment_test.json
 
   test_grid_experiments_script:
     runs-on: ubuntu-latest
@@ -205,7 +205,7 @@ jobs:
 
     - name: Run test
       run:
-        python execute_grid_experiments.py config_files/algorithm/test
+        python execute_grid_experiments.py config_files/test
 
     - name: Convert output and validation to same encoding
       run: iconv -f UTF-8 -t ASCII output/features/generated/2_bpic_features/2_ense_enseef_feat.csv > data/validation/2_ense_enseef_feat.csv
