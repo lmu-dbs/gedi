@@ -28,7 +28,7 @@ class EventLogFile:
         return str(os.path.join(self.root_path, self.filename))
 
 class EventLogFeatures(EventLogFile):
-    def __init__(self, filename, folder_path='data/event_log', params=None, logs=None, ft_params=None):
+    def __init__(self, filename=None, folder_path='data/event_log', params=None, logs=None, ft_params=None):
         super().__init__(filename, folder_path)
         if ft_params == None:
             self.params = None

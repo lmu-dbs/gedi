@@ -22,7 +22,7 @@ def run(kwargs:dict, model_paramas_list: list, filename_list:list):
     @return:
     """
     params = kwargs[PARAMS]
-    run_option = params[RUN_OPTION]
+    run_option = 'baseline'
     ft = EventLogFeatures(None)
     augmented_ft = InstanceAugmentator()
     gen = pd.DataFrame(columns=['log'])
@@ -60,13 +60,7 @@ if __name__=='__main__':
     print(f'INFO: GEDI starting {start_gedi}')
 
     args = ArgParser().parse('GEDI main')
-    run_params = config.get_run_params(args.run_params_json)
-    filename_list, kwargs = config.get_files_and_kwargs(run_params)
-
-    if args.result_load_files is None:
-        model_params_list = config.get_model_params_list(args.alg_params_json)
-        run(kwargs, model_params_list, filename_list)
-    else:
-        load(args.result_load_files, kwargs)
+    model_params_list = config.get_model_params_list(args.alg_params_json)
+    run({'params':""}, model_params_list, [])
 
     print(f'SUCCESS: GEDI took {dt.now()-start_gedi} sec.')
