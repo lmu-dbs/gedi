@@ -220,8 +220,9 @@ class GenerateEventLogs():
         #TODO: Replace hotfix
         if features_to_dump.get('ratio_unique_traces_per_trace'):#HOTFIX
             features_to_dump['ratio_variants_per_number_of_traces']=features_to_dump.pop('ratio_unique_traces_per_trace')
-        features_to_dump['log'] = identifier.replace('genEL', '')
+        features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
         dump_features_json(features_to_dump, save_path)
+
         return log_config
 
     def generate_optimized_log(self, config):
