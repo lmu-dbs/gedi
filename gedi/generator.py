@@ -19,7 +19,8 @@ from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
 from utils.param_keys import OUTPUT_PATH, INPUT_PATH
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG_SPACE, N_TRIALS
-from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, read_csvs
+from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json
+from gedi.utils.io_helpers import read_csvs
 import xml.etree.ElementTree as ET
 import re
 from xml.dom import minidom
@@ -158,12 +159,13 @@ class GenerateEventLogs():
             tasks=tasks.rename(columns={"ratio_variants_per_number_of_traces": "ratio_unique_traces_per_trace"})
 
         if tasks is not None:
+            self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
             #self.generator_wrapper([*tasks.iterrows()][0])# For testing
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
-                log_config = p.map(self.generator_wrapper, tasks.iterrows())
+                log_config = p.map(self.generator_wrapper, [(index, row) for index, row in tasks.iterrows()])
             self.log_config = log_config
 
         else:
@@ -192,7 +194,7 @@ class GenerateEventLogs():
         except IndexError:
             identifier = task[0]+1
         task = task[1].loc[lambda x, identifier=identifier: x!=identifier]
-        self.objectives = task.to_dict()
+        self.objectives = task.dropna().to_dict()
         random.seed(RANDOM_SEED)
         self.configs = self.optimize()
 
@@ -207,8 +209,8 @@ class GenerateEventLogs():
         if self.objectives.get('ratio_unique_traces_per_trace'):#HOTFIX
             self.objectives['ratio_variants_per_number_of_traces']=self.objectives.pop('ratio_unique_traces_per_trace')
 
-        save_path = get_output_key_value_location(self.objectives,
-                                         self.output_path, identifier)+".xes"
+        save_path = get_output_key_value_location(task.to_dict(),
+                                         self.output_path, identifier, self.feature_keys)+".xes"
 
         write_xes(log_config['log'], save_path)
         add_extension_before_traces(save_path)
@@ -219,7 +221,8 @@ class GenerateEventLogs():
         if features_to_dump.get('ratio_unique_traces_per_trace'):#HOTFIX
             features_to_dump['ratio_variants_per_number_of_traces']=features_to_dump.pop('ratio_unique_traces_per_trace')
         features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
-        dump_features_json(features_to_dump, self.output_path, identifier, objectives=self.objectives)
+        dump_features_json(features_to_dump, save_path)
+
         return log_config
 
     def generate_optimized_log(self, config):

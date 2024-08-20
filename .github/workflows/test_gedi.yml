@@ -69,6 +69,14 @@ jobs:
       run: 
         diff data/validation/genELexperiment1_04_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment1_04_02.json
 
+    - name: Compare output 3
+      run: 
+        diff data/validation/genELexperiment3_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment3_04_nan.json
+
+    - name: Compare output 4
+      run: 
+        diff data/validation/genELexperiment4_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment4_nan_02.json
+
   test_benchmark:
     runs-on: ubuntu-latest
 

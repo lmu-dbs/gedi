@@ -4,12 +4,12 @@ import csv
 import os
 
 """
-Run using: 
+Run using:
 python merge_jsons.py path_to_your_json_directory output.csv
 
 """
 def json_to_csv(json_dir, output_csv):
-    
+
     json_files = [os.path.join(json_dir, file) for file in os.listdir(json_dir) if file.endswith('.json')]
 
     # Collect data from all JSON files
@@ -18,13 +18,13 @@ def json_to_csv(json_dir, output_csv):
         with open(json_file, 'r') as f:
             data = json.load(f)
             all_data.append(data)
-                                                        
+
     # Extract the headers from the first JSON object
     if all_data:
-        headers = all_data[0].keys()
+        headers = {elem for s in [set(i) for i in [d.keys() for d in all_data]] for elem in s}
     else:
         raise ValueError("No data found in JSON files")
-                                                                                            
+
     # Write data to CSV
     with open(output_csv, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=headers)
