@@ -27,7 +27,7 @@ conda install pyrfr swig
 ### Startup
 ```console
 conda activate gedi
-python main.py -a config_files/algorithm/experiment_test.json
+python main.py -a config_files/test/experiment_test.json
 ```
 The last step should take only a few minutes to run.
 
@@ -43,7 +43,7 @@ To run different steps of the GEDI pipeline, please adapt the `.json` accordingl
 conda activate gedi
 python main.py -a config_files/algorithm/pipeline_steps/<pipeline-step>.json
 ```
-For reference of possible keys and values for each step, please see `config_files/algorithm/experiment_test.json`.
+For reference of possible keys and values for each step, please see `config_files/test/experiment_test.json`.
 To run the whole pipeline please create a new `.json` file, specifying all steps you want to run and specify desired keys and values for each step.
 To reproduce results from out paper, please refer to [Experiments](#experiments).
 
