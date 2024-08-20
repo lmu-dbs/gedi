@@ -159,6 +159,6 @@ class EventLogFeatures(EventLogFile):
 
         identifier = file.rsplit(".", 1)[0]
         print(f"  DONE: {file_path}. FEEED computed {feature_set}")
-        dump_features_json(features, self.root_path, identifier)
+        dump_features_json(features, os.path.join(self.root_path,identifier))
         return features
 
