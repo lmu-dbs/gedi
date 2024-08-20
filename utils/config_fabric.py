@@ -243,8 +243,7 @@ if __name__ == '__main__':
         st.write("Saved configuration in ", output_path, ". Run command:")
         #if create_run_button:
         if True:
-            options_path = os.path.join("config_files", "options", "baseline.json")
-            var = f"python -W ignore main.py -o {options_path} -a {output_path}"
+            var = f"python -W ignore main.py -a {output_path}"
             st.code(var, language='bash')
         if False: #FIXME: Command fails when using multiprocessing 
             command = var.split()
