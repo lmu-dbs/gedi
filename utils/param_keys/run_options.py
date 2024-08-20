@@ -1,2 +1,0 @@
-BASELINE = 'baseline'
-COMPARE = 'compare'

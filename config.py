@@ -2,8 +2,9 @@ import json
 import os
 import warnings
 
+from utils.param_keys import PIPELINE_STEP, INPUT_PATH, OUTPUT_PATH
+from utils.param_keys.features import FEATURE_SET, FEATURE_PARAMS
 from tqdm import tqdm
-from utils.param_keys import INPUT_NAME, FILENAME, FOLDER_PATH, PARAMS
 
 def get_model_params_list(alg_json_file: str) :#-> list[dict]:
     """
@@ -19,5 +20,8 @@ def get_model_params_list(alg_json_file: str) :#-> list[dict]:
         warnings.warn('The default model parameter list is used instead of a .json-file.\n'
                       '  Use a configuration from the `config_files`-folder together with the args `-a`.')
         return [
-            {ALGORITHM_NAME: 'pca', NDIM: TENSOR_NDIM},
+            {PIPELINE_STEP: 'feature_extraction', INPUT_PATH: 'data/test',
+             FEATURE_PARAMS: {FEATURE_SET: ['ratio_unique_traces_per_trace',
+                                            'ratio_most_common_variant']},
+             OUTPUT_PATH: 'output/plots'}
             ]

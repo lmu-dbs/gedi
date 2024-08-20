@@ -8,7 +8,6 @@ from gedi.benchmark import BenchmarkTest
 from gedi.plotter import BenchmarkPlotter, FeaturesPlotter, AugmentationPlotter, GenerationPlotter
 from utils.default_argparse import ArgParser
 from utils.param_keys import *
-from utils.param_keys.run_options import *
 
 def run(kwargs:dict, model_paramas_list: list, filename_list:list):
     """
