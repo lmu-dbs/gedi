@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import re
 import shutil
-
+import numpy as np
 from collections import defaultdict
 from pathlib import Path, PurePath
 
@@ -82,3 +82,27 @@ def dump_features_json(features: dict, output_path, content_type="features"):
     with open(json_path, 'w') as fp:
         json.dump(features, fp, default=int)
         print(f"SUCCESS: Saved {len(features)-1} {content_type} in {json_path}")#-1 because 'log' is not a feature
+
+def calculate_manhattan_distance(v1, v2):
+
+    # HOTFIX: Rename 'ratio_unique_traces_per_trace
+    if 'ratio_unique_traces_per_trace' in v1:
+        v1['ratio_variants_per_number_of_traces'] = v1.pop('ratio_unique_traces_per_trace')
+    
+    # Filter out non-numeric values and ensure the same keys exist in both dictionaries
+    common_keys = set(v1.keys()).intersection(set(v2.keys()))
+    numeric_keys = [k for k in common_keys if isinstance(v1[k], (int, float)) and isinstance(v2[k], (int, float))]
+
+    # Create vectors from the filtered keys
+    vec1 = np.array([v1[k] for k in numeric_keys])
+    vec2 = np.array([v2[k] for k in numeric_keys])
+
+    if len(vec1) == 0 or len(vec2) == 0:
+        print("[ERROR]: No common numeric keys found for (Manhattan) Distance calculation.")
+        return None
+
+    else:
+        # Calculate Manhattan Distance
+        manhattan_distance = np.sum(np.abs(vec1 - vec2))
+
+        return manhattan_distance
