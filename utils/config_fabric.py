@@ -264,14 +264,14 @@ if __name__ == '__main__':
     save_labels = ["Save configuration file"]
     #create_button, create_run_button = multi_button(save_labels)
     create_button = multi_button(save_labels)
+    # ToDo: Bug: automatically updates the experiment_config.json file even without pressing the save button
     if create_button: # or create_run_button:
         with open(output_path, "w") as f:
             f.write(config_file)
         st.write("Saved configuration in ", output_path, ". Run command:")
         #if create_run_button:
         if True:
-            options_path = os.path.join("config_files", "options", "baseline.json")
-            var = f"python -W ignore main.py -o {options_path} -a {output_path}"
+            var = f"python -W ignore main.py -a {output_path}"
             st.code(var, language='bash')
         if False: #FIXME: Command fails when using multiprocessing 
             command = var.split()

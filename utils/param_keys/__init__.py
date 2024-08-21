@@ -1,9 +1,3 @@
-# Run Params #
-RUN_OPTION = 'run_option'
-INPUT_NAME = 'input_name'
-SAVE_RESULTS = 'save_results'
-LOAD_RESULTS = 'load_results'
-
 # Model params
 ALGORITHM_NAME = 'algorithm_name'
 PIPELINE_STEP = 'pipeline_step'

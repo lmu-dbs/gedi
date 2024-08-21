@@ -109,7 +109,7 @@ class BenchmarkTest:
         results['log'] = log_name
 
         print(f"    SUCCESS: {miner} miner for {results} took {dt.now()-start_miner} sec.")
-        dump_features_json(results, dump_path, log_name, content_type="benchmark")
+        dump_features_json(results, os.path.join(dump_path, log_name), content_type="benchmark")
         return
 
     def split_miner_wrapper(self, log_path="data/real_event_logs/BPI_Challenges/BPI_Challenge_2012.xes"):

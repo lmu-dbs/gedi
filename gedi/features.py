@@ -28,7 +28,7 @@ class EventLogFile:
         return str(os.path.join(self.root_path, self.filename))
 
 class EventLogFeatures(EventLogFile):
-    def __init__(self, filename, folder_path='data/event_log', params=None, logs=None, ft_params=None):
+    def __init__(self, filename=None, folder_path='data/event_log', params=None, logs=None, ft_params=None):
         super().__init__(filename, folder_path)
         if ft_params == None:
             self.params = None
@@ -159,6 +159,6 @@ class EventLogFeatures(EventLogFile):
 
         identifier = file.rsplit(".", 1)[0]
         print(f"  DONE: {file_path}. FEEED computed {feature_set}")
-        dump_features_json(features, self.root_path, identifier)
+        dump_features_json(features, os.path.join(self.root_path,identifier))
         return features
 
