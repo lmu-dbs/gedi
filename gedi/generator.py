@@ -19,7 +19,7 @@ from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
 from utils.param_keys import OUTPUT_PATH, INPUT_PATH
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG_SPACE, N_TRIALS
-from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json
+from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
 import xml.etree.ElementTree as ET
 import re
@@ -221,6 +221,9 @@ class GenerateEventLogs():
         if features_to_dump.get('ratio_unique_traces_per_trace'):#HOTFIX
             features_to_dump['ratio_variants_per_number_of_traces']=features_to_dump.pop('ratio_unique_traces_per_trace')
         features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
+        # calculating the manhattan distance of the generated log to the target features
+        #features_to_dump['distance_to_target'] = calculate_manhattan_distance(self.objectives, features_to_dump)
+        features_to_dump['target_similarity'] = compute_similarity(self.objectives, features_to_dump)
         dump_features_json(features_to_dump, save_path)
 
         return log_config
