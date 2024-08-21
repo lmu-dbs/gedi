@@ -237,6 +237,7 @@ if __name__ == '__main__':
     save_labels = ["Save configuration file"]
     #create_button, create_run_button = multi_button(save_labels)
     create_button = multi_button(save_labels)
+    # ToDo: Bug: automatically updates the experiment_config.json file even without pressing the save button
     if create_button: # or create_run_button:
         with open(output_path, "w") as f:
             f.write(config_file)
