@@ -2,6 +2,7 @@ from copy import deepcopy
 from importlib import reload
 from itertools import product as cproduct
 from itertools import combinations
+from pathlib import Path
 from pylab import *
 import itertools
 import json
@@ -186,10 +187,11 @@ def set_generator_experiments(generator_params):
                 with col2:
                     sel_features = feature_select()
 
+                filtered_dict = {key: generator_params['experiment'][key] for key in sel_features if key in generator_params['experiment']}
                 values_indexes = ["value "+str(i+1) for i in range(num_values)]
                 values_defaults = ['*(1+2*0.'+str(i)+')' for i in range(num_values)]
                 cross_labels =  [feature[0]+': '+feature[1] for feature in list(cproduct(sel_features,values_indexes))]
-                cross_values = [round(eval(str(combination[0])+combination[1]), 2) for combination in list(cproduct(list(generator_params['experiment'].values()), values_defaults))]
+                cross_values = [round(eval(str(combination[0])+combination[1]), 2) for combination in list(cproduct(list(filtered_dict.values()), values_defaults))]
                 parameters = split_list(list(input_multicolumn(cross_labels, cross_values, n_cols=num_values)), len(sel_features))
                 tasks = f"list({parameters})"
 
@@ -267,25 +269,44 @@ if __name__ == '__main__':
     output_path = st.text_input("Output file path", "config_files/experiment_config.json")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     save_labels = ["Save config file", "Save and run config_file"]
-    save_labels = ["Save configuration file"]
-    #create_button, create_run_button = multi_button(save_labels)
-    create_button = multi_button(save_labels)
-    if create_button[0]: # or create_run_button:
+    #save_labels = ["Save configuration file"]
+    create_button, create_run_button = multi_button(save_labels)
+    #create_button = multi_button(save_labels)
+    if create_button or create_run_button:
         with open(output_path, "w") as f:
             f.write(config_file)
         st.write("Saved configuration in ", output_path, ". Run command:")
-        create_button[0] = False
-        #if create_run_button:
-        if True:
-            var = f"python -W ignore main.py -a {output_path}"
-            st.code(var, language='bash')
-        if False: #FIXME: Command fails when using multiprocessing 
+        create_button = False
+        var = f"python -W ignore main.py -a {output_path}"
+        st.code(var, language='bash')
+
+        if create_run_button:
+        #if False: #FIXME: Command fails when using multiprocessing
             command = var.split()
 
             # Run the command
             result = subprocess.run(command, capture_output=True, text=True)
+            st.write("## Results")
+            st.write(*step_config['generator_params']['experiment'][0].keys(), "log name", "target similarity")
 
-            if len(result.stderr)==0:
-                st.write(result.stdout)
-            else:
-                st.write("ERROR: ", result.stderr)
+            #if len(result.stderr)==0:
+            #    st.write(result.stdout)
+            #else:
+            #    st.write("ERROR: ", result.stderr)
+
+            directory = Path(step_config['output_path']).parts
+            path = os.path.join(directory[0],'features',*directory[1:])
+
+            # Walk through all directories and files
+            for root, dirs, files in os.walk(path):
+                feature_files = [os.path.join(root, file) for file in files]
+                for feature_file in feature_files:
+                    # Open and read the JSON file
+                    with open(feature_file, 'r') as file:
+                        data = json.load(file)
+                        index = int(data['log'].split('genEL')[-1].split('_')[0])-1
+                        config_targets = step_config['generator_params']['experiment'][index]
+
+                    # Print the contents of the JSON file
+                    st.write(*config_targets.values(), data['log'], data['target_similarity'])
+
