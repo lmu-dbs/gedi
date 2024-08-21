@@ -88,13 +88,22 @@ def get_ranges_from_stats(stats, tuple_values):
     result = ", ".join(result)
     return result
 
-def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial"):
-        if method=="combinatorial":
-            sel_features = df.index.to_list()
-            parameters_o = "objectives, "
-            parameters = get_ranges_from_stats(df, sorted(objectives))
-            objectives = sorted(sel_features)
-            tasks = f"list(cproduct({parameters}))[0]"
+def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial", n_values=None):
+        if "combinatorial" in method:
+            if method=="combinatorial-manual":
+                values_indexes = ["value "+str(i+1) for i in range(n_values)]
+                values_defaults = ['*(1+2*0.'+str(i)+')' for i in range(n_values)]
+                cross_labels =  [feature[0]+': '+feature[1] for feature in list(cproduct(objectives,values_indexes))]
+                cross_values = [round(eval(str(combination[0])+combination[1]), 2) for combination in list(cproduct(list(df.values()), values_defaults))]
+                parameters = split_list(list(input_multicolumn(cross_labels, cross_values, n_cols=n_values)), len(objectives))
+                tasks = f"list({parameters})"
+
+            else: #combinatorial from csv
+                sel_features = df.index.to_list()
+                parameters_o = "objectives, "
+                parameters = get_ranges_from_stats(df, sorted(objectives))
+                objectives = sorted(sel_features)
+                tasks = f"list(cproduct({parameters}))[0]"
 
         elif method=="range-from-csv":
             tasks = ""
@@ -167,40 +176,33 @@ def set_generator_experiments(generator_params):
             st.write(df)
             return df.to_dict(orient='records')
 
-    def handle_manual_option(sel_features, grid_option):
-        if sel_features:
-            if grid_option:
-                combinatorial = double_switch("Range", "Combinatorial")
-                if combinatorial:
+    def feature_select():
+        return st.multiselect("Selected features", list(generator_params['experiment'].keys()))
+
+    def handle_manual_option(grid_option):
+        if grid_option:
+            combinatorial = double_switch("Range", "Combinatorial")
+            if combinatorial:
+                col1, col2 = st.columns([1,4])
+                with col1:
                     num_values = st.number_input('How many values to define?', min_value=1, step=1)
+                with col2:
+                    #sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
+                    sel_features = feature_select()
 
-                    # Dictionary to store the values for each feature
-                    feature_values_dict = {}
-                    for feature in sel_features:
-                        st.write(f"Define {num_values} values for feature: {feature}")
-                        feature_values = []
+                return create_objectives_grid(generator_params['experiment'], sel_features, n_para_obj=len(sel_features), method="combinatorial-manual", n_values=num_values)
 
-                        for i in range(int(num_values)):
-                            value = st.text_input(f"Value {i+1} for {feature}", key=f"value_{feature}_{i}")
-                            feature_values.append(value)
-                        
-                        # Store the list of values for the feature
-                        feature_values_dict[feature] = feature_values
+            else: # Range
+                sel_features = feature_select()
+                return create_objectives_grid(generator_params['experiment'], sel_features, n_para_obj=len(sel_features), method="range-manual")
 
-                    # Generate the cartesian product of all possible combinations
-                    cartesian_product = list(itertools.product(*feature_values_dict.values()))
+        else: # Point
+            sel_features = feature_select()
+            #sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
 
-                    # Convert each combination into a dictionary with the appropriate feature keys
-                    experiments = [dict(zip(sel_features, values)) for values in cartesian_product]
-                    
-                    return experiments
-
-                else:
-                    return create_objectives_grid(generator_params['experiment'], sel_features, n_para_obj=len(sel_features), method="range-manual")
-            else:
-                experiment = {sel_feature: float(st.text_input(sel_feature, generator_params['experiment'][sel_feature])) for sel_feature in sel_features}
-                return [experiment]
-        return []
+            experiment = {sel_feature: float(st.text_input(sel_feature, generator_params['experiment'][sel_feature])) for sel_feature in sel_features}
+            return [experiment]
+        return[]
 
 
     grid_option, csv_option = double_switch("Point-", "Grid-based", third_label="Manual", fourth_label="From CSV")
@@ -212,8 +214,7 @@ def set_generator_experiments(generator_params):
         else:
             experiments = []
     else:  # Manual
-        sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
-        experiments = handle_manual_option(sel_features, grid_option)
+        experiments = handle_manual_option(grid_option)
 
     generator_params['experiment'] = experiments
     st.write(f"...result in {len(generator_params['experiment'])} experiment(s)")
