@@ -89,7 +89,7 @@ def get_ranges_from_stats(stats, tuple_values):
     return result
 
 def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial"):
-        if method=="combinatorial":
+        if "combinatorial" in method:
             sel_features = df.index.to_list()
             parameters_o = "objectives, "
             parameters = get_ranges_from_stats(df, sorted(objectives))
@@ -118,10 +118,16 @@ def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial")
                     selcted_min, selcted_max, step_value = range_value
                     tasks += f"np.around(np.arange({selcted_min}, {selcted_max}+{step_value}, {step_value}),2), "
 
-        #import pdb; pdb.set_trace()
-        cartesian_product = list(cproduct(*eval(tasks)))
-        experiments = [{key: value[idx] for idx, key in enumerate(objectives)} for value in cartesian_product]
-        return experiments
+        try:
+            cartesian_product = list(cproduct(*eval(tasks)))
+            experiments = [{key: value[idx] for idx, key in enumerate(objectives)} for value in cartesian_product]
+            return experiments
+        except SyntaxError as e:
+            st.write("Please select valid features above.")
+            sys.exit(1)
+        except TypeError as e:
+            st.write("Please select at least 2 values to define.")
+            sys.exit(1)
 
 def set_generator_experiments(generator_params):
     def handle_csv_file(grid_option):
@@ -147,11 +153,11 @@ def set_generator_experiments(generator_params):
             for comb in all_combinations:
                 sel_stats = stats.loc[sorted(list(comb))]
                 experiments += create_objectives_grid(sel_stats, tuple_values, n_para_obj=len(tuple_values), method="combinatorial")
-        else:
-            experiments = create_objectives_grid(stats, tuple_values, n_para_obj=len(tuple_values))
+        else: # Square
+            experiments = create_objectives_grid(stats, tuple_values, n_para_obj=len(tuple_values), method="combinatorial")
         return experiments
 
-    def handle_grid_option(grid_option, df, sel_features):
+    def handle_csv_option(grid_option, df, sel_features):
         if grid_option:
             combinatorial = double_switch("Range", "Combinatorial")
             if combinatorial:
@@ -167,26 +173,53 @@ def set_generator_experiments(generator_params):
             st.write(df)
             return df.to_dict(orient='records')
 
-    def handle_manual_option(sel_features, grid_option):
-        if sel_features:
-            if grid_option:
+    def feature_select():
+        return st.multiselect("Selected features", list(generator_params['experiment'].keys()))
+
+    def handle_manual_option(grid_option):
+        if grid_option:
+            combinatorial = double_switch("Range", "Combinatorial")
+            if combinatorial:
+                col1, col2 = st.columns([1,4])
+                with col1:
+                    num_values = st.number_input('How many values to define?', min_value=2, step=1)
+                with col2:
+                    sel_features = feature_select()
+
+                values_indexes = ["value "+str(i+1) for i in range(num_values)]
+                values_defaults = ['*(1+2*0.'+str(i)+')' for i in range(num_values)]
+                cross_labels =  [feature[0]+': '+feature[1] for feature in list(cproduct(sel_features,values_indexes))]
+                cross_values = [round(eval(str(combination[0])+combination[1]), 2) for combination in list(cproduct(list(generator_params['experiment'].values()), values_defaults))]
+                parameters = split_list(list(input_multicolumn(cross_labels, cross_values, n_cols=num_values)), len(sel_features))
+                tasks = f"list({parameters})"
+
+                tasks_df = pd.DataFrame(eval(tasks), index=sel_features, columns=values_indexes)
+                tasks_df = tasks_df.astype(float)
+                return handle_combinatorial(sel_features, tasks_df, values_indexes)
+
+            else: # Range
+                sel_features = feature_select()
                 return create_objectives_grid(generator_params['experiment'], sel_features, n_para_obj=len(sel_features), method="range-manual")
-            else:
-                experiment = {sel_feature: float(st.text_input(sel_feature, generator_params['experiment'][sel_feature])) for sel_feature in sel_features}
-                return [experiment]
-        return []
+
+        else: # Point
+            sel_features = feature_select()
+            #sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
+
+            experiment = {sel_feature: float(st.text_input(sel_feature, generator_params['experiment'][sel_feature])) for sel_feature in sel_features}
+            return [experiment]
+        return[]
+
 
     grid_option, csv_option = double_switch("Point-", "Grid-based", third_label="Manual", fourth_label="From CSV")
 
     if csv_option:
         df, sel_features = handle_csv_file(grid_option)
         if df is not None and sel_features is not None:
-            experiments = handle_grid_option(grid_option, df, sel_features)
+            experiments = handle_csv_option(grid_option, df, sel_features)
         else:
             experiments = []
     else:  # Manual
-        sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
-        experiments = handle_manual_option(sel_features, grid_option)
+        experiments = handle_manual_option(grid_option)
 
     generator_params['experiment'] = experiments
     st.write(f"...result in {len(generator_params['experiment'])} experiment(s)")
@@ -208,7 +241,7 @@ if __name__ == '__main__':
     pipeline_steps = st.multiselect(
         "Choose pipeline step",
         step_candidates,
-        []
+        ["event_logs_generation"]
     )
     step_configs = []
     set_col, view_col = st.columns([3, 2])
@@ -237,7 +270,7 @@ if __name__ == '__main__':
     save_labels = ["Save configuration file"]
     #create_button, create_run_button = multi_button(save_labels)
     create_button = multi_button(save_labels)
-    # ToDo: Bug: automatically updates the experiment_config.json file even without pressing the save button
+    # FIXME: Bug: automatically updates the experiment_config.json file even without pressing the save button
     if create_button: # or create_run_button:
         with open(output_path, "w") as f:
             f.write(config_file)
