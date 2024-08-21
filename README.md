@@ -41,7 +41,7 @@ Our pipeline offers several pipeline steps, which can be run sequentially or par
 To run different steps of the GEDI pipeline, please adapt the `.json` accordingly.
 ```console
 conda activate gedi
-python main.py -a config_files/algorithm/pipeline_steps/<pipeline-step>.json
+python main.py -a config_files/pipeline_steps/<pipeline-step>.json
 ```
 For reference of possible keys and values for each step, please see `config_files/test/experiment_test.json`.
 To run the whole pipeline please create a new `.json` file, specifying all steps you want to run and specify desired keys and values for each step.
@@ -52,7 +52,7 @@ To reproduce results from out paper, please refer to [Experiments](#experiments)
 To extract the features on the event-log level and use them for hyperparameter optimization, we employ the following script:
 ```console
 conda activate gedi
-python main.py -a config_files/algorithm/pipeline_steps/feature_extraction.json
+python main.py -a config_files/pipeline_steps/feature_extraction.json
 ```
 The JSON file consists of the following key-value pairs:
 
@@ -74,7 +74,7 @@ The command to execute the generation step is given by a exemplarily generation.
 
 ```console
 conda activate gedi
-python main.py -a config_files/algorithm/pipeline_steps/generation.json
+python main.py -a config_files/pipeline_steps/generation.json
 ```
 
 In the `generation.json`, we have the following key-value pairs:
@@ -106,7 +106,7 @@ The benchmarking defines the downstream task which is used for evaluating the go
 
 ```console
 conda activate gedi
-python main.py -a config_files/algorithm/pipeline_steps/benchmark.json
+python main.py -a config_files/pipeline_steps/benchmark.json
 ```
 
 In the `benchmark.json`, we have the following key-value pairs:
@@ -124,7 +124,7 @@ The purpose of the evaluation plotting step is used just for visualization. Some
 
 ```console
 conda activate gedi
-python main.py -a config_files/algorithm/pipeline_steps/evaluation_plotter.json
+python main.py -a config_files/pipeline_steps/evaluation_plotter.json
 ```
 
 Generally, in the `evaluation_plotter.json`, we have the following key-value pairs:
@@ -140,20 +140,20 @@ In this repository, experiments can be run selectively or from scratch, as prefe
 We present two settings for generating intentional event logs, using [real targets](#generating-data-with-real-targets) or using [grid targets](#generating-data-with-grid-targets). Both settings output `.xes` event logs, `.json` and `.csv` files containing feature values, as well as evaluation results, from running a [process discovery benchmark](#benchmark), for the generated event logs.
 
 ### Generating data with real targets
-To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/algorithm/experiment_real_targets.json). The script's pipeline will output the [generated event logs (GenBaselineED)](data/event_logs/GenBaselineED), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
+To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/experiment_real_targets.json). The script's pipeline will output the [generated event logs (GenBaselineED)](data/event_logs/GenBaselineED), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
 
 ```console
 conda activate gedi
-python main.py -a config_files/algorithm/experiment_real_targets.json
+python main.py -a config_files/experiment_real_targets.json
 ```
 
 ### Generating data with grid targets
-To execute the experiments with grid targets, a single [configuration](config_files/algorithm/grid_2obj) can be selected or all [grid objectives](data/grid_2obj) can be run with one command using the following script. This script will output the [generated event logs (GenED)](data/event_logs/GenED), alongside their respectively measured [feature values](data/GenED_feat.csv) and [benchmark metrics values](data/GenED_bench.csv).
+To execute the experiments with grid targets, a single [configuration](config_files/grid_2obj) can be selected or all [grid objectives](data/grid_2obj) can be run with one command using the following script. This script will output the [generated event logs (GenED)](data/event_logs/GenED), alongside their respectively measured [feature values](data/GenED_feat.csv) and [benchmark metrics values](data/GenED_bench.csv).
 ```
 conda activate gedi
-python execute_grid_experiments.py config_files/algorithm/grid_2obj
+python execute_grid_experiments.py config_files/grid_2obj
 ```
-We employ the [experiment_grid_2obj_configfiles_fabric.ipynb](notebooks/experiment_grid_2obj_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/algorithm/grid_2obj) and [objective](data/grid_2obj) files for this experiment.
+We employ the [experiment_grid_2obj_configfiles_fabric.ipynb](notebooks/experiment_grid_2obj_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/grid_2obj) and [objective](data/grid_2obj) files for this experiment.
 For more details about these config_files, please refer to [Feature Extraction](#feature-extraction), [Generation](#generation), and [Benchmark](#benchmark).
 To create configuration files for grid objectives interactively, you can use the start the following dashboard:
 ```
