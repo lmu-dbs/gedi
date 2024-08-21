@@ -170,11 +170,38 @@ def set_generator_experiments(generator_params):
     def handle_manual_option(sel_features, grid_option):
         if sel_features:
             if grid_option:
-                return create_objectives_grid(generator_params['experiment'], sel_features, n_para_obj=len(sel_features), method="range-manual")
+                combinatorial = double_switch("Range", "Combinatorial")
+                if combinatorial:
+                    num_values = st.number_input('How many values to define?', min_value=1, step=1)
+
+                    # Dictionary to store the values for each feature
+                    feature_values_dict = {}
+                    for feature in sel_features:
+                        st.write(f"Define {num_values} values for feature: {feature}")
+                        feature_values = []
+
+                        for i in range(int(num_values)):
+                            value = st.text_input(f"Value {i+1} for {feature}", key=f"value_{feature}_{i}")
+                            feature_values.append(value)
+                        
+                        # Store the list of values for the feature
+                        feature_values_dict[feature] = feature_values
+
+                    # Generate the cartesian product of all possible combinations
+                    cartesian_product = list(itertools.product(*feature_values_dict.values()))
+
+                    # Convert each combination into a dictionary with the appropriate feature keys
+                    experiments = [dict(zip(sel_features, values)) for values in cartesian_product]
+                    
+                    return experiments
+
+                else:
+                    return create_objectives_grid(generator_params['experiment'], sel_features, n_para_obj=len(sel_features), method="range-manual")
             else:
                 experiment = {sel_feature: float(st.text_input(sel_feature, generator_params['experiment'][sel_feature])) for sel_feature in sel_features}
                 return [experiment]
         return []
+
 
     grid_option, csv_option = double_switch("Point-", "Grid-based", third_label="Manual", fourth_label="From CSV")
 
