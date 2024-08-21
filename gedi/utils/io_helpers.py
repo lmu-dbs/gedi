@@ -7,6 +7,7 @@ import shutil
 import numpy as np
 from collections import defaultdict
 from pathlib import Path, PurePath
+from scipy.spatial.distance import euclidean
 
 def select_instance(source_dir, log_path, destination=os.path.join("output","generated","instance_selection")):
     os.makedirs(destination, exist_ok=True)
@@ -83,12 +84,12 @@ def dump_features_json(features: dict, output_path, content_type="features"):
         json.dump(features, fp, default=int)
         print(f"SUCCESS: Saved {len(features)-1} {content_type} in {json_path}")#-1 because 'log' is not a feature
 
-def calculate_manhattan_distance(v1, v2):
+def compute_similarity(v1, v2):
 
     # HOTFIX: Rename 'ratio_unique_traces_per_trace
     if 'ratio_unique_traces_per_trace' in v1:
         v1['ratio_variants_per_number_of_traces'] = v1.pop('ratio_unique_traces_per_trace')
-    
+
     # Filter out non-numeric values and ensure the same keys exist in both dictionaries
     common_keys = set(v1.keys()).intersection(set(v2.keys()))
     numeric_keys = [k for k in common_keys if isinstance(v1[k], (int, float)) and isinstance(v2[k], (int, float))]
@@ -98,11 +99,12 @@ def calculate_manhattan_distance(v1, v2):
     vec2 = np.array([v2[k] for k in numeric_keys])
 
     if len(vec1) == 0 or len(vec2) == 0:
-        print("[ERROR]: No common numeric keys found for (Manhattan) Distance calculation.")
+        print("[ERROR]: No common numeric keys found for (Edit) Distance calculation.")
         return None
 
     else:
-        # Calculate Manhattan Distance
-        manhattan_distance = np.sum(np.abs(vec1 - vec2))
+        # Calculate Euclidean Similarity
+        target_similarity = 1-euclidean(vec1, vec2)
+        #print("VECTORS: ", vec1, vec2, target_similarity)
 
-        return manhattan_distance
+        return target_similarity
