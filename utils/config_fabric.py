@@ -14,7 +14,7 @@ import shutil
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
-LOGO_PATH="gedi/utils/logo_higher.png"
+LOGO_PATH="gedi/utils/logo.png"
 
 def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
@@ -35,8 +35,9 @@ def play_header():
             justify-content: flex-start;
         }}
         .header-logo img {{
-            max-width: 140px; /* Adjust the size as needed */
-            height: auto;
+            max-width: 100%; /* Adjust the size as needed */
+            max-height: 100%;
+            overflow: hidden;
         }}
         </style>
         <div class="header-logo">
