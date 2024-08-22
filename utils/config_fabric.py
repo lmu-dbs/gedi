@@ -10,6 +10,7 @@ import pandas as pd
 import streamlit as st
 import subprocess
 import time
+import shutil
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
@@ -317,7 +318,11 @@ if __name__ == '__main__':
         if create_run_button:
             command = var.split()
             progress_bar = st.progress(0)  # Initialize the progress bar
-
+            
+            directory = Path(step_config['output_path']).parts
+            path = os.path.join(directory[0], 'features', *directory[1:])
+            if os.path.exists(path): shutil.rmtree(path)
+            
             # Simulate running the command with a loop and updating the progress bar
             for i in range(95):
                 time.sleep(0.2)  # Simulate the time taken for each step
@@ -336,11 +341,6 @@ if __name__ == '__main__':
             for root, dirs, files in os.walk(path):
                 feature_files = [os.path.join(root, file) for file in files]
                 for feature_file in feature_files:
-                    # Open and read the JSON file
-                    # with open(feature_file, 'r') as file:
-                        # data = json.load(file)
-                        # index = int(data['log'].split('genEL')[-1].split('_')[0])-1
-                        # config_targets = step_config['generator_params']['experiment'][index]
 
                     df_temp = pd.read_json(feature_file,lines=True)
                     dataframes.append(df_temp)
@@ -365,68 +365,3 @@ if __name__ == '__main__':
             
             # Optional: Updating the progress bar to indicate completion
             progress_bar.progress(100)
-
-
-## proposed change
-## problem: the code reads the output file even before it is created, this causes an error
-# if create_button or create_run_button:
-#     with open(output_path, "w") as f:
-#         f.write(config_file)
-#     st.write("Saved configuration in ", output_path, ". Run command:")
-#     create_button = False
-#     var = f"python -W ignore main.py -a {output_path}"
-#     st.code(var, language='bash')
-
-#     if create_run_button:
-#         command = var.split()
-#         progress_bar = st.progress(0)  # Initialize the progress bar
-
-#         # Start the subprocess
-#         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-
-#         # Get the total number of experiments
-#         total_experiments = len(step_config['generator_params']['experiment'])
-
-#         # Determine the output path
-#         directory = Path(step_config['output_path']).parts
-#         path = os.path.join(directory[0], 'features', *directory[1:])
-
-#         generated_files = 0
-#         last_generated_files_count = 0
-
-#         while process.poll() is None:  # While the subprocess is still running
-#             # Count the number of files generated so far
-#             generated_files = len(os.listdir(path))
-
-#             # Update the progress bar only if new files have been generated
-#             if generated_files > last_generated_files_count:
-#                 last_generated_files_count = generated_files
-#                 progress = min(generated_files / total_experiments, 1.0)
-#                 progress_bar.progress(int(progress * 100))
-
-#             time.sleep(1)  # Sleep for a short interval before checking again
-
-#         process.wait()  # Wait for the process to complete
-
-#         # Final update of the progress bar
-#         progress_bar.progress(100)
-
-#         st.write("Number of files generated: ", generated_files)
-        
-#         st.write("## Results")
-#         st.write(*step_config['generator_params']['experiment'][0].keys(), "log name", "target similarity")
-
-#         # Walk through all directories and files
-#         for root, dirs, files in os.walk(path):
-#             feature_files = [os.path.join(root, file) for file in files]
-#             for feature_file in feature_files:
-#                 # Open and read the JSON file
-#                 with open(feature_file, 'r') as file:
-#                     data = json.load(file)
-#                     index = int(data['log'].split('genEL')[-1].split('_')[0]) - 1
-#                     config_targets = step_config['generator_params']['experiment'][index]
-
-#                 # Print the contents of the JSON file
-#                 st.write(*config_targets.values(), data['log'], data['target_similarity'])
-
-#         st.write("All files have been generated and processed.")
