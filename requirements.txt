@@ -1,0 +1,5 @@
+# Hugging Face requirements
+pandas
+pm4py
+streamlit
+matplotlib  # Required by 'pylab'
