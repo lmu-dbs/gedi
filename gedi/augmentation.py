@@ -1,8 +1,7 @@
 import pandas as pd
 from collections import Counter
 from datetime import datetime as dt
-from imblearn.over_sampling import SMOTE, SVMSMOTE, BorderlineSMOTE, KMeansSMOTE
-from sklearn.preprocessing import Normalizer
+from imblearn.over_sampling import SMOTE
 from gedi.utils.matrix_tools import insert_missing_data
 from utils.param_keys import INPUT_PATH, OUTPUT_PATH
 from utils.param_keys.augmentation import AUGMENTATION_PARAMS, NO_SAMPLES, FEATURE_SELECTION, METHOD

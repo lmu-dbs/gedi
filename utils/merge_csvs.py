@@ -1,9 +1,7 @@
 import os
 import pandas as pd
 import sys
-import tqdm
 
-from gedi.utils.io_helpers import sort_files
 
 FILE_START = sys.argv[1]
 ROOT_PATH, FILE_START = os.path.split(FILE_START)
