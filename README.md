@@ -182,3 +182,16 @@ Likewise to the evaluation on the statistical tests in notebook `gedi_figs7and8_
 
 ## References
 The framework used by `GEDI` is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl. If you would like to discuss the paper, or corresponding research questions on benchmarking process mining tasks please email the authors.
+
+---
+title: Gedi
+emoji: 🦀
+colorFrom: indigo
+colorTo: blue
+sdk: streamlit
+sdk_version: 1.37.1
+app_file: app.py
+pinned: false
+license: mit
+
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
