@@ -14,7 +14,7 @@ import shutil
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
-LOGO_PATH="gedi/utils/logo.png"
+LOGO_PATH="gedi/utils/logo_higher.png"
 
 def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
@@ -35,7 +35,7 @@ def play_header():
             justify-content: flex-start;
         }}
         .header-logo img {{
-            max-width: 120px; /* Adjust the size as needed */
+            max-width: 140px; /* Adjust the size as needed */
             height: auto;
         }}
         </style>
@@ -168,7 +168,7 @@ def set_generator_experiments(generator_params):
         uploaded_file = st.file_uploader("Pick a csv-file containing feature values for features:", type="csv")
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
-            sel_features = st.multiselect("Selected features", list(df.columns))
+            sel_features = st.multiselect("Selected features", list(df.columns), list(df.columns)[-1])
             if sel_features:
                 df = df[sel_features]
                 return df, sel_features
@@ -208,7 +208,8 @@ def set_generator_experiments(generator_params):
             return df.to_dict(orient='records')
 
     def feature_select():
-        return st.multiselect("Selected features", list(generator_params['experiment'].keys()))
+        return st.multiselect("Selected features", list(generator_params['experiment'].keys()),
+                                                        list(generator_params['experiment'].keys())[-1])
 
     def handle_manual_option(grid_option):
         if grid_option:
