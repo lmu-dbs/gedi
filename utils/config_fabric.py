@@ -285,17 +285,18 @@ if __name__ == '__main__':
 
             # Simulate running the command with a loop and updating the progress bar
             for i in range(95):
-                time.sleep(0.1)  # Simulate the time taken for each step
+                time.sleep(0.2)  # Simulate the time taken for each step
                 progress_bar.progress(i + 1)
 
             # Run the actual command
             result = subprocess.run(command, capture_output=True, text=True)
             st.write("## Results")
-            st.write(*step_config['generator_params']['experiment'][0].keys(), "log name", "target similarity")
+            # st.write(*step_config['generator_params']['experiment'][0].keys(), "log name", "target similarity")
 
             directory = Path(step_config['output_path']).parts
             path = os.path.join(directory[0], 'features', *directory[1:])
 
+            dataframes = []
             # Walk through all directories and files
             for root, dirs, files in os.walk(path):
                 feature_files = [os.path.join(root, file) for file in files]
@@ -306,9 +307,27 @@ if __name__ == '__main__':
                         index = int(data['log'].split('genEL')[-1].split('_')[0])-1
                         config_targets = step_config['generator_params']['experiment'][index]
 
+                    df_temp = pd.read_json(feature_file,lines=True)
+                    dataframes.append(df_temp)
                     # Print the contents of the JSON file
-                    st.write(*config_targets.values(), data['log'], data['target_similarity'])
+                    # st.write(*config_targets.values(), data['log'], data['target_similarity'])
+            dataframes = pd.concat(dataframes, ignore_index=True)
+            # dataframes = dataframes.sort_values(by=['log'])
+            dataframes = dataframes.set_index('log')
+            col1, col2 = st.columns([2, 3])  # Adjust the ratio as needed
 
+            with col1:
+                st.dataframe(dataframes)
+
+            with col2:
+                plt.figure(figsize=(4, 2))
+                plt.plot(dataframes.index, dataframes['target_similarity'], 'o-')
+                plt.xlabel('log', fontsize=5)
+                plt.ylabel('target_similarity', fontsize=5)
+                plt.xticks(rotation=45, ha='right', fontsize=5)
+                plt.tight_layout()
+                st.pyplot(plt)
+            
             # Optional: Updating the progress bar to indicate completion
             progress_bar.progress(100)
 
