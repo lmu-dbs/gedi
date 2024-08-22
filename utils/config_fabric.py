@@ -4,15 +4,13 @@ from itertools import product as cproduct
 from itertools import combinations
 from pathlib import Path
 from pylab import *
-import itertools
 import json
 import math
 import os
 import pandas as pd
-import pm4py
-import random
 import streamlit as st
 import subprocess
+import time
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
@@ -272,6 +270,7 @@ if __name__ == '__main__':
     #save_labels = ["Save configuration file"]
     create_button, create_run_button = multi_button(save_labels)
     #create_button = multi_button(save_labels)
+
     if create_button or create_run_button:
         with open(output_path, "w") as f:
             f.write(config_file)
@@ -281,21 +280,21 @@ if __name__ == '__main__':
         st.code(var, language='bash')
 
         if create_run_button:
-        #if False: #FIXME: Command fails when using multiprocessing
             command = var.split()
+            progress_bar = st.progress(0)  # Initialize the progress bar
 
-            # Run the command
+            # Simulate running the command with a loop and updating the progress bar
+            for i in range(95):
+                time.sleep(0.1)  # Simulate the time taken for each step
+                progress_bar.progress(i + 1)
+
+            # Run the actual command
             result = subprocess.run(command, capture_output=True, text=True)
             st.write("## Results")
             st.write(*step_config['generator_params']['experiment'][0].keys(), "log name", "target similarity")
 
-            #if len(result.stderr)==0:
-            #    st.write(result.stdout)
-            #else:
-            #    st.write("ERROR: ", result.stderr)
-
             directory = Path(step_config['output_path']).parts
-            path = os.path.join(directory[0],'features',*directory[1:])
+            path = os.path.join(directory[0], 'features', *directory[1:])
 
             # Walk through all directories and files
             for root, dirs, files in os.walk(path):
@@ -309,4 +308,8 @@ if __name__ == '__main__':
 
                     # Print the contents of the JSON file
                     st.write(*config_targets.values(), data['log'], data['target_similarity'])
+
+            # Optional: Updating the progress bar to indicate completion
+            progress_bar.progress(100)
+
 

@@ -86,7 +86,11 @@ def dump_features_json(features: dict, output_path, content_type="features"):
 
 def compute_similarity(v1, v2):
 
-    # HOTFIX: Rename 'ratio_unique_traces_per_trace
+    # Convert all values to float except for the value for the key "Log"
+    v1 = {k: (float(v) if k != "log" else v) for k, v in v1.items()}
+    v2 = {k: (float(v) if k != "log" else v) for k, v in v2.items()}
+
+    # HOTFIX: Rename 'ratio_unique_traces_per_trace'
     if 'ratio_unique_traces_per_trace' in v1:
         v1['ratio_variants_per_number_of_traces'] = v1.pop('ratio_unique_traces_per_trace')
 
@@ -104,7 +108,7 @@ def compute_similarity(v1, v2):
 
     else:
         # Calculate Euclidean Similarity
-        target_similarity = 1-euclidean(vec1, vec2)
-        #print("VECTORS: ", vec1, vec2, target_similarity)
+        target_similarity = 1 / (1 + euclidean(vec1, vec2))
+        # print("VECTORS: ", vec1, vec2, target_similarity)
 
         return target_similarity
