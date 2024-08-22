@@ -337,10 +337,10 @@ if __name__ == '__main__':
                 feature_files = [os.path.join(root, file) for file in files]
                 for feature_file in feature_files:
                     # Open and read the JSON file
-                    with open(feature_file, 'r') as file:
-                        data = json.load(file)
-                        index = int(data['log'].split('genEL')[-1].split('_')[0])-1
-                        config_targets = step_config['generator_params']['experiment'][index]
+                    # with open(feature_file, 'r') as file:
+                        # data = json.load(file)
+                        # index = int(data['log'].split('genEL')[-1].split('_')[0])-1
+                        # config_targets = step_config['generator_params']['experiment'][index]
 
                     df_temp = pd.read_json(feature_file,lines=True)
                     dataframes.append(df_temp)
