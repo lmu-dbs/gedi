@@ -1,24 +1,59 @@
-from copy import deepcopy
-from importlib import reload
 from itertools import product as cproduct
 from itertools import combinations
+from pathlib import Path
 from pylab import *
-import itertools
+import base64
 import json
 import math
 import os
 import pandas as pd
-import random
 import streamlit as st
 import subprocess
+import time
+import shutil
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
+LOGO_PATH="gedi/utils/logo.png"
 
-"""
-# Configuration File fabric for
-## GEDI: **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining
-"""
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode()
+
+def play_header():
+    # Convert local image to base64
+    logo_base64 = get_base64_image(LOGO_PATH)
+
+    # HTML and CSS for placing the logo at the top left corner
+    head1, head2 = st.columns([1,8])
+    head1.markdown(
+        f"""
+        <style>
+        .header-logo {{
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }}
+        .header-logo img {{
+            max-width: 120px; /* Adjust the size as needed */
+            height: auto;
+        }}
+        </style>
+        <div class="header-logo">
+            <img src="data:image/png;base64,{logo_base64}" alt="Logo">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    with head2:
+        """
+        # interactive GEDI
+        """
+    """
+    ## **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining
+    """
+    return
+
 def double_switch(label_left, label_right, third_label=None, fourth_label=None):
     if third_label==None and fourth_label==None:
         # Create two columns for the labels and toggle switch
@@ -185,10 +220,11 @@ def set_generator_experiments(generator_params):
                 with col2:
                     sel_features = feature_select()
 
+                filtered_dict = {key: generator_params['experiment'][key] for key in sel_features if key in generator_params['experiment']}
                 values_indexes = ["value "+str(i+1) for i in range(num_values)]
                 values_defaults = ['*(1+2*0.'+str(i)+')' for i in range(num_values)]
                 cross_labels =  [feature[0]+': '+feature[1] for feature in list(cproduct(sel_features,values_indexes))]
-                cross_values = [round(eval(str(combination[0])+combination[1]), 2) for combination in list(cproduct(list(generator_params['experiment'].values()), values_defaults))]
+                cross_values = [round(eval(str(combination[0])+combination[1]), 2) for combination in list(cproduct(list(filtered_dict.values()), values_defaults))]
                 parameters = split_list(list(input_multicolumn(cross_labels, cross_values, n_cols=num_values)), len(sel_features))
                 tasks = f"list({parameters})"
 
@@ -234,6 +270,7 @@ def set_generator_experiments(generator_params):
     return generator_params
 
 if __name__ == '__main__':
+    play_header()
     config_layout = json.load(open("config_files/config_layout.json"))
     type(config_layout)
     step_candidates = ["instance_augmentation","event_logs_generation","feature_extraction","benchmark_test"]
@@ -266,25 +303,65 @@ if __name__ == '__main__':
     output_path = st.text_input("Output file path", "config_files/experiment_config.json")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     save_labels = ["Save config file", "Save and run config_file"]
-    save_labels = ["Save configuration file"]
-    #create_button, create_run_button = multi_button(save_labels)
-    create_button = multi_button(save_labels)
-    # FIXME: Bug: automatically updates the experiment_config.json file even without pressing the save button
-    if create_button: # or create_run_button:
+    #save_labels = ["Save configuration file"]
+    create_button, create_run_button = multi_button(save_labels)
+    #create_button = multi_button(save_labels)
+
+    if create_button or create_run_button:
         with open(output_path, "w") as f:
             f.write(config_file)
         st.write("Saved configuration in ", output_path, ". Run command:")
-        #if create_run_button:
-        if True:
-            var = f"python -W ignore main.py -a {output_path}"
-            st.code(var, language='bash')
-        if False: #FIXME: Command fails when using multiprocessing 
+        create_button = False
+        var = f"python -W ignore main.py -a {output_path}"
+        st.code(var, language='bash')
+
+        if create_run_button:
             command = var.split()
+            progress_bar = st.progress(0)  # Initialize the progress bar
+            
+            directory = Path(step_config['output_path']).parts
+            path = os.path.join(directory[0], 'features', *directory[1:])
+            if os.path.exists(path): shutil.rmtree(path)
+            
+            # Simulate running the command with a loop and updating the progress bar
+            for i in range(95):
+                time.sleep(0.2)  # Simulate the time taken for each step
+                progress_bar.progress(i + 1)
 
-            # Run the command
+            # Run the actual command
             result = subprocess.run(command, capture_output=True, text=True)
+            st.write("## Results")
+            # st.write(*step_config['generator_params']['experiment'][0].keys(), "log name", "target similarity")
 
-            if len(result.stderr)==0:
-                st.write(result.stdout)
-            else:
-                st.write("ERROR: ", result.stderr)
+            directory = Path(step_config['output_path']).parts
+            path = os.path.join(directory[0], 'features', *directory[1:])
+
+            dataframes = []
+            # Walk through all directories and files
+            for root, dirs, files in os.walk(path):
+                feature_files = [os.path.join(root, file) for file in files]
+                for feature_file in feature_files:
+
+                    df_temp = pd.read_json(feature_file,lines=True)
+                    dataframes.append(df_temp)
+                    # Print the contents of the JSON file
+                    # st.write(*config_targets.values(), data['log'], data['target_similarity'])
+            dataframes = pd.concat(dataframes, ignore_index=True)
+            # dataframes = dataframes.sort_values(by=['log'])
+            dataframes = dataframes.set_index('log')
+            col1, col2 = st.columns([2, 3])  # Adjust the ratio as needed
+
+            with col1:
+                st.dataframe(dataframes)
+
+            with col2:
+                plt.figure(figsize=(4, 2))
+                plt.plot(dataframes.index, dataframes['target_similarity'], 'o-')
+                plt.xlabel('log', fontsize=5)
+                plt.ylabel('target_similarity', fontsize=5)
+                plt.xticks(rotation=45, ha='right', fontsize=5)
+                plt.tight_layout()
+                st.pyplot(plt)
+            
+            # Optional: Updating the progress bar to indicate completion
+            progress_bar.progress(100)

@@ -9,7 +9,7 @@
   {
     "pipeline_step": "event_logs_generation",
     "output_path": "output/features/2_bpic_features/2_ense_rmcv_feat.csv",
-    "output_path": "data/test",
+    "output_path": "data/frontend/test",
     "generator_params": {
       "experiment": "data/grid_objectives.csv",
       "experiment": {"input_path": "data/2_bpic_features.csv",

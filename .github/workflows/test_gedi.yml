@@ -63,11 +63,11 @@ jobs:
 
     - name: Compare output 1
       run: 
-        diff data/validation/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
+        diff data/validation/genELexperiment1_04_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment1_04_02.json
 
     - name: Compare output 2
       run: 
-        diff data/validation/genELexperiment1_04_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment1_04_02.json
+        diff data/validation/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
 
     - name: Compare output 3
       run: 

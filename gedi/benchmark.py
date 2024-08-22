@@ -5,15 +5,12 @@ import pandas as pd
 import subprocess
 
 from datetime import datetime as dt
-from functools import partial, partialmethod
+from functools import partialmethod
 from itertools import repeat
-from pathlib import Path
-from pm4py import read_xes, convert_to_bpmn, read_bpmn, convert_to_petri_net, check_soundness
+from pm4py import convert_to_bpmn, read_bpmn, convert_to_petri_net, check_soundness
 from pm4py import discover_petri_net_inductive, discover_petri_net_ilp, discover_petri_net_heuristics
-from pm4py import fitness_alignments, fitness_token_based_replay
-from pm4py import precision_alignments, precision_token_based_replay
-from pm4py.algo.evaluation.generalization import algorithm as generalization_evaluator
-from pm4py.algo.evaluation.simplicity import algorithm as simplicity_evaluator
+from pm4py import fitness_alignments
+from pm4py import precision_alignments
 from pm4py.objects.bpmn.obj import BPMN
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from gedi.utils.io_helpers import dump_features_json
