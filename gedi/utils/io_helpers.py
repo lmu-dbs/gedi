@@ -6,7 +6,7 @@ import re
 import shutil
 import numpy as np
 from collections import defaultdict
-from pathlib import Path, PurePath
+from pathlib import PurePath
 from scipy.spatial.distance import euclidean
 
 def select_instance(source_dir, log_path, destination=os.path.join("output","generated","instance_selection")):

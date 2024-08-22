@@ -1,9 +1,8 @@
-from copy import deepcopy
-from importlib import reload
 from itertools import product as cproduct
 from itertools import combinations
 from pathlib import Path
 from pylab import *
+import base64
 import json
 import math
 import os
@@ -14,11 +13,46 @@ import time
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
+LOGO_PATH="gedi/utils/logo.png"
 
-"""
-# Configuration File fabric for
-## GEDI: **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining
-"""
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode()
+
+def play_header():
+    # Convert local image to base64
+    logo_base64 = get_base64_image(LOGO_PATH)
+
+    # HTML and CSS for placing the logo at the top left corner
+    head1, head2 = st.columns([1,8])
+    head1.markdown(
+        f"""
+        <style>
+        .header-logo {{
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }}
+        .header-logo img {{
+            max-width: 120px; /* Adjust the size as needed */
+            height: auto;
+        }}
+        </style>
+        <div class="header-logo">
+            <img src="data:image/png;base64,{logo_base64}" alt="Logo">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    with head2:
+        """
+        # interactive GEDI
+        """
+    """
+    ## **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining
+    """
+    return
+
 def double_switch(label_left, label_right, third_label=None, fourth_label=None):
     if third_label==None and fourth_label==None:
         # Create two columns for the labels and toggle switch
@@ -235,6 +269,7 @@ def set_generator_experiments(generator_params):
     return generator_params
 
 if __name__ == '__main__':
+    play_header()
     config_layout = json.load(open("config_files/config_layout.json"))
     type(config_layout)
     step_candidates = ["instance_augmentation","event_logs_generation","feature_extraction","benchmark_test"]

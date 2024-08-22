@@ -12,14 +12,13 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from utils.param_keys import PLOT_TYPE, PROJECTION, EXPLAINED_VAR, PLOT_3D_MAP
-from utils.param_keys import INPUT_PATH, OUTPUT_PATH, PIPELINE_STEP
+from utils.param_keys import OUTPUT_PATH, PIPELINE_STEP
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, PLOT_REFERENCE_FEATURE
 from utils.param_keys.plotter import REAL_EVENTLOG_PATH, FONT_SIZE, BOXPLOT_WIDTH
 from collections import defaultdict
 
 from sklearn.preprocessing import Normalizer, StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.metrics.pairwise import euclidean_distances
 from gedi.generator import get_tasks
 from gedi.utils.io_helpers import get_keys_abbreviation
 from gedi.utils.io_helpers import read_csvs, select_instance
