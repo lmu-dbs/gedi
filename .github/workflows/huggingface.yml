@@ -21,4 +21,9 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://andreamalhera:$HF_TOKEN@huggingface.co/spaces/andreamalhera/gedi main
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git reset README.md
+          git commit -m "Commit all changes except README.md"
+          git push --force https://andreamalhera:$HF_TOKEN@huggingface.co/spaces/andreamalhera/gedi main
