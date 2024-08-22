@@ -36,9 +36,10 @@ def play_header():
         }}
         .header-logo img {{
             max-width: 100%; /* Adjust the size as needed */
-            max-height: 100%;
             overflow: hidden;
-        }}
+            object-fit: contain;
+            padding-top: 12px;
+       }}
         </style>
         <div class="header-logo">
             <img src="data:image/png;base64,{logo_base64}" alt="Logo">
