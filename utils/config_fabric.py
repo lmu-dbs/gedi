@@ -360,8 +360,7 @@ if __name__ == '__main__':
 
             # Run the actual command
             result = subprocess.run(command, capture_output=True, text=True)
-            # result = subprocess.run(['python', '-W', 'ignore', '-c', 'print("Hello, World!")'], capture_output=True, text=True)
-            st.write("bash results:",result.stdout, result.stderr)
+
             st.write("## Results")
 
             # Collect all file paths from the output directory
