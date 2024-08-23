@@ -360,7 +360,7 @@ if __name__ == '__main__':
 
             # Run the actual command
             result = subprocess.run(command, capture_output=True, text=True)
-
+            st.write(result.stdout)
             st.write("## Results")
 
             # Collect all file paths from the output directory
