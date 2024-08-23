@@ -274,20 +274,31 @@ def set_generator_experiments(generator_params):
 
 if __name__ == '__main__':
     play_header()
+
+    # Load the configuration layout from a JSON file
     config_layout = json.load(open("config_files/config_layout.json"))
-    type(config_layout)
-    step_candidates = ["instance_augmentation","event_logs_generation","feature_extraction","benchmark_test"]
+
+    # Define available pipeline steps
+    step_candidates = ["instance_augmentation", "event_logs_generation", "feature_extraction", "benchmark_test"]
+
+    # Streamlit multi-select for pipeline steps
     pipeline_steps = st.multiselect(
         "Choose pipeline step",
         step_candidates,
         ["event_logs_generation"]
     )
+
     step_configs = []
     set_col, view_col = st.columns([3, 2])
+
+    # Iterate through selected pipeline steps
     for pipeline_step in pipeline_steps:
-        step_config = [d for d in config_layout if d['pipeline_step'] == pipeline_step][0]
+        step_config = next(d for d in config_layout if d['pipeline_step'] == pipeline_step)
+        
         with set_col:
             st.header(pipeline_step)
+
+            # Iterate through step configuration keys
             for step_key in step_config.keys():
                 if step_key == "generator_params":
                     st.subheader("Set-up experiments")
@@ -295,64 +306,79 @@ if __name__ == '__main__':
                 elif step_key == "feature_params":
                     layout_features = list(step_config[step_key]['feature_set'])
                     step_config[step_key]["feature_set"] = st.multiselect(
-                            "features to extract",
-                            layout_features)
+                        "features to extract",
+                        layout_features
+                    )
                 elif step_key != "pipeline_step":
                     step_config[step_key] = st.text_input(step_key, step_config[step_key])
+        
         with view_col:
             st.write(step_config)
+        
         step_configs.append(step_config)
+
+    # Convert step configurations to JSON
     config_file = json.dumps(step_configs, indent=4)
+
+    # Streamlit input for output file path
     output_path = st.text_input("Output file path", "config_files/experiment_config.json")
+    
+    # Ensure output directory exists
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    # Streamlit multi-button for saving options
     save_labels = ["Save config file", "Save and run config_file"]
-    #save_labels = ["Save configuration file"]
     create_button, create_run_button = multi_button(save_labels)
-    #create_button = multi_button(save_labels)
 
     if create_button or create_run_button:
+        # Save configuration to the specified output path
         with open(output_path, "w") as f:
             f.write(config_file)
+
         st.write("Saved configuration in ", output_path, ". Run command:")
-        create_button = False
+        
         var = f"python -W ignore main.py -a {output_path}"
         st.code(var, language='bash')
 
         if create_run_button:
+            # Split the command for subprocess
             command = var.split()
-            progress_bar = st.progress(0)  # Initialize the progress bar
-            
+            progress_bar = st.progress(0)
+
+            # Prepare output path for feature extraction
             directory = Path(step_config['output_path']).parts
             path = os.path.join(directory[0], 'features', *directory[1:])
-            if os.path.exists(path): shutil.rmtree(path)
             
-            # Simulate running the command with a loop and updating the progress bar
+            # Clean existing output path if it exists
+            if os.path.exists(path): 
+                shutil.rmtree(path)
+
+            # Simulate running the command with a loop and update progress
             for i in range(95):
-                time.sleep(0.2)  # Simulate the time taken for each step
+                time.sleep(0.2)
                 progress_bar.progress(i + 1)
 
             # Run the actual command
             result = subprocess.run(command, capture_output=True, text=True)
+
             st.write("## Results")
-            # st.write(*step_config['generator_params']['experiment'][0].keys(), "log name", "target similarity")
 
-            directory = Path(step_config['output_path']).parts
-            path = os.path.join(directory[0], 'features', *directory[1:])
+            # Collect all file paths from the output directory
+            file_paths = [os.path.join(root, file)
+                          for root, _, files in os.walk(path)
+                          for file in files]
 
-            dataframes = []
-            # Walk through all directories and files
-            for root, dirs, files in os.walk(path):
-                feature_files = [os.path.join(root, file) for file in files]
-                for feature_file in feature_files:
+            # Read and concatenate all JSON files into a DataFrame
+            dataframes = pd.concat([pd.read_json(file, lines=True) for file in file_paths], ignore_index=True)
 
-                    df_temp = pd.read_json(feature_file,lines=True)
-                    dataframes.append(df_temp)
-                    # Print the contents of the JSON file
-                    # st.write(*config_targets.values(), data['log'], data['target_similarity'])
-            dataframes = pd.concat(dataframes, ignore_index=True)
-            # dataframes = dataframes.sort_values(by=['log'])
-            dataframes = dataframes.set_index('log')
-            col1, col2 = st.columns([2, 3])  # Adjust the ratio as needed
+            # Reorder columns with 'target_similarity' as the last column
+            columns = [col for col in dataframes.columns if col != 'target_similarity'] + ['target_similarity']
+            dataframes = dataframes[columns]
+
+            # Set 'log' as the index
+            dataframes.set_index('log', inplace=True)
+
+            col1, col2 = st.columns([2, 3])
 
             with col1:
                 st.dataframe(dataframes)
@@ -366,5 +392,5 @@ if __name__ == '__main__':
                 plt.tight_layout()
                 st.pyplot(plt)
             
-            # Optional: Updating the progress bar to indicate completion
+            # Update progress bar to indicate completion
             progress_bar.progress(100)
