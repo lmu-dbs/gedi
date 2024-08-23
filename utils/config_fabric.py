@@ -354,13 +354,13 @@ if __name__ == '__main__':
                 shutil.rmtree(path)
 
             # Simulate running the command with a loop and update progress
-            for i in range(95):
-                time.sleep(0.2)
-                progress_bar.progress(i + 1)
+            # for i in range(95):
+            #     time.sleep(0.2)
+            #     progress_bar.progress(i + 1)
 
             # Run the actual command
             result = subprocess.run(command, capture_output=True, text=True)
-            st.write(result.stdout)
+            st.write("bash results:",result.stdout)
             st.write("## Results")
 
             # Collect all file paths from the output directory
