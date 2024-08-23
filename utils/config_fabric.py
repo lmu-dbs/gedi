@@ -339,13 +339,12 @@ if __name__ == '__main__':
         with open(output_path, "w") as f:
             f.write(config_file)
 
-        st.write("Saved configuration in ", output_path, ". Run command:")
+        # st.write("Saved configuration in ", output_path, ". Run command:")
         
         var = f"python -W ignore main.py -a {output_path}"
-        st.code(var, language='bash')
+        # st.code(var, language='bash')
         # Split the command for subprocess
         command = var.split()
-        progress_bar = st.progress(0)
 
         # Prepare output path for feature extraction
         directory = Path(step_config['output_path']).parts
@@ -356,13 +355,10 @@ if __name__ == '__main__':
             shutil.rmtree(path)
 
         # Simulate running the command with a loop and update progress
-        for i in range(95):
-            time.sleep(0.05)
-            progress_bar.progress(i + 1)
-
+        with st.spinner("Generating logs.."):
         # Run the actual command
-        result = subprocess.run(command, capture_output=True, text=True)
-
+            result = subprocess.run(command, capture_output=True, text=True)
+        st.success("Logs generated!")
         st.write("## Results")
 
         # Collect all file paths from the output directory
@@ -393,6 +389,3 @@ if __name__ == '__main__':
             plt.xticks(rotation=45, ha='right', fontsize=5)
             plt.tight_layout()
             st.pyplot(plt)
-        
-        # Update progress bar to indicate completion
-        progress_bar.progress(100)
