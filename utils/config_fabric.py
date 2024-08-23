@@ -56,7 +56,7 @@ def play_header():
     """
     return
 
-def double_switch(label_left, label_right, third_label=None, fourth_label=None):
+def double_switch(label_left, label_right, third_label=None, fourth_label=None, value=False):
     if third_label==None and fourth_label==None:
         # Create two columns for the labels and toggle switch
         col0, col1, col2, col3, col4 = st.columns([2,1,1,1,2])
@@ -70,7 +70,7 @@ def double_switch(label_left, label_right, third_label=None, fourth_label=None):
 
     with col2:
         # Create the toggle switch
-        toggle_option = st.toggle(" ",value=False,
+        toggle_option = st.toggle(" ",value=value,
             key="toggle_switch_"+label_left,
         )
 
@@ -215,7 +215,7 @@ def set_generator_experiments(generator_params):
 
     def handle_manual_option(grid_option):
         if grid_option:
-            combinatorial = double_switch("Range", "Combinatorial")
+            combinatorial = double_switch("Range", "Combinatorial", value=True)
             if combinatorial:
                 col1, col2 = st.columns([1,4])
                 with col1:
