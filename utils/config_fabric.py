@@ -359,7 +359,8 @@ if __name__ == '__main__':
             #     progress_bar.progress(i + 1)
 
             # Run the actual command
-            result = subprocess.run(command, capture_output=True, text=True)
+            # result = subprocess.run(command, capture_output=True, text=True)
+            result = subprocess.run(['python', '-W', 'ignore', '-c', 'print("Hello, World!")'], capture_output=True, text=True)
             st.write("bash results:",result.stdout)
             st.write("## Results")
 
