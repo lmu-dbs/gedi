@@ -75,7 +75,7 @@ class BenchmarkTest:
               f" and {len(benchmark_results)} event-logs. Saved benchmark to {self.filepath}.")
         print("========================= ~ BenchmarkTest =============================")
 
-    def benchmark_wrapper(self, event_log, log_counter=0, miners=['inductive']):
+    def benchmark_wrapper(self, event_log, log_counter=0, miners=['ind']):
         dump_path = os.path.join(self.params[OUTPUT_PATH],
                                  os.path.split(self.params[INPUT_PATH])[-1])
         dump_path= os.path.join(self.params[OUTPUT_PATH],
@@ -183,6 +183,8 @@ class BenchmarkTest:
             if miner == 'imf':
                 miner = 'inductive'
                 miner_params = f', noise_threshold={NOISE_THRESHOLD}'
+            elif miner == 'ind':
+                miner = 'inductive'
             elif miner == 'heu':
                 miner = 'heuristics'
             net, im, fm = eval(f"discover_petri_net_{miner}(log {miner_params})")

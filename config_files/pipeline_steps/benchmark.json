@@ -4,6 +4,6 @@
     "benchmark_test": "discovery",
     "input_path":"data/test",
     "output_path":"output",
-    "miners" : ["inductive", "heu", "imf", "ilp"]
+    "miners" : ["ind", "heu", "imf", "ilp"]
   }
 ]
