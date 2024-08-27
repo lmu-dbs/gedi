@@ -98,8 +98,8 @@ class BenchmarkTest:
             benchmark_results =  [round(x, 4) for x in self.benchmark_discovery(results['log'],  miner, self.params)]
             results[f"fitness_{miner}"] = benchmark_results[0]
             results[f"precision_{miner}"] = benchmark_results[1]
-            results[f"fscore_{miner}"] = 2*(benchmark_results[0]*benchmark_results[1]/
-                                                  (benchmark_results[0]+ benchmark_results[1]))
+            results[f"fscore_{miner}"] = round(2*(benchmark_results[0]*benchmark_results[1]/
+                                                  (benchmark_results[0]+ benchmark_results[1])), 4)
             results[f"size_{miner}"]= benchmark_results[2]
             results[f"pnsize_{miner}"]= benchmark_results[4]
             results[f"cfc_{miner}"]= benchmark_results[3]
