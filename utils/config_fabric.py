@@ -336,7 +336,7 @@ if __name__ == '__main__':
             st.code(f"python -W ignore main.py -a {output_path}", language='bash')
     if pipeline_steps == ["event_logs_generation"]:
         with button_col2:
-            create_run_button = st.button("Run config_file")
+            create_run_button = st.button("Run Generation")
     
         if create_run_button:
             # Save configuration to the specified output path
