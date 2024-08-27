@@ -279,7 +279,7 @@ if __name__ == '__main__':
     config_layout = json.load(open("config_files/config_layout.json"))
 
     # Define available pipeline steps
-    step_candidates = ["instance_augmentation", "event_logs_generation", "feature_extraction", "benchmark_test"]
+    step_candidates = ["event_logs_generation", "feature_extraction"]
 
     # Streamlit multi-select for pipeline steps
     pipeline_steps = st.multiselect(
@@ -331,61 +331,60 @@ if __name__ == '__main__':
     button_col1, button_col2 = st.columns([1, 1])
     with button_col1:
         create_button = st.download_button(label="Download config file", data=config_file, file_name=os.path.basename(output_path), mime='application/json')
-    with button_col2:
-        create_run_button = st.button("Run config_file")
+        if pipeline_steps != ["event_logs_generation"]:
+            st.write("Run command:")
+            st.code(f"python -W ignore main.py -a {output_path}", language='bash')
+    if pipeline_steps == ["event_logs_generation"]:
+        with button_col2:
+            create_run_button = st.button("Run config_file")
     
-    if create_run_button:
-        # Save configuration to the specified output path
-        with open(output_path, "w") as f:
-            f.write(config_file)
+        if create_run_button:
+            # Save configuration to the specified output path
+            with open(output_path, "w") as f:
+                f.write(config_file)
 
-        # st.write("Saved configuration in ", output_path, ". Run command:")
-        
-        var = f"python -W ignore main.py -a {output_path}"
-        # st.code(var, language='bash')
-        # Split the command for subprocess
-        command = var.split()
+            command = f"python -W ignore main.py -a {output_path}".split()
 
-        # Prepare output path for feature extraction
-        directory = Path(step_config['output_path']).parts
-        path = os.path.join(directory[0], 'features', *directory[1:])
-        
-        # Clean existing output path if it exists
-        if os.path.exists(path): 
-            shutil.rmtree(path)
+            # Prepare output path for feature extraction
+            directory = Path(step_config['output_path']).parts
+            path = os.path.join(directory[0], 'features', *directory[1:])
+            
+            # Clean existing output path if it exists
+            if os.path.exists(path): 
+                shutil.rmtree(path)
 
-        # Simulate running the command with a loop and update progress
-        with st.spinner("Generating logs.."):
-        # Run the actual command
-            result = subprocess.run(command, capture_output=True, text=True)
-        st.success("Logs generated!")
-        st.write("## Results")
+            # Simulate running the command with a loop and update progress
+            with st.spinner("Generating logs.."):
+            # Run the actual command
+                result = subprocess.run(command, capture_output=True, text=True)
+            st.success("Logs generated!")
+            st.write("## Results")
 
-        # Collect all file paths from the output directory
-        file_paths = [os.path.join(root, file)
-                        for root, _, files in os.walk(path)
-                        for file in files]
+            # Collect all file paths from the output directory
+            file_paths = [os.path.join(root, file)
+                            for root, _, files in os.walk(path)
+                            for file in files]
 
-        # Read and concatenate all JSON files into a DataFrame
-        dataframes = pd.concat([pd.read_json(file, lines=True) for file in file_paths], ignore_index=True)
+            # Read and concatenate all JSON files into a DataFrame
+            dataframes = pd.concat([pd.read_json(file, lines=True) for file in file_paths], ignore_index=True)
 
-        # Reorder columns with 'target_similarity' as the last column
-        columns = [col for col in dataframes.columns if col != 'target_similarity'] + ['target_similarity']
-        dataframes = dataframes[columns]
+            # Reorder columns with 'target_similarity' as the last column
+            columns = [col for col in dataframes.columns if col != 'target_similarity'] + ['target_similarity']
+            dataframes = dataframes[columns]
 
-        # Set 'log' as the index
-        dataframes.set_index('log', inplace=True)
+            # Set 'log' as the index
+            dataframes.set_index('log', inplace=True)
 
-        col1, col2 = st.columns([2, 3])
+            col1, col2 = st.columns([2, 3])
 
-        with col1:
-            st.dataframe(dataframes)
+            with col1:
+                st.dataframe(dataframes)
 
-        with col2:
-            plt.figure(figsize=(4, 2))
-            plt.plot(dataframes.index, dataframes['target_similarity'], 'o-')
-            plt.xlabel('log', fontsize=5)
-            plt.ylabel('target_similarity', fontsize=5)
-            plt.xticks(rotation=45, ha='right', fontsize=5)
-            plt.tight_layout()
-            st.pyplot(plt)
+            with col2:
+                plt.figure(figsize=(4, 2))
+                plt.plot(dataframes.index, dataframes['target_similarity'], 'o-')
+                plt.xlabel('log', fontsize=5)
+                plt.ylabel('target_similarity', fontsize=5)
+                plt.xticks(rotation=45, ha='right', fontsize=5)
+                plt.tight_layout()
+                st.pyplot(plt)
