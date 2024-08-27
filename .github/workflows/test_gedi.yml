@@ -100,7 +100,7 @@ jobs:
         python main.py -a config_files/pipeline_steps/benchmark.json
 
     - name: Convert output and validation to same encoding
-      run: iconv -f UTF-8 -t ASCII output/benchmark/test_benchmark.csv > data/validation/test_benchmark.csv
+      run: iconv -f UTF-8 -t ASCII output/benchmark/test_benchmark.csv > output/benchmark/test_benchmark.csv
 
     - name: Compare output
       run: diff data/validation/test_benchmark.csv output/benchmark/test_benchmark.csv

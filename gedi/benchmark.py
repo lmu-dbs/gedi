@@ -95,13 +95,14 @@ class BenchmarkTest:
         for miner in miners:
             miner_cols = [f"fitness_{miner}", f"precision_{miner}", f"fscore_{miner}", f"size_{miner}", f"cfc_{miner}", f"pnsize_{miner}"]# f"generalization_{miner}",f"simplicity_{miner}"]
             start_miner = dt.now()
-            benchmark_results =  self.benchmark_discovery(results['log'],  miner, self.params)
+            benchmark_results =  [round(x, 4) for x in self.benchmark_discovery(results['log'],  miner, self.params)]
             results[f"fitness_{miner}"] = benchmark_results[0]
             results[f"precision_{miner}"] = benchmark_results[1]
-            results[f"fscore_{miner}"] = 2*(benchmark_results[0]*benchmark_results[1]/(benchmark_results[0]+ benchmark_results[1]))
-            results[f"size_{miner}"]=benchmark_results[2]
-            results[f"pnsize_{miner}"]=benchmark_results[4]
-            results[f"cfc_{miner}"]=benchmark_results[3]
+            results[f"fscore_{miner}"] = 2*(benchmark_results[0]*benchmark_results[1]/
+                                                  (benchmark_results[0]+ benchmark_results[1]))
+            results[f"size_{miner}"]= benchmark_results[2]
+            results[f"pnsize_{miner}"]= benchmark_results[4]
+            results[f"cfc_{miner}"]= benchmark_results[3]
 
         results['log'] = log_name
 
