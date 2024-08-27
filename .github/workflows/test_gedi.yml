@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - bpm24
+  workflow_dispatch:
 
 # Specifies the jobs that are to be run
 jobs:
