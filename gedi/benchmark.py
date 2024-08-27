@@ -55,7 +55,7 @@ class BenchmarkTest:
                 path_to_json = path_to_json.rsplit("/",1)[0]
              df = pd.DataFrame()
              # Iterate over the files in the directory
-             for filename in os.listdir(path_to_json):
+             for filename in sorted(os.listdir(path_to_json)):
                  if filename.endswith('.json'):
                      i_path = os.path.join(path_to_json, filename)
                      with open(i_path) as f:
