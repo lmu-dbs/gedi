@@ -302,7 +302,7 @@ if __name__ == '__main__':
     # Iterate through selected pipeline steps
     for pipeline_step in pipeline_steps:
         step_config = next(d for d in config_layout if d['pipeline_step'] == pipeline_step)
-        
+
         with set_col:
             st.header(pipeline_step)
 
@@ -319,10 +319,10 @@ if __name__ == '__main__':
                     )
                 elif step_key != "pipeline_step":
                     step_config[step_key] = st.text_input(step_key, step_config[step_key])
-        
+
         with view_col:
             st.write(step_config)
-        
+
         step_configs.append(step_config)
 
     # Convert step configurations to JSON
@@ -330,7 +330,7 @@ if __name__ == '__main__':
 
     # Streamlit input for output file path
     output_path = st.text_input("Output file path", "config_files/experiment_config.json")
-    
+
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
@@ -357,12 +357,12 @@ if __name__ == '__main__':
             directory = Path(step_config['output_path']).parts
             path = os.path.join(directory[0], 'features', *directory[1:]) # for feature storage
             path_to_logs = os.path.join(*directory[:]) # for log storage
-            
+
             # Clean existing output path if it exists
-            if os.path.exists(path): 
+            if os.path.exists(path):
                 shutil.rmtree(path)
-                
-            if os.path.exists(path_to_logs): 
+
+            if os.path.exists(path_to_logs):
                 shutil.rmtree(path_to_logs)
 
             # Simulate running the command with a loop and update progress
@@ -376,7 +376,7 @@ if __name__ == '__main__':
             file_paths = [os.path.join(root, file)
                             for root, _, files in os.walk(path)
                             for file in files]
-            
+
             # Download the generated logs as a ZIP file
             download_file_paths = [os.path.join(root, file)
                             for root, _, files in os.walk(path_to_logs)
@@ -398,6 +398,8 @@ if __name__ == '__main__':
             dataframes = dataframes.sort_values(by='log', key=lambda col: col.map(sort_key))
 
             # Set 'log' as the index
+            dataframes['log'] = dataframes['log'].astype(str)
+            xticks_labels=dataframes['log'].apply(lambda x: x.split('_')[0])#+'_'+x.split('_')[1][:4]+'_'+x.split('_')[2][:4])
             dataframes.set_index('log', inplace=True)
 
             col1, col2 = st.columns([2, 3])
@@ -406,10 +408,13 @@ if __name__ == '__main__':
                 st.dataframe(dataframes)
 
             with col2:
-                plt.figure(figsize=(12, 6))
-                plt.plot(dataframes.index, dataframes['target_similarity'], 'o-')
-                plt.xlabel('log', fontsize=5)
-                plt.ylabel('target_similarity', fontsize=5)
-                plt.xticks(rotation=45, ha='right', fontsize=5)
+                plt.figure(figsize=(6, 3))
+                plt.plot(xticks_labels, dataframes['target_similarity'], 'o-')
+                plt.xlabel('Log')
+                plt.ylabel('Target Similarity')
+                if len(dataframes) > 10:
+                    plt.xticks(rotation=30, ha='right')
+                else:
+                    plt.xticks(rotation=0, ha='center')
                 plt.tight_layout()
-                st.pyplot(plt)
+                st.pyplot(plt, dpi=400)
