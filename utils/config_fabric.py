@@ -407,7 +407,7 @@ if __name__ == '__main__':
 
             with col2:
                 plt.figure(figsize=(4, 2))
-                plt.plot(dataframes.index, dataframes['target_similarity'], 'o-')
+                plt.plot(dataframes.index, dataframes['target_similarity'], 'o-', dpi=400)
                 plt.xlabel('log', fontsize=5)
                 plt.ylabel('target_similarity', fontsize=5)
                 plt.xticks(rotation=45, ha='right', fontsize=5)
