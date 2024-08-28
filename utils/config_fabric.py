@@ -11,6 +11,8 @@ import streamlit as st
 import subprocess
 import time
 import shutil
+import zipfile
+import io
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
@@ -272,6 +274,12 @@ def set_generator_experiments(generator_params):
 
     return generator_params
 
+def sort_key(val):
+    parts = val.split('_')
+    # Extract and convert the numeric parts
+    part1 = int(parts[0][5:])  # e.g., from 'genEL1', extract '1'
+    return (part1)
+
 if __name__ == '__main__':
     play_header()
 
@@ -347,11 +355,15 @@ if __name__ == '__main__':
 
             # Prepare output path for feature extraction
             directory = Path(step_config['output_path']).parts
-            path = os.path.join(directory[0], 'features', *directory[1:])
+            path = os.path.join(directory[0], 'features', *directory[1:]) # for feature storage
+            path_to_logs = os.path.join(*directory[:]) # for log storage
             
             # Clean existing output path if it exists
             if os.path.exists(path): 
                 shutil.rmtree(path)
+                
+            if os.path.exists(path_to_logs): 
+                shutil.rmtree(path_to_logs)
 
             # Simulate running the command with a loop and update progress
             with st.spinner("Generating logs.."):
@@ -364,14 +376,27 @@ if __name__ == '__main__':
             file_paths = [os.path.join(root, file)
                             for root, _, files in os.walk(path)
                             for file in files]
+            
+            # Download the generated logs as a ZIP file
+            download_file_paths = [os.path.join(root, file)
+                            for root, _, files in os.walk(path_to_logs)
+                            for file in files]
 
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+                for file in download_file_paths:
+                    zip_file.write(file, os.path.basename(file))
+            zip_buffer.seek(0)
+            st.download_button(label="Download generated logs", data=zip_buffer, file_name='generated_logs.zip', mime='application/zip')
+            
             # Read and concatenate all JSON files into a DataFrame
             dataframes = pd.concat([pd.read_json(file, lines=True) for file in file_paths], ignore_index=True)
 
             # Reorder columns with 'target_similarity' as the last column
             columns = [col for col in dataframes.columns if col != 'target_similarity'] + ['target_similarity']
             dataframes = dataframes[columns]
-
+            dataframes = dataframes.sort_values(by='log', key=lambda col: col.map(sort_key))
+            
             # Set 'log' as the index
             dataframes.set_index('log', inplace=True)
 
