@@ -388,7 +388,7 @@ if __name__ == '__main__':
                     zip_file.write(file, os.path.basename(file))
             zip_buffer.seek(0)
             st.download_button(label="Download generated logs", data=zip_buffer, file_name='generated_logs.zip', mime='application/zip')
-            
+
             # Read and concatenate all JSON files into a DataFrame
             dataframes = pd.concat([pd.read_json(file, lines=True) for file in file_paths], ignore_index=True)
 
@@ -396,7 +396,7 @@ if __name__ == '__main__':
             columns = [col for col in dataframes.columns if col != 'target_similarity'] + ['target_similarity']
             dataframes = dataframes[columns]
             dataframes = dataframes.sort_values(by='log', key=lambda col: col.map(sort_key))
-            
+
             # Set 'log' as the index
             dataframes.set_index('log', inplace=True)
 
@@ -406,8 +406,8 @@ if __name__ == '__main__':
                 st.dataframe(dataframes)
 
             with col2:
-                plt.figure(figsize=(4, 2))
-                plt.plot(dataframes.index, dataframes['target_similarity'], 'o-', dpi=400)
+                plt.figure(figsize=(12, 6))
+                plt.plot(dataframes.index, dataframes['target_similarity'], 'o-')
                 plt.xlabel('log', fontsize=5)
                 plt.ylabel('target_similarity', fontsize=5)
                 plt.xticks(rotation=45, ha='right', fontsize=5)
