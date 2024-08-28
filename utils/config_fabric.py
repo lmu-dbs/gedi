@@ -172,6 +172,8 @@ def set_generator_experiments(generator_params):
         uploaded_file = st.file_uploader("Pick a csv-file containing feature values for features:", type="csv")
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
+            if len(df.columns) <= 1:
+                raise pd.errors.ParserError("Please select a file withat least two columns (e.g. log, feature) and use ',' as a delimiter.")
             sel_features = st.multiselect("Selected features", list(df.columns), list(df.columns)[-1])
             if sel_features:
                 df = df[sel_features]
