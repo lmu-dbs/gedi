@@ -71,6 +71,7 @@ class BenchmarkTest:
         benchmark_results.to_csv(self.filepath, index=False)
 
         self.results = benchmark_results
+        print(benchmark_results)
         print(f"SUCCESS: BenchmarkTest took {dt.now()-start} sec for {len(params[MINERS])} miners"+\
               f" and {len(benchmark_results)} event-logs. Saved benchmark to {self.filepath}.")
         print("========================= ~ BenchmarkTest =============================")
