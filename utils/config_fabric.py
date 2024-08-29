@@ -347,7 +347,7 @@ if __name__ == '__main__':
     if pipeline_steps == ["event_logs_generation"]:
         with button_col2:
             create_run_button = st.button("Run Generation")
-    
+
         if create_run_button:
             # Save configuration to the specified output path
             with open(output_path, "w") as f:
