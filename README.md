@@ -44,6 +44,8 @@ brew install swig
 conda install pyrfr swig
 ```
 ## Installation
+Our package is pip installable using `pip install gedi`.
+Otherwise:
 - `conda env create -f .conda.yml`
 
 ### Startup
