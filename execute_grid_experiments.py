@@ -1,5 +1,6 @@
 import multiprocessing
 import os
+import sys
 
 from datetime import datetime as dt
 from gedi.utils.io_helpers import sort_files
@@ -13,15 +14,18 @@ def multi_experiment_wrapper(config_file, i=0):
     print(f"=========================FINISHED EXPERIMENT #{i+1}=======================")
 
 if __name__ == '__main__':
-    EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','34_bpic_features')
-    EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','grid_1obj')
-    EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','grid_experiments')
-    EXPERIMENTS_FOLDER = os.path.join('config_files','algorithm','test')
+    EXPERIMENTS_FOLDER = sys.argv[1]
+    """
+    Following args run the following experiments:
+    - config_files/algorithm/grid_1obj
+    - config_files/algorithm/grid_experiments
+    - config_files/algorithm/test
+    """
     start = dt.now()
 
     experiment_list = list(tqdm(sort_files(os.listdir(EXPERIMENTS_FOLDER))))
     experiment_list = [os.path.join(EXPERIMENTS_FOLDER, config_file) for config_file in experiment_list]
-    experiment_list = experiment_list[:10]
+    #experiment_list = experiment_list[:10]
 
     print(f"========================STARTING MULTIPLE EXPERIMENTS=========================")
     print(f"INFO: {EXPERIMENTS_FOLDER} contains config files for {len(experiment_list)}.")
