@@ -1,9 +1,6 @@
 name: Upload Python Package to TestPyPI
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'  # Triggers the workflow when a new version tag is pushed
 
 jobs:
   build:
