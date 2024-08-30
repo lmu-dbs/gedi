@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - bpm24
+      - demo-icpm24
+  workflow_dispatch:
 
 # Specifies the jobs that are to be run
 jobs:
