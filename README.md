@@ -7,7 +7,7 @@
 - [Installation](#installation)
 - [General Usage](#general-usage)
 - [Experiments](#experiments)
-- [References](#references)
+- [Citation](#citation)
 
 ## Requirements
 - [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
@@ -168,5 +168,18 @@ This notebook is used to visualize the metric distribution of real event logs co
 
 This notebook is used to answer the question if there is a statistically significant relation between feature similarity and performance metrics for the downstream tasks of process discovery. For that, we compute the pearson coefficient, as well as the kendall's tau coefficient. This elucidates the correlation between the features with metric scores being used for process discovery. Each coefficient is calculated for three different settings: i) real-world datasets; ii) synthesized event log data with real-world targets; iii) synthesized event log data with grid objectives. Figures 7 and 8 shown in the paper refer to this notebook.
 
-## References
-The framework used by `GEDI` is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl. If you would like to discuss the paper, or corresponding research questions on benchmarking process mining tasks please email the authors.
+## Citation
+The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl and is *to appear on BPM'24*.
+
+```bibtex
+@article{maldonado2024gedi,
+  author       = {Maldonado, Andrea and Frey, {Christian M. M.} and Tavares, {Gabriel M.} and Rehwald, Nikolina and Seidl, Thomas},
+  title        = {{GEDI:} Generating Event Data with Intentional Features for Benchmarking Process Mining},
+  journal      = {To be published in BPM 2024. Krakow, Poland, Sep 01-06},
+  volume       = {},
+  year         = {2024},
+  url          = {https://mcml.ai/publications/gedi.pdf},
+  doi          = {},
+  eprinttype    = {website},
+}
+```
