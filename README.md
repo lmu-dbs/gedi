@@ -24,7 +24,7 @@ license: mit
 - [Installation](#installation)
 - [General Usage](#general-usage)
 - [Experiments](#experiments)
-- [References](#references)
+- [Citation](#citation)
 
 ## Interactive Web Application
 Our [interactive web application](https://huggingface.co/spaces/andreamalhera/gedi) (iGEDI) guides you through the specification process, runs GEDI for you. You can directly download the resulting generated logs or the configuration file to run GEDI locally.
@@ -200,5 +200,18 @@ This notebook is used to answer the question if there is a statistically signifi
 #### [Fig. 9 Consistency and fig. 10 Limitations](notebooks/gedi_figs9and10_consistency.ipynb)
 Likewise to the evaluation on the statistical tests in notebook `gedi_figs7and8_benchmarking_statisticalTests.ipynb`, this notebook is used to compute the differences between two correlation matrices $\Delta C = C_1 - C_2$. This logic is employed to evaluate and visualize the distance of two correlation matrices. Furthermore, we show how significant scores are retained from the correlations being evaluated on real-world datasets coompared to synthesized event log datasets with real-world targets. In Fig. 9 and 10 in the paper, the results of the notebook are shown. 
 
-## References
-The framework used by `GEDI` is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl. If you would like to discuss the paper, or corresponding research questions on benchmarking process mining tasks please email the authors.
+## Citation
+The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl and is *to appear on BPM'24*.
+
+```bibtex
+@article{maldonado2024gedi,
+  author       = {Maldonado, Andrea and Frey, {Christian M. M.} and Tavares, {Gabriel M.} and Rehwald, Nikolina and Seidl, Thomas},
+  title        = {{GEDI:} Generating Event Data with Intentional Features for Benchmarking Process Mining},
+  journal      = {To be published in BPM 2024. Krakow, Poland, Sep 01-06},
+  volume       = {},
+  year         = {2024},
+  url          = {https://mcml.ai/publications/gedi.pdf},
+  doi          = {},
+  eprinttype    = {website},
+}
+```
