@@ -44,9 +44,14 @@ brew install swig
 conda install pyrfr swig
 ```
 ## Installation
-Our package is pip installable using `pip install gedi`.
-Otherwise:
-- `conda env create -f .conda.yml`
+To directly use GEDI methods via `import`, install directly from [PyPi](https://pypi.org/project/gedi/) with
+```shell
+pip install gedi
+```
+Run:
+```shell
+python -c "from gedi import gedi; gedi('config_files/pipeline_steps/generation.json')"
+```
 
 ### Startup
 ```console
