@@ -17,13 +17,15 @@ license: mit
 
 **i**nteractive **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
 This repository contains the codebase for the interactive web application tool (iGEDI) as well as for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
+Our documentation also includes both frameworks. From [General Usage](#general-usage) and beyond, documentation refers especially to reproducibility of the [GEDI paper](https://mcml.ai/publications/gedi.pdf).
 
 ## Table of Contents
 
 - [Interactive Web Application (iGEDI)](#interactive-web-application)
 - [Installation](#installation)
   -  [as PyPi Package](#install-as-pypi-package)
-  -  [as local repository](#insatall-as-local-repository)
+  -  [of iGEDI](#install-igedi)
+  -  [as local repository](#install-as-local-repository)
 - [General Usage](#general-usage)
 - [Experiments](#experiments)
 - [Citation](#citation)
@@ -54,12 +56,21 @@ and run:
 ```shell
 python -c "from gedi import gedi; gedi('config_files/pipeline_steps/generation.json')"
 ```
+### Install iGEDI
+Our [interactive GEDI (iGEDI)](https://huggingface.co/spaces/andreamalhera/gedi) can be employed to create all necessary [configuration files](config_files) to reproduce our experiements.
+Users can directly use our [web application service](https://huggingface.co/spaces/andreamalhera/gedi) or locally start the following dashboard:
+```
+streamlit run utils/config_fabric.py # To tunnel to local machine add: --server.port 8501 --server.headless true
+
+# In local machine (only in case you are tunneling):
+ssh -N -f -L 9000:localhost:8501 <user@remote_machine.com>
+open "http://localhost:9000/"
+```
 
 ### Install as local repository
 ```console
 conda env create -f .conda.yml
-conda activate gedi
-python main.py -a config_files/test/experiment_test.json
+from gedi import gedi; gedi('config_files/test/experiment_test.json
 ```
 The last step should take only a few minutes to run.
 
@@ -71,9 +82,8 @@ Our pipeline offers several pipeline steps, which can be run sequentially or par
 - [Evaluation Plotter](https://github.com/lmu-dbs/gedi/blob/16-documentation-update-readme/README.md#evaluation-plotting)
 
 To run different steps of the GEDI pipeline, please adapt the `.json` accordingly.
-```console
-conda activate gedi
-python main.py -a config_files/pipeline_steps/<pipeline-step>.json
+```python
+from gedi import gedi; gedi('config_files/pipeline_steps/<pipeline-step>.json')
 ```
 For reference of possible keys and values for each step, please see `config_files/test/experiment_test.json`.
 To run the whole pipeline please create a new `.json` file, specifying all steps you want to run and specify desired keys and values for each step.
@@ -82,9 +92,8 @@ To reproduce results from our paper, please refer to [Experiments](#experiments)
 ### Feature Extraction
 ---
 To extract the features on the event-log level and use them for hyperparameter optimization, we employ the following script:
-```console
-conda activate gedi
-python main.py -a config_files/pipeline_steps/feature_extraction.json
+```python
+from gedi import gedi; gedi('config_files/pipeline_steps/feature_extraction.json')
 ```
 The JSON file consists of the following key-value pairs:
 
@@ -104,9 +113,8 @@ After having extracted meta features from the files, the next step is to generat
 
 The command to execute the generation step is given by a exemplarily generation.json file:
 
-```console
-conda activate gedi
-python main.py -a config_files/pipeline_steps/generation.json
+```python
+from gedi import gedi; gedi('config_files/pipeline_steps/generation.json')
 ```
 
 In the `generation.json`, we have the following key-value pairs:
@@ -136,9 +144,8 @@ In the `generation.json`, we have the following key-value pairs:
 ### Benchmark
 The benchmarking defines the downstream task which is used for evaluating the goodness of the synthesized event log datasets with the metrics of real-world datasets. The command to execute a benchmarking is shown in the following script:
 
-```console
-conda activate gedi
-python main.py -a config_files/pipeline_steps/benchmark.json
+```python
+from gedi import gedi; gedi('config_files/pipeline_steps/benchmark.json')
 ```
 
 In the `benchmark.json`, we have the following key-value pairs:
@@ -154,9 +161,8 @@ In the `benchmark.json`, we have the following key-value pairs:
 The purpose of the evaluation plotting step is used just for visualization. Some examples of how the plotter can be used is shown in the following exemplarily script:
 
 
-```console
-conda activate gedi
-python main.py -a config_files/pipeline_steps/evaluation_plotter.json
+```python
+from gedi import gedi; gedi('config_files/pipeline_steps/evaluation_plotter.json')
 ```
 
 Generally, in the `evaluation_plotter.json`, we have the following key-value pairs:
@@ -174,9 +180,8 @@ We present two settings for generating intentional event logs, using [real targe
 ### Generating data with real targets
 To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/experiment_real_targets.json). The script's pipeline will output the [generated event logs (GenBaselineED)](data/event_logs/GenBaselineED), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
 
-```console
-conda activate gedi
-python main.py -a config_files/experiment_real_targets.json
+```python
+from gedi import gedi; gedi('config_files/experiment_real_targets.json')
 ```
 
 ### Generating data with grid targets
@@ -187,15 +192,10 @@ python execute_grid_experiments.py config_files/grid_2obj
 ```
 We employ the [experiment_grid_2obj_configfiles_fabric.ipynb](notebooks/experiment_grid_2obj_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/grid_2obj) and [objective](data/grid_2obj) files for this experiment.
 For more details about these config_files, please refer to [Feature Extraction](#feature-extraction), [Generation](#generation), and [Benchmark](#benchmark).
-To create configuration files for grid objectives interactively, you can use the start the following dashboard:
-```
-streamlit run utils/config_fabric.py # To tunnel to local machine add: --server.port 8501 --server.headless true
+To create configuration files for grid objectives interactively, you can use iGEDI(https://huggingface.co/spaces/andreamalhera/gedi).
 
-# In local machine (only in case you are tunneling):
-ssh -N -f -L 9000:localhost:8501 <user@remote_machine.com>
-open "http://localhost:9000/"
-```
 ### Visualizations
+Visualizations correspond to the [GEDI paper](https://mcml.ai/publications/gedi.pdf).
 To run the visualizations, we employ [jupyter notebooks](https://jupyter.org/install) and [add the installed environment to the jupyter notebook](https://medium.com/@nrk25693/how-to-add-your-conda-environment-to-your-jupyter-notebook-in-just-4-steps-abeab8b8d084). We then start all visualizations by running e.g.: `jupyter noteboook`. In the following, we describe the `.ipynb`-files in the folder `\notebooks` to reproduce the figures from our paper. 
 
 #### [Fig. 4 and fig. 5 Representativeness](notebooks/gedi_figs4and5_representativeness.ipynb)
