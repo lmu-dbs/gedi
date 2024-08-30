@@ -1,9 +1,0 @@
-{
-  "run_option": "baseline",
-  "plot_type": "color_map",
-  "plot_tics": true,
-  "n_components": 2,
-  "input_name": "test",
-  "save_results": false,
-  "load_results": false
-}

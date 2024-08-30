@@ -1,0 +1,48 @@
+[
+  {
+    "pipeline_step": "instance_augmentation",
+    "augmentation_params":{"method":"SMOTE", "no_samples":2,
+        "feature_selection": ["ratio_top_20_variants", "epa_normalized_sequence_entropy_linear_forgetting"]},
+    "input_path": "data/test/bpic_features.csv",
+    "output_path": "output"
+  },
+  {
+    "pipeline_step": "event_logs_generation",
+    "output_path": "output/features/2_bpic_features/2_ense_rmcv_feat.csv",
+    "output_path": "data/frontend/test",
+    "generator_params": {
+      "experiment": "data/grid_objectives.csv",
+      "experiment": {"input_path": "data/2_bpic_features.csv",
+        "objectives": ["ratio_top_20_variants", "epa_normalized_sequence_entropy_linear_forgetting"]},
+      "experiment": {"n_traces":832, "n_unique_traces":828, "ratio_variants_per_number_of_traces":0.99, "trace_len_min":1, "trace_len_max":132, "trace_len_mean":53.31, "trace_len_median":54, "trace_len_mode":61, "trace_len_std":19.89, "trace_len_variance":395.81, "trace_len_q1":44, "trace_len_q3":62, "trace_len_iqr":18, "trace_len_geometric_mean":48.15, "trace_len_geometric_std":1.69, "trace_len_harmonic_mean":37.58, "trace_len_skewness":0.0541, "trace_len_kurtosis":0.81, "trace_len_coefficient_variation":0.37, "trace_len_entropy":6.65, "trace_len_hist1":0.004, "trace_len_hist2":0.005, "trace_len_hist3":0.005, "trace_len_hist4":0.024, "trace_len_hist5":0.024, "trace_len_hist6":0.008, "trace_len_hist7":0.005, "trace_len_hist8":0.001, "trace_len_hist9":0.0, "trace_len_hist10":0.00, "trace_len_skewness_hist":0.05, "trace_len_kurtosis_hist":0.8, "ratio_most_common_variant":0.0, "ratio_top_1_variants":0.01, "ratio_top_5_variants":0.05, "ratio_top_10_variants":0.10, "ratio_top_20_variants":0.2, "ratio_top_50_variants":0.5, "ratio_top_75_variants":0.75, "mean_variant_occurrence":1.0, "std_variant_occurrence":0.07, "skewness_variant_occurrence":14.28, "kurtosis_variant_occurrence":202.00, "n_unique_activities":410, "activities_min":1, "activities_max":830, "activities_mean":108.18, "activities_median":12, "activities_std":187.59, "activities_variance":35189, "activities_q1":3, "activities_q3":125, "activities_iqr":122, "activities_skewness":2.13, "activities_kurtosis":3.81, "n_unique_start_activities":14, "start_activities_min":1, "start_activities_max":731, "start_activities_mean":59.43, "start_activities_median":1, "start_activities_std":186.72, "start_activities_variance":34863, "start_activities_q1":1, "start_activities_q3":8, "start_activities_iqr":7, "start_activities_skewness":3, "start_activities_kurtosis":9.0, "n_unique_end_activities":82, "end_activities_min":1, "end_activities_max":216, "end_activities_mean":10, "end_activities_median":1, "end_activities_std":35, "end_activities_variance":1247, "end_activities_q1":1, "end_activities_q3":3, "end_activities_iqr":2, "end_activities_skewness":5, "end_activities_kurtosis":26, "eventropy_trace":10, "eventropy_prefix":15, "eventropy_global_block":19, "eventropy_lempel_ziv":4, "eventropy_k_block_diff_1":7.1, "eventropy_k_block_diff_3":7.1, "eventropy_k_block_diff_5":7.1, "eventropy_k_block_ratio_1":7.1, "eventropy_k_block_ratio_3":7.1, "eventropy_k_block_ratio_5":7.1, "eventropy_knn_3":5.54, "eventropy_knn_5":5.04, "eventropy_knn_7":4.72, "epa_variant_entropy":240512, "epa_normalized_variant_entropy":0.68, "epa_sequence_entropy":285876, "epa_normalized_sequence_entropy":0.60, "epa_sequence_entropy_linear_forgetting":150546, "epa_normalized_sequence_entropy_linear_forgetting":0.32, "epa_sequence_entropy_exponential_forgetting":185312, "epa_normalized_sequence_entropy_exponential_forgetting":0.39},
+      "config_space": {
+        "mode": [5, 20],
+        "sequence": [0.01, 1],
+        "choice": [0.01, 1],
+        "parallel": [0.01, 1],
+        "loop": [0.01, 1],
+        "silent": [0.01, 1],
+        "lt_dependency": [0.01, 1],
+        "num_traces": [10, 100],
+        "duplicate": [0],
+        "or": [0]
+      },
+      "n_trials": 50
+    }
+  },
+  {
+    "pipeline_step": "feature_extraction",
+    "input_path": "data/test",
+    "feature_params": {"feature_set": ["n_traces", "n_unique_traces", "ratio_unique_traces_per_trace", "trace_len_min", "trace_len_max", "trace_len_mean", "trace_len_median", "trace_len_mode", "trace_len_std", "trace_len_variance", "trace_len_q1", "trace_len_q3", "trace_len_iqr", "trace_len_geometric_mean", "trace_len_geometric_std", "trace_len_harmonic_mean", "trace_len_skewness", "trace_len_kurtosis", "trace_len_coefficient_variation", "trace_len_entropy", "trace_len_hist1", "trace_len_hist2", "trace_len_hist3", "trace_len_hist4", "trace_len_hist5", "trace_len_hist6", "trace_len_hist7", "trace_len_hist8", "trace_len_hist9", "trace_len_hist10", "trace_len_skewness_hist", "trace_len_kurtosis_hist", "ratio_most_common_variant", "ratio_top_1_variants", "ratio_top_5_variants", "ratio_top_10_variants", "ratio_top_20_variants", "ratio_top_50_variants", "ratio_top_75_variants", "mean_variant_occurrence", "std_variant_occurrence", "skewness_variant_occurrence", "kurtosis_variant_occurrence", "n_unique_activities", "activities_min", "activities_max", "activities_mean", "activities_median", "activities_std", "activities_variance", "activities_q1", "activities_q3", "activities_iqr", "activities_skewness", "activities_kurtosis", "n_unique_start_activities", "start_activities_min", "start_activities_max", "start_activities_mean", "start_activities_median", "start_activities_std", "start_activities_variance", "start_activities_q1", "start_activities_q3", "start_activities_iqr", "start_activities_skewness", "start_activities_kurtosis", "n_unique_end_activities", "end_activities_min", "end_activities_max", "end_activities_mean", "end_activities_median", "end_activities_std", "end_activities_variance", "end_activities_q1", "end_activities_q3", "end_activities_iqr", "end_activities_skewness", "end_activities_kurtosis", "eventropy_trace", "eventropy_prefix", "eventropy_prefix_flattened", "eventropy_global_block", "eventropy_global_block_flattened", "eventropy_lempel_ziv", "eventropy_lempel_ziv_flattened", "eventropy_k_block_diff_1", "eventropy_k_block_diff_3", "eventropy_k_block_diff_5", "eventropy_k_block_ratio_1", "eventropy_k_block_ratio_3", "eventropy_k_block_ratio_5", "eventropy_knn_3", "eventropy_knn_5", "eventropy_knn_7", "epa_variant_entropy", "epa_normalized_variant_entropy", "epa_sequence_entropy", "epa_normalized_sequence_entropy", "epa_sequence_entropy_linear_forgetting", "epa_normalized_sequence_entropy_linear_forgetting", "epa_sequence_entropy_exponential_forgetting", "epa_normalized_sequence_entropy_exponential_forgetting"]},
+    "output_path": "output/plots",
+    "real_eventlog_path": "data/BaselineED_feat.csv",
+    "plot_type": "boxplot"
+  },
+  {
+    "pipeline_step": "benchmark_test",
+    "benchmark_task": "discovery",
+    "input_path":"data/test",
+    "output_path":"output",
+    "miners" : ["inductive", "heu", "imf", "ilp"]
+  }
+]

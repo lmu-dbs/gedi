@@ -1,9 +1,0 @@
-{
-  "run_option": "compare",
-  "plot_type": "color_map",
-  "plot_tics": true,
-  "n_components": 2,
-  "input_name": "gen20",
-  "save_results": false,
-  "load_results": true
-}

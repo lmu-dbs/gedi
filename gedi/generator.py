@@ -2,7 +2,6 @@ import multiprocessing
 import os
 import pandas as pd
 import random
-
 from ConfigSpace import Configuration, ConfigurationSpace
 from datetime import datetime as dt
 from feeed.activities import Activities as activities
@@ -20,9 +19,11 @@ from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
 from utils.param_keys import OUTPUT_PATH, INPUT_PATH
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG_SPACE, N_TRIALS
-from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, read_csvs
-
-
+from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
+from gedi.utils.io_helpers import read_csvs
+import xml.etree.ElementTree as ET
+import re
+from xml.dom import minidom
 
 """
    Parameters
@@ -72,13 +73,72 @@ def get_tasks(experiment, output_path="", reference_feature=None):
         raise FileNotFoundError(f"{experiment} not found. Please check path in filesystem.")
     return tasks, output_path
 
+
+def removeextralines(elem):
+    hasWords = re.compile("\\w")
+    for element in elem.iter():
+        if not re.search(hasWords,str(element.tail)):
+            element.tail=""
+        if not re.search(hasWords,str(element.text)):
+            element.text = ""
+
+def add_extension_before_traces(xes_file):
+    # Register the namespace
+    ET.register_namespace('', "http://www.xes-standard.org/")
+
+    # Parse the original XML
+    tree = ET.parse(xes_file)
+    root = tree.getroot()
+
+    # Add extensions
+    extensions = [
+        {'name': 'Lifecycle', 'prefix': 'lifecycle', 'uri': 'http://www.xes-standard.org/lifecycle.xesext'},
+        {'name': 'Time', 'prefix': 'time', 'uri': 'http://www.xes-standard.org/time.xesext'},
+        {'name': 'Concept', 'prefix': 'concept', 'uri': 'http://www.xes-standard.org/concept.xesext'}
+    ]
+
+    for ext in extensions:
+        extension_elem = ET.Element('extension', ext)
+        root.insert(0, extension_elem)
+
+    # Add global variables
+    globals = [
+        {
+            'scope': 'event',
+            'attributes': [
+                {'key': 'lifecycle:transition', 'value': 'complete'},
+                {'key': 'concept:name', 'value': '__INVALID__'},
+                {'key': 'time:timestamp', 'value': '1970-01-01T01:00:00.000+01:00'}
+            ]
+        },
+        {
+            'scope': 'trace',
+            'attributes': [
+                {'key': 'concept:name', 'value': '__INVALID__'}
+            ]
+        }
+    ]
+
+    for global_var in globals:
+        global_elem = ET.Element('global', {'scope': global_var['scope']})
+        for attr in global_var['attributes']:
+            string_elem = ET.SubElement(global_elem, 'string', {'key': attr['key'], 'value': attr['value']})
+        root.insert(len(extensions), global_elem)
+
+
+    # Pretty print the Xes
+    removeextralines(root)
+    xml_str = minidom.parseString(ET.tostring(root)).toprettyxml()
+    with open(xes_file, "w") as f:
+        f.write(xml_str)
+
 class GenerateEventLogs():
     # TODO: Clarify nomenclature: experiment, task, objective as in notebook (https://github.com/lmu-dbs/gedi/blob/main/notebooks/grid_objectives.ipynb)
     def __init__(self, params):
         print("=========================== Generator ==========================")
         print(f"INFO: Running with {params}")
         start = dt.now()
-        if params.get(OUTPUT_PATH) == None:
+        if params.get(OUTPUT_PATH) is None:
             self.output_path = 'data/generated'
         else:
             self.output_path = params.get(OUTPUT_PATH)
@@ -91,17 +151,21 @@ class GenerateEventLogs():
 
         self.params = params.get(GENERATOR_PARAMS)
         experiment = self.params.get(EXPERIMENT)
-        if experiment!= None:
+        if experiment is not None:
             tasks, output_path = get_tasks(experiment, self.output_path)
             self.output_path = output_path
 
+        if 'ratio_variants_per_number_of_traces' in tasks.columns:#HOTFIX
+            tasks=tasks.rename(columns={"ratio_variants_per_number_of_traces": "ratio_unique_traces_per_trace"})
+
         if tasks is not None:
+            self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
             #self.generator_wrapper([*tasks.iterrows()][0])# For testing
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
-                log_config = p.map(self.generator_wrapper, tasks.iterrows())
+                log_config = p.map(self.generator_wrapper, [(index, row) for index, row in tasks.iterrows()])
             self.log_config = log_config
 
         else:
@@ -111,9 +175,14 @@ class GenerateEventLogs():
                 self.configs = [self.configs]
             temp = self.generate_optimized_log(self.configs[0])
             self.log_config = [temp]
+            #TODO: Replace hotfix
+            if self.params[EXPERIMENT].get('ratio_unique_traces_per_trace'):#HOTFIX
+                self.params[EXPERIMENT]['ratio_variants_per_number_of_traces']=self.params[EXPERIMENT].pop('ratio_unique_traces_per_trace')
+
             save_path = get_output_key_value_location(self.params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
+            add_extension_before_traces(save_path)
             print("SUCCESS: Saved generated event log in", save_path)
         print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.log_config)} event logs.")
         print(f"         Saved generated logs in {self.output_path}")
@@ -125,7 +194,7 @@ class GenerateEventLogs():
         except IndexError:
             identifier = task[0]+1
         task = task[1].loc[lambda x, identifier=identifier: x!=identifier]
-        self.objectives = task.to_dict()
+        self.objectives = task.dropna().to_dict()
         random.seed(RANDOM_SEED)
         self.configs = self.optimize()
 
@@ -136,14 +205,27 @@ class GenerateEventLogs():
             log_config = self.generate_optimized_log(self.configs)
 
         identifier = 'genEL'+str(identifier)
-        save_path = get_output_key_value_location(self.objectives,
-                                         self.output_path, identifier)+".xes"
+        #TODO: Replace hotfix
+        if self.objectives.get('ratio_unique_traces_per_trace'):#HOTFIX
+            self.objectives['ratio_variants_per_number_of_traces']=self.objectives.pop('ratio_unique_traces_per_trace')
+
+        save_path = get_output_key_value_location(task.to_dict(),
+                                         self.output_path, identifier, self.feature_keys)+".xes"
 
         write_xes(log_config['log'], save_path)
+        add_extension_before_traces(save_path)
         print("SUCCESS: Saved generated event log in", save_path)
         features_to_dump = log_config['metafeatures']
-        features_to_dump['log'] = identifier.replace('genEL', '')
-        dump_features_json(features_to_dump, self.output_path, identifier, objectives=self.objectives)
+
+        #TODO: Replace hotfix
+        if features_to_dump.get('ratio_unique_traces_per_trace'):#HOTFIX
+            features_to_dump['ratio_variants_per_number_of_traces']=features_to_dump.pop('ratio_unique_traces_per_trace')
+        features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
+        # calculating the manhattan distance of the generated log to the target features
+        #features_to_dump['distance_to_target'] = calculate_manhattan_distance(self.objectives, features_to_dump)
+        features_to_dump['target_similarity'] = compute_similarity(self.objectives, features_to_dump)
+        dump_features_json(features_to_dump, save_path)
+
         return log_config
 
     def generate_optimized_log(self, config):
@@ -165,9 +247,10 @@ class GenerateEventLogs():
         log = play_out(tree, parameters={"num_traces": config["num_traces"]})
 
         for i, trace in enumerate(log):
-            trace.attributes['concept:name']=str(i)
+            trace.attributes['concept:name'] = str(i)
             for j, event in enumerate(trace):
-                event['time:timestamp']=dt.now()
+                event['time:timestamp'] = dt.now()
+                event['lifecycle:transition'] = "complete"
         random.seed(RANDOM_SEED)
         metafeatures = self.compute_metafeatures(log)
         return {
@@ -203,6 +286,7 @@ class GenerateEventLogs():
             trace.attributes['concept:name'] = str(i)
             for j, event in enumerate(trace):
                 event['time:timestamp'] = dt.fromtimestamp(j * 1000)
+                event['lifecycle:transition'] = "complete"
 
         metafeatures_computation = {}
         for ft_name in self.objectives.keys():
@@ -219,7 +303,7 @@ class GenerateEventLogs():
         return log_evaluation
 
     def optimize(self):
-        if self.params.get(CONFIG_SPACE) ==  None:
+        if self.params.get(CONFIG_SPACE) is None:
             configspace = ConfigurationSpace({
                 "mode": (5, 40),
                 "sequence": (0.01, 1),

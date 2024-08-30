@@ -1,0 +1,52 @@
+[
+  {
+    "pipeline_step": "instance_augmentation",
+    "augmentation_params":{"method":"SMOTE", "no_samples":2,
+        "feature_selection": ["ratio_top_20_variants", "epa_normalized_sequence_entropy_linear_forgetting"]},
+    "input_path": "data/test/bpic_features.csv",
+    "output_path": "output"
+  },
+  {
+    "pipeline_step": "event_logs_generation",
+    "output_path": "output/features/2_bpic_features/2_ense_rmcv_feat.csv",
+    "output_path": "data/test",
+    "generator_params": {
+      "experiment": "data/grid_objectives.csv",
+      "experiment": {"input_path": "data/2_bpic_features.csv",
+        "objectives": ["ratio_top_20_variants", "epa_normalized_sequence_entropy_linear_forgetting"]},
+      "experiment": [
+          {"epa_normalized_sequence_entropy_linear_forgetting": 0.2, "ratio_top_20_variants": 0.4},
+          {"epa_normalized_sequence_entropy_linear_forgetting": 0.4, "ratio_top_20_variants": 0.7}
+        ],
+      "experiment": {"epa_normalized_sequence_entropy_linear_forgetting": 0.2, "ratio_top_20_variants": 0.4},
+      "config_space": {
+        "mode": [5, 20],
+        "sequence": [0.01, 1],
+        "choice": [0.01, 1],
+        "parallel": [0.01, 1],
+        "loop": [0.01, 1],
+        "silent": [0.01, 1],
+        "lt_dependency": [0.01, 1],
+        "num_traces": [10, 100],
+        "duplicate": [0],
+        "or": [0]
+      },
+      "n_trials": 2
+    }
+  },
+  {
+    "pipeline_step": "feature_extraction",
+    "input_path": "data/test",
+    "feature_params": {"feature_set":["trace_length"]},
+    "output_path": "output/plots",
+    "real_eventlog_path": "data/BaselineED_feat.csv",
+    "plot_type": "boxplot"
+  },
+  {
+    "pipeline_step": "benchmark_test",
+    "benchmark_test": "discovery",
+    "input_path":"data/test",
+    "output_path":"output",
+    "miners" : ["inductive", "heu", "imf", "ilp"]
+  }
+]

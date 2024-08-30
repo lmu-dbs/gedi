@@ -5,15 +5,12 @@ import pandas as pd
 import subprocess
 
 from datetime import datetime as dt
-from functools import partial, partialmethod
+from functools import partialmethod
 from itertools import repeat
-from pathlib import Path
-from pm4py import read_xes, convert_to_bpmn, read_bpmn, convert_to_petri_net, check_soundness
+from pm4py import convert_to_bpmn, read_bpmn, convert_to_petri_net, check_soundness
 from pm4py import discover_petri_net_inductive, discover_petri_net_ilp, discover_petri_net_heuristics
-from pm4py import fitness_alignments, fitness_token_based_replay
-from pm4py import precision_alignments, precision_token_based_replay
-from pm4py.algo.evaluation.generalization import algorithm as generalization_evaluator
-from pm4py.algo.evaluation.simplicity import algorithm as simplicity_evaluator
+from pm4py import fitness_alignments
+from pm4py import precision_alignments
 from pm4py.objects.bpmn.obj import BPMN
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from gedi.utils.io_helpers import dump_features_json
@@ -34,7 +31,7 @@ class BenchmarkTest:
                 event_logs = [""]
             else:
                 try:
-                    event_logs =[filename for filename in os.listdir(log_path) if filename.endswith(".xes")]
+                    event_logs =sorted([filename for filename in os.listdir(log_path) if filename.endswith(".xes")])
                 except FileNotFoundError:
                     print(f"        FAILED: Cannot find {params[INPUT_PATH]}" )
                     return
@@ -58,7 +55,7 @@ class BenchmarkTest:
                 path_to_json = path_to_json.rsplit("/",1)[0]
              df = pd.DataFrame()
              # Iterate over the files in the directory
-             for filename in os.listdir(path_to_json):
+             for filename in sorted(os.listdir(path_to_json)):
                  if filename.endswith('.json'):
                      i_path = os.path.join(path_to_json, filename)
                      with open(i_path) as f:
@@ -74,11 +71,12 @@ class BenchmarkTest:
         benchmark_results.to_csv(self.filepath, index=False)
 
         self.results = benchmark_results
+        print(benchmark_results)
         print(f"SUCCESS: BenchmarkTest took {dt.now()-start} sec for {len(params[MINERS])} miners"+\
               f" and {len(benchmark_results)} event-logs. Saved benchmark to {self.filepath}.")
         print("========================= ~ BenchmarkTest =============================")
 
-    def benchmark_wrapper(self, event_log, log_counter=0, miners=['inductive']):
+    def benchmark_wrapper(self, event_log, log_counter=0, miners=['ind']):
         dump_path = os.path.join(self.params[OUTPUT_PATH],
                                  os.path.split(self.params[INPUT_PATH])[-1])
         dump_path= os.path.join(self.params[OUTPUT_PATH],
@@ -94,22 +92,23 @@ class BenchmarkTest:
         else:
             log_name = "gen_el_"+str(log_counter)
             results = {"log": event_log}
-            
+
         for miner in miners:
             miner_cols = [f"fitness_{miner}", f"precision_{miner}", f"fscore_{miner}", f"size_{miner}", f"cfc_{miner}", f"pnsize_{miner}"]# f"generalization_{miner}",f"simplicity_{miner}"]
             start_miner = dt.now()
-            benchmark_results =  self.benchmark_discovery(results['log'],  miner, self.params)
+            benchmark_results =  [round(x, 4) for x in self.benchmark_discovery(results['log'],  miner, self.params)]
             results[f"fitness_{miner}"] = benchmark_results[0]
             results[f"precision_{miner}"] = benchmark_results[1]
-            results[f"fscore_{miner}"] = 2*(benchmark_results[0]*benchmark_results[1]/(benchmark_results[0]+ benchmark_results[1]))
-            results[f"size_{miner}"]=benchmark_results[2]
-            results[f"pnsize_{miner}"]=benchmark_results[4]
-            results[f"cfc_{miner}"]=benchmark_results[3]
+            results[f"fscore_{miner}"] = round(2*(benchmark_results[0]*benchmark_results[1]/
+                                                  (benchmark_results[0]+ benchmark_results[1])), 4)
+            results[f"size_{miner}"]= benchmark_results[2]
+            results[f"pnsize_{miner}"]= benchmark_results[4]
+            results[f"cfc_{miner}"]= benchmark_results[3]
 
         results['log'] = log_name
 
         print(f"    SUCCESS: {miner} miner for {results} took {dt.now()-start_miner} sec.")
-        dump_features_json(results, dump_path, log_name, content_type="benchmark")
+        dump_features_json(results, os.path.join(dump_path, log_name), content_type="benchmark")
         return
 
     def split_miner_wrapper(self, log_path="data/real_event_logs/BPI_Challenges/BPI_Challenge_2012.xes"):
@@ -186,6 +185,10 @@ class BenchmarkTest:
             if miner == 'imf':
                 miner = 'inductive'
                 miner_params = f', noise_threshold={NOISE_THRESHOLD}'
+            elif miner == 'ind':
+                miner = 'inductive'
+            elif miner == 'heu':
+                miner = 'heuristics'
             net, im, fm = eval(f"discover_petri_net_{miner}(log {miner_params})")
             bpmn_graph = convert_to_bpmn(net, im, fm)
         fitness = fitness_alignments(log, net, im, fm)['log_fitness']

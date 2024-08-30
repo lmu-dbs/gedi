@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 import os
 
 with open("README.md", "r") as fh:
@@ -32,6 +32,7 @@ setup(
             'seaborn==0.13.2',
             'smac==2.0.2',
             'tqdm==4.65.0',
+            'streamlit-toggle-switch>=1.0.2'
             ],
         packages = ['gedi'],
         classifiers=[

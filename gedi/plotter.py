@@ -12,14 +12,13 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from utils.param_keys import PLOT_TYPE, PROJECTION, EXPLAINED_VAR, PLOT_3D_MAP
-from utils.param_keys import INPUT_PATH, OUTPUT_PATH, PIPELINE_STEP
+from utils.param_keys import OUTPUT_PATH, PIPELINE_STEP
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, PLOT_REFERENCE_FEATURE
 from utils.param_keys.plotter import REAL_EVENTLOG_PATH, FONT_SIZE, BOXPLOT_WIDTH
 from collections import defaultdict
 
 from sklearn.preprocessing import Normalizer, StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.metrics.pairwise import euclidean_distances
 from gedi.generator import get_tasks
 from gedi.utils.io_helpers import get_keys_abbreviation
 from gedi.utils.io_helpers import read_csvs, select_instance
@@ -263,7 +262,7 @@ class BenchmarkPlotter:
         corr = df.corr()
 
         if mean == 'methods':
-            for method in ['inductive', 'heuristics', 'ilp']:
+            for method in ['inductive', 'heu', 'ilp']:
                 method_cols = [col for col in corr.columns if col.startswith(method)]
                 corr[method+'_avg'] = corr.loc[:, corr.columns.isin(method_cols)].mean(axis=1)
         elif mean == 'metrics':
@@ -274,7 +273,7 @@ class BenchmarkPlotter:
         avg_cols = [col for col in corr.columns if col.endswith('_avg')]
 
         benchmark_result_cols = [col for col in corr.columns if col.startswith('inductive')
-                                or col.startswith('heuristics') or col.startswith('ilp')]
+                                or col.startswith('heu') or col.startswith('ilp')]
 
         corr = corr[:][~corr.index.isin(benchmark_result_cols)]
 
@@ -298,7 +297,7 @@ class BenchmarkPlotter:
 
     def plot_miners_correlation(self, benchmark, output_path=None):
         benchmark_result_cols = [col for col in benchmark.columns if col.startswith('inductive')
-                                or col.startswith('heuristics') or col.startswith('ilp')]
+                                or col.startswith('heu') or col.startswith('ilp')]
         df = benchmark.loc[:, benchmark.columns!='log']
         df = df.loc[:, df.columns.isin(benchmark_result_cols)]
 
@@ -985,10 +984,10 @@ class GenerationPlotter(object):
             print(e)
         ratio_most_common_variant = 2.021278 / 11.0
         ratio_top_10_variants = 0.07378 / 11.0
-        ratio_unique_traces_per_trace = 0.016658 / 11.0
+        ratio_variants_per_number_of_traces = 0.016658 / 11.0
         result_df['ratio_most_common_variant']['ratio_most_common_variant'] = ratio_most_common_variant
         result_df['ratio_top_10_variants']['ratio_top_10_variants'] = ratio_top_10_variants
-        result_df['ratio_unique_traces_per_trace']['ratio_unique_traces_per_trace'] = ratio_unique_traces_per_trace
+        result_df['ratio_variants_per_number_of_traces']['ratio_variants_per_number_of_traces'] = ratio_variants_per_number_of_traces
 
         abbrvs_key = get_keys_abbreviation(keys)
         result_df.columns = abbrvs_key.split("_")
