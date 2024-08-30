@@ -15,11 +15,12 @@ license: mit
   <h1 style="display: inline;">GEDI</h1>
 </p>
 
-**G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining
+**G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
+Codebase for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
 
 ## Table of Contents
 
-- [Interactive Web Application](#interactive-web-application)
+- [Interactive Web Application (iGEDI)](#interactive-web-application)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [General Usage](#general-usage)
