@@ -21,8 +21,9 @@ This repository contains the codebase for the interactive web application tool (
 ## Table of Contents
 
 - [Interactive Web Application (iGEDI)](#interactive-web-application)
-- [Requirements](#requirements)
 - [Installation](#installation)
+  -  [as PyPi Package](#install-as-pypi-package)
+  -  [as local repository](#insatall-as-local-repository)
 - [General Usage](#general-usage)
 - [Experiments](#experiments)
 - [Citation](#citation)
@@ -31,7 +32,8 @@ This repository contains the codebase for the interactive web application tool (
 Our [interactive web application](https://huggingface.co/spaces/andreamalhera/gedi) (iGEDI) guides you through the specification process, runs GEDI for you. You can directly download the resulting generated logs or the configuration file to run GEDI locally.
 ![Interface Screenshot](gedi/utils/iGEDI_interface.png)
 
-## Requirements
+## Installation
+### Requirements
 - [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 - Graphviz on your OS e.g.
 For MacOS:
@@ -43,18 +45,19 @@ brew install swig
 ```console
 conda install pyrfr swig
 ```
-## Installation
+### Install as PyPi package
 To directly use GEDI methods via `import`, install directly from [PyPi](https://pypi.org/project/gedi/) with
 ```shell
 pip install gedi
 ```
-Run:
+and run:
 ```shell
 python -c "from gedi import gedi; gedi('config_files/pipeline_steps/generation.json')"
 ```
 
-### Startup
+### Install as local repository
 ```console
+conda env create -f .conda.yml
 conda activate gedi
 python main.py -a config_files/test/experiment_test.json
 ```
