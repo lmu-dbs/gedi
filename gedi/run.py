@@ -33,7 +33,6 @@ def run(kwargs:dict, model_params_list: list, filename_list:list):
             gen = pd.DataFrame(GenerateEventLogs(model_params).log_config)
             #gen = pd.read_csv("output/features/generated/grid_2objectives_enseef_enve/2_enseef_enve_feat.csv")
             #GenerationPlotter(gen, model_params, output_path="output/plots")
-            return gen
         elif model_params.get(PIPELINE_STEP) == 'benchmark_test':
             benchmark = BenchmarkTest(model_params, event_logs=gen['log'])
             # BenchmarkPlotter(benchmark.features, output_path="output/plots")
