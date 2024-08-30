@@ -19,6 +19,9 @@ license: mit
 This repository contains the codebase for the interactive web application tool (iGEDI) as well as for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
 Our documentation also includes both frameworks. From [General Usage](#general-usage) and beyond, documentation refers especially to reproducibility of the [GEDI paper](https://mcml.ai/publications/gedi.pdf).
 
+A video tutorial on how to use this tool can be found [here](https://youtu.be/9iQhaYwyQ9E).
+
+
 ## Table of Contents
 
 - [Interactive Web Application (iGEDI)](#interactive-web-application)
