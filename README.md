@@ -1,6 +1,6 @@
 # GEDI
 **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
-Codebase for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
+Codebase for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) published at the [BPM'24 conference proceedings](https://link.springer.com/book/10.1007/978-3-031-70396-6).
 
 ## Table of Contents
 
