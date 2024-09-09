@@ -173,14 +173,23 @@ This notebook is used to answer the question if there is a statistically signifi
 The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl and is *to appear on BPM'24*.
 
 ```bibtex
-@article{maldonado2024gedi,
-  author       = {Maldonado, Andrea and Frey, {Christian M. M.} and Tavares, {Gabriel M.} and Rehwald, Nikolina and Seidl, Thomas},
-  title        = {{GEDI:} Generating Event Data with Intentional Features for Benchmarking Process Mining},
-  journal      = {To be published in BPM 2024. Krakow, Poland, Sep 01-06},
-  volume       = {},
-  year         = {2024},
-  url          = {https://mcml.ai/publications/gedi.pdf},
-  doi          = {},
-  eprinttype    = {website},
+@InProceedings{10.1007/978-3-031-70396-6_13,
+author="Maldonado, Andrea
+and Frey, Christian M. M.
+and Tavares, Gabriel Marques
+and Rehwald, Nikolina
+and Seidl, Thomas",
+editor="Marrella, Andrea
+and Resinas, Manuel
+and Jans, Mieke
+and Rosemann, Michael",
+title="GEDI: Generating Event Data with Intentional Features for Benchmarking Process Mining",
+booktitle="Business Process Management",
+year="2024",
+publisher="Springer Nature Switzerland",
+address="Cham",
+pages="221--237",
+abstract="Process mining solutions include enhancing performance, conserving resources, and alleviating bottlenecks in organizational contexts. However, as in other data mining fields, success hinges on data quality and availability. Existing analyses for process mining solutions lack diverse and ample data for rigorous testing, hindering insights' generalization. To address this, we propose Generating Event Data with Intentional features, a framework producing event data sets satisfying specific meta-features. Considering the meta-feature space that defines feasible event logs, we observe that existing real-world datasets describe only local areas within the overall space. Hence, our framework aims at providing the capability to generate an event data benchmark, which covers unexplored regions. Therefore, our approach leverages a discretization of the meta-feature space to steer generated data towards regions, where a combination of meta-features is not met yet by existing benchmark datasets. Providing a comprehensive data pool enriches process mining analyses, enables methods to capture a wider range of real-world scenarios, and improves evaluation quality. Moreover, it empowers analysts to uncover correlations between meta-features and evaluation metrics, enhancing explainability and solution effectiveness. Experiments demonstrate GEDI's ability to produce a benchmark of intentional event data sets and robust analyses for process mining tasks.",
+isbn="978-3-031-70396-6"
 }
 ```
