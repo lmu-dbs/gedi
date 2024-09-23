@@ -123,7 +123,7 @@ In the `generation.json`, we have the following key-value pairs:
 
     - plot_reference_feature: defines the feature, which is used on the x-axis on the output plots, i.e., each feature defined in the 'objectives' of the 'experiment' is plotted against the reference feature being defined in this value
 
-The BPIC ranges of the feature values are as follows:
+In case of manually defining the targets for the features in config space, the following table shows the range of the features in the real-world event log data (BPIC's) for reference:
 <div style="overflow-x:auto;">
     <table border="1" class="dataframe">
     <thead>
