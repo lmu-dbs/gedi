@@ -3,7 +3,7 @@ import os
 import sys
 
 from datetime import datetime as dt
-from gedi.utils.io_helpers import sort_files
+from io_helpers import sort_files
 from tqdm import tqdm
 
 #TODO: Pass i properly
