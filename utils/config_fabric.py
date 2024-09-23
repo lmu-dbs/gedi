@@ -13,6 +13,7 @@ import time
 import shutil
 import zipfile
 import io
+from column_mappings import column_mappings
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
@@ -174,19 +175,7 @@ def set_generator_experiments(generator_params):
             df = pd.read_csv(uploaded_file)
             if len(df.columns) <= 1:
                 raise pd.errors.ParserError("Please select a file withat least two columns (e.g. log, feature) and use ',' as a delimiter.")
-            column_names_short = {
-                                    'rutpt': 'ratio_unique_traces_per_trace',
-                                    'rmcv': 'ratio_most_common_variant',
-                                    'tlcv': 'trace_len_coefficient_variation',
-                                    'mvo': 'mean_variant_occurrence',
-                                    'enve': 'epa_normalized_variant_entropy',
-                                    'ense': 'epa_normalized_sequence_entropy',
-                                    'eself': 'epa_sequence_entropy_linear_forgetting',
-                                    'enself': 'epa_normalized_sequence_entropy_linear_forgetting',
-                                    'eseef': 'epa_sequence_entropy_exponential_forgetting',
-                                    'enseef': 'epa_normalized_sequence_entropy_exponential_forgetting'
-                                }
-            columns_to_rename = {col: column_names_short[col] for col in df.columns if col in column_names_short}
+            columns_to_rename = {col: column_mappings()[col] for col in df.columns if col in column_mappings()}
 
             # Rename the matching columns
             df.rename(columns=columns_to_rename, inplace=True)

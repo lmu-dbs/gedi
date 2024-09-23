@@ -1,0 +1,43 @@
+name: GEDI abbrv Test
+
+# Specifies when the action should run
+on:
+  pull_request:
+    branches:
+      - main
+      - bpm24
+  workflow_dispatch:
+
+# Specifies the jobs that are to be run
+jobs:
+
+  test_generation:
+    runs-on: ubuntu-latest
+
+    # Setting up a python envronment  for the test script to run
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install build-essential python3 python3-dev
+
+    - name: Install feeed
+      run: |
+        python -m pip install --upgrade pip
+        pip install .
+
+    - name: Run test
+      run:
+        python main.py -a config_files/test/test_abbrv_generation.json
+
+    - name: Compare output
+      run: 
+        diff data/validation/2_ense_rmcv_feat.csv output/test/igedi_table_1/2_ense_rmcv_feat.csv
+
