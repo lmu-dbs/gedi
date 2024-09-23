@@ -124,7 +124,24 @@ In the `generation.json`, we have the following key-value pairs:
     - plot_reference_feature: defines the feature, which is used on the x-axis on the output plots, i.e., each feature defined in the 'objectives' of the 'experiment' is plotted against the reference feature being defined in this value
 
 The BPIC ranges of the feature values are as follows:
-[here](gedi/utils/bpic_feat_ranges.html)
+<script>
+    // Function to load the content from the txt file
+    async function loadTable() {
+        try {
+            // Fetch the .txt file
+            const response = await fetch('gedi/utils/bpic_feat_ranges.html');
+            const tableContent = await response.text();
+
+            // Inject the content into the div
+            document.getElementById('myDiv').innerHTML = tableContent;
+        } catch (error) {
+            console.error('Error loading the file:', error);
+        }
+    }
+
+    // Call the function when the page loads
+    window.onload = loadTable;
+</script>
 
 ### Benchmark
 The benchmarking defines the downstream task which is used for evaluating the goodness of the synthesized event log datasets with the metrics of real-world datasets. The command to execute a benchmarking is shown in the following script:
