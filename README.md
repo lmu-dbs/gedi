@@ -125,7 +125,218 @@ In the `generation.json`, we have the following key-value pairs:
 
 The BPIC ranges of the feature values are as follows:
 <div style="overflow-x:auto;">
-  <table border="1" class="dataframe">\n  <thead>\n    <tr style="text-align: right;">\n      <th></th>\n      <th>n_traces</th>\n      <th>n_unique_traces</th>\n      <th>ratio_variants_per_number_of_traces</th>\n      <th>trace_len_min</th>\n      <th>trace_len_max</th>\n      <th>trace_len_mean</th>\n      <th>trace_len_median</th>\n      <th>trace_len_mode</th>\n      <th>trace_len_std</th>\n      <th>trace_len_variance</th>\n      <th>trace_len_q1</th>\n      <th>trace_len_q3</th>\n      <th>trace_len_iqr</th>\n      <th>trace_len_geometric_mean</th>\n      <th>trace_len_geometric_std</th>\n      <th>trace_len_harmonic_mean</th>\n      <th>trace_len_skewness</th>\n      <th>trace_len_kurtosis</th>\n      <th>trace_len_coefficient_variation</th>\n      <th>trace_len_entropy</th>\n      <th>trace_len_hist1</th>\n      <th>trace_len_hist2</th>\n      <th>trace_len_hist3</th>\n      <th>trace_len_hist4</th>\n      <th>trace_len_hist5</th>\n      <th>trace_len_hist6</th>\n      <th>trace_len_hist7</th>\n      <th>trace_len_hist8</th>\n      <th>trace_len_hist9</th>\n      <th>trace_len_hist10</th>\n      <th>trace_len_skewness_hist</th>\n      <th>trace_len_kurtosis_hist</th>\n      <th>ratio_most_common_variant</th>\n      <th>ratio_top_1_variants</th>\n      <th>ratio_top_5_variants</th>\n      <th>ratio_top_10_variants</th>\n      <th>ratio_top_20_variants</th>\n      <th>ratio_top_50_variants</th>\n      <th>ratio_top_75_variants</th>\n      <th>mean_variant_occurrence</th>\n      <th>std_variant_occurrence</th>\n      <th>skewness_variant_occurrence</th>\n      <th>kurtosis_variant_occurrence</th>\n      <th>n_unique_activities</th>\n      <th>activities_min</th>\n      <th>activities_max</th>\n      <th>activities_mean</th>\n      <th>activities_median</th>\n      <th>activities_std</th>\n      <th>activities_variance</th>\n      <th>activities_q1</th>\n      <th>activities_q3</th>\n      <th>activities_iqr</th>\n      <th>activities_skewness</th>\n      <th>activities_kurtosis</th>\n      <th>n_unique_start_activities</th>\n      <th>start_activities_min</th>\n      <th>start_activities_max</th>\n      <th>start_activities_mean</th>\n      <th>start_activities_median</th>\n      <th>start_activities_std</th>\n      <th>start_activities_variance</th>\n      <th>start_activities_q1</th>\n      <th>start_activities_q3</th>\n      <th>start_activities_iqr</th>\n      <th>start_activities_skewness</th>\n      <th>start_activities_kurtosis</th>\n      <th>n_unique_end_activities</th>\n      <th>end_activities_min</th>\n      <th>end_activities_max</th>\n      <th>end_activities_mean</th>\n      <th>end_activities_median</th>\n      <th>end_activities_std</th>\n      <th>end_activities_variance</th>\n      <th>end_activities_q1</th>\n      <th>end_activities_q3</th>\n      <th>end_activities_iqr</th>\n      <th>end_activities_skewness</th>\n      <th>end_activities_kurtosis</th>\n      <th>eventropy_trace</th>\n      <th>eventropy_prefix</th>\n      <th>eventropy_global_block</th>\n      <th>eventropy_lempel_ziv</th>\n      <th>eventropy_k_block_diff_1</th>\n      <th>eventropy_k_block_diff_3</th>\n      <th>eventropy_k_block_diff_5</th>\n      <th>eventropy_k_block_ratio_1</th>\n      <th>eventropy_k_block_ratio_3</th>\n      <th>eventropy_k_block_ratio_5</th>\n      <th>eventropy_knn_3</th>\n      <th>eventropy_knn_5</th>\n      <th>eventropy_knn_7</th>\n      <th>epa_variant_entropy</th>\n      <th>epa_normalized_variant_entropy</th>\n      <th>epa_sequence_entropy</th>\n      <th>epa_normalized_sequence_entropy</th>\n      <th>epa_sequence_entropy_linear_forgetting</th>\n      <th>epa_normalized_sequence_entropy_linear_forgetting</th>\n      <th>epa_sequence_entropy_exponential_forgetting</th>\n      <th>epa_normalized_sequence_entropy_exponential_forgetting</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>[ min, max ]</td>\n      <td>[ 226.0, 251734.0 ]</td>\n      <td>[ 6.0, 28457.0 ]</td>\n      <td>[ 0.0, 1.0 ]</td>\n      <td>[ 1.0, 24.0 ]</td>\n      <td>[ 1.0, 2973.0 ]</td>\n      <td>[ 1.0, 131.49 ]</td>\n      <td>[ 1.0, 55.0 ]</td>\n      <td>[ 1.0, 61.0 ]</td>\n      <td>[ 0.0, 202.53 ]</td>\n      <td>[ 0.0, 41017.89 ]</td>\n      <td>[ 1.0, 44.0 ]</td>\n      <td>[ 1.0, 169.0 ]</td>\n      <td>[ 0.0, 161.0 ]</td>\n      <td>[ 1.0, 53.78 ]</td>\n      <td>[ 1.0, 5.65 ]</td>\n      <td>[ 1.0, 51.65 ]</td>\n      <td>[ -0.58, 111.97 ]</td>\n      <td>[ -0.97, 14006.75 ]</td>\n      <td>[ 0.0, 4.74 ]</td>\n      <td>[ 5.33, 12.04 ]</td>\n      <td>[ 0.0, 1.99 ]</td>\n      <td>[ 0.0, 0.42 ]</td>\n      <td>[ 0.0, 0.4 ]</td>\n      <td>[ 0.0, 0.19 ]</td>\n      <td>[ 0.0, 0.14 ]</td>\n      <td>[ 0.0, 10.0 ]</td>\n      <td>[ 0.0, 0.02 ]</td>\n      <td>[ 0.0, 0.04 ]</td>\n      <td>[ 0.0, 0.0 ]</td>\n      <td>[ 0.0, 2.7 ]</td>\n      <td>[ -0.58, 111.97 ]</td>\n      <td>[ -0.97, 14006.75 ]</td>\n      <td>[ 0.0, 0.79 ]</td>\n      <td>[ 0.0, 0.87 ]</td>\n      <td>[ 0.0, 0.98 ]</td>\n      <td>[ 0.0, 0.99 ]</td>\n      <td>[ 0.2, 1.0 ]</td>\n      <td>[ 0.5, 1.0 ]</td>\n      <td>[ 0.75, 1.0 ]</td>\n      <td>[ 1.0, 24500.67 ]</td>\n      <td>[ 0.04, 42344.04 ]</td>\n      <td>[ 1.54, 64.77 ]</td>\n      <td>[ 0.66, 5083.46 ]</td>\n      <td>[ 1.0, 1152.0 ]</td>\n      <td>[ 1.0, 66058.0 ]</td>\n      <td>[ 34.0, 466141.0 ]</td>\n      <td>[ 4.13, 66058.0 ]</td>\n      <td>[ 2.0, 66058.0 ]</td>\n      <td>[ 0.0, 120522.25 ]</td>\n      <td>[ 0.0, 14525612122.34 ]</td>\n      <td>[ 1.0, 66058.0 ]</td>\n      <td>[ 4.0, 79860.0 ]</td>\n      <td>[ 0.0, 77290.0 ]</td>\n      <td>[ -0.06, 15.21 ]</td>\n      <td>[ -1.5, 315.84 ]</td>\n      <td>[ 1.0, 809.0 ]</td>\n      <td>[ 1.0, 150370.0 ]</td>\n      <td>[ 27.0, 199867.0 ]</td>\n      <td>[ 3.7, 150370.0 ]</td>\n      <td>[ 1.0, 150370.0 ]</td>\n      <td>[ 0.0, 65387.49 ]</td>\n      <td>[ 0.0, 4275524278.19 ]</td>\n      <td>[ 1.0, 150370.0 ]</td>\n      <td>[ 4.0, 150370.0 ]</td>\n      <td>[ 0.0, 23387.25 ]</td>\n      <td>[ 0.0, 9.3 ]</td>\n      <td>[ -2.0, 101.82 ]</td>\n      <td>[ 1.0, 757.0 ]</td>\n      <td>[ 1.0, 16653.0 ]</td>\n      <td>[ 28.0, 181328.0 ]</td>\n      <td>[ 3.53, 24500.67 ]</td>\n      <td>[ 1.0, 16653.0 ]</td>\n      <td>[ 0.0, 42344.04 ]</td>\n      <td>[ 0.0, 1793017566.89 ]</td>\n      <td>[ 1.0, 16653.0 ]</td>\n      <td>[ 3.0, 39876.0 ]</td>\n      <td>[ 0.0, 39766.0 ]</td>\n      <td>[ -0.7, 13.82 ]</td>\n      <td>[ -2.0, 255.39 ]</td>\n      <td>[ 0.0, 13.36 ]</td>\n      <td>[ 0.0, 16.77 ]</td>\n      <td>[ 0.0, 24.71 ]</td>\n      <td>[ 0.0, 685.0 ]</td>\n      <td>[ -328.0, 962.0 ]</td>\n      <td>[ 0.0, 871.0 ]</td>\n      <td>[ 0.0, 881.0 ]</td>\n      <td>[ 0.0, 935.0 ]</td>\n      <td>[ 0.0, 7.11 ]</td>\n      <td>[ 0.0, 7.11 ]</td>\n      <td>[ 0.0, 8.93 ]</td>\n      <td>[ 0.0, 648.0 ]</td>\n      <td>[ 0.0, 618.0 ]</td>\n      <td>[ 0.0, 11563842.15 ]</td>\n      <td>[ 0.0, 0.9 ]</td>\n      <td>[ 0.0, 21146257.12 ]</td>\n      <td>[ 0.0, 0.76 ]</td>\n      <td>[ 0.0, 14140225.9 ]</td>\n      <td>[ 0.0, 0.42 ]</td>\n      <td>[ 0.0, 15576076.83 ]</td>\n      <td>[ 0.0, 0.51 ]</td>\n    </tr>\n  </tbody>\n</table>
+    <table border="1" class="dataframe">
+    <thead>
+        <tr style="text-align: right;">
+        <th></th>
+        <th>n_traces</th>
+        <th>n_unique_traces</th>
+        <th>ratio_variants_per_number_of_traces</th>
+        <th>trace_len_min</th>
+        <th>trace_len_max</th>
+        <th>trace_len_mean</th>
+        <th>trace_len_median</th>
+        <th>trace_len_mode</th>
+        <th>trace_len_std</th>
+        <th>trace_len_variance</th>
+        <th>trace_len_q1</th>
+        <th>trace_len_q3</th>
+        <th>trace_len_iqr</th>
+        <th>trace_len_geometric_mean</th>
+        <th>trace_len_geometric_std</th>
+        <th>trace_len_harmonic_mean</th>
+        <th>trace_len_skewness</th>
+        <th>trace_len_kurtosis</th>
+        <th>trace_len_coefficient_variation</th>
+        <th>trace_len_entropy</th>
+        <th>trace_len_hist1</th>
+        <th>trace_len_hist2</th>
+        <th>trace_len_hist3</th>
+        <th>trace_len_hist4</th>
+        <th>trace_len_hist5</th>
+        <th>trace_len_hist6</th>
+        <th>trace_len_hist7</th>
+        <th>trace_len_hist8</th>
+        <th>trace_len_hist9</th>
+        <th>trace_len_hist10</th>
+        <th>trace_len_skewness_hist</th>
+        <th>trace_len_kurtosis_hist</th>
+        <th>ratio_most_common_variant</th>
+        <th>ratio_top_1_variants</th>
+        <th>ratio_top_5_variants</th>
+        <th>ratio_top_10_variants</th>
+        <th>ratio_top_20_variants</th>
+        <th>ratio_top_50_variants</th>
+        <th>ratio_top_75_variants</th>
+        <th>mean_variant_occurrence</th>
+        <th>std_variant_occurrence</th>
+        <th>skewness_variant_occurrence</th>
+        <th>kurtosis_variant_occurrence</th>
+        <th>n_unique_activities</th>
+        <th>activities_min</th>
+        <th>activities_max</th>
+        <th>activities_mean</th>
+        <th>activities_median</th>
+        <th>activities_std</th>
+        <th>activities_variance</th>
+        <th>activities_q1</th>
+        <th>activities_q3</th>
+        <th>activities_iqr</th>
+        <th>activities_skewness</th>
+        <th>activities_kurtosis</th>
+        <th>n_unique_start_activities</th>
+        <th>start_activities_min</th>
+        <th>start_activities_max</th>
+        <th>start_activities_mean</th>
+        <th>start_activities_median</th>
+        <th>start_activities_std</th>
+        <th>start_activities_variance</th>
+        <th>start_activities_q1</th>
+        <th>start_activities_q3</th>
+        <th>start_activities_iqr</th>
+        <th>start_activities_skewness</th>
+        <th>start_activities_kurtosis</th>
+        <th>n_unique_end_activities</th>
+        <th>end_activities_min</th>
+        <th>end_activities_max</th>
+        <th>end_activities_mean</th>
+        <th>end_activities_median</th>
+        <th>end_activities_std</th>
+        <th>end_activities_variance</th>
+        <th>end_activities_q1</th>
+        <th>end_activities_q3</th>
+        <th>end_activities_iqr</th>
+        <th>end_activities_skewness</th>
+        <th>end_activities_kurtosis</th>
+        <th>eventropy_trace</th>
+        <th>eventropy_prefix</th>
+        <th>eventropy_global_block</th>
+        <th>eventropy_lempel_ziv</th>
+        <th>eventropy_k_block_diff_1</th>
+        <th>eventropy_k_block_diff_3</th>
+        <th>eventropy_k_block_diff_5</th>
+        <th>eventropy_k_block_ratio_1</th>
+        <th>eventropy_k_block_ratio_3</th>
+        <th>eventropy_k_block_ratio_5</th>
+        <th>eventropy_knn_3</th>
+        <th>eventropy_knn_5</th>
+        <th>eventropy_knn_7</th>
+        <th>epa_variant_entropy</th>
+        <th>epa_normalized_variant_entropy</th>
+        <th>epa_sequence_entropy</th>
+        <th>epa_normalized_sequence_entropy</th>
+        <th>epa_sequence_entropy_linear_forgetting</th>
+        <th>epa_normalized_sequence_entropy_linear_forgetting</th>
+        <th>epa_sequence_entropy_exponential_forgetting</th>
+        <th>epa_normalized_sequence_entropy_exponential_forgetting</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td>[ min, max ]</td>
+        <td>[ 226.0, 251734.0 ]</td>
+        <td>[ 6.0, 28457.0 ]</td>
+        <td>[ 0.0, 1.0 ]</td>
+        <td>[ 1.0, 24.0 ]</td>
+        <td>[ 1.0, 2973.0 ]</td>
+        <td>[ 1.0, 131.49 ]</td>
+        <td>[ 1.0, 55.0 ]</td>
+        <td>[ 1.0, 61.0 ]</td>
+        <td>[ 0.0, 202.53 ]</td>
+        <td>[ 0.0, 41017.89 ]</td>
+        <td>[ 1.0, 44.0 ]</td>
+        <td>[ 1.0, 169.0 ]</td>
+        <td>[ 0.0, 161.0 ]</td>
+        <td>[ 1.0, 53.78 ]</td>
+        <td>[ 1.0, 5.65 ]</td>
+        <td>[ 1.0, 51.65 ]</td>
+        <td>[ -0.58, 111.97 ]</td>
+        <td>[ -0.97, 14006.75 ]</td>
+        <td>[ 0.0, 4.74 ]</td>
+        <td>[ 5.33, 12.04 ]</td>
+        <td>[ 0.0, 1.99 ]</td>
+        <td>[ 0.0, 0.42 ]</td>
+        <td>[ 0.0, 0.4 ]</td>
+        <td>[ 0.0, 0.19 ]</td>
+        <td>[ 0.0, 0.14 ]</td>
+        <td>[ 0.0, 10.0 ]</td>
+        <td>[ 0.0, 0.02 ]</td>
+        <td>[ 0.0, 0.04 ]</td>
+        <td>[ 0.0, 0.0 ]</td>
+        <td>[ 0.0, 2.7 ]</td>
+        <td>[ -0.58, 111.97 ]</td>
+        <td>[ -0.97, 14006.75 ]</td>
+        <td>[ 0.0, 0.79 ]</td>
+        <td>[ 0.0, 0.87 ]</td>
+        <td>[ 0.0, 0.98 ]</td>
+        <td>[ 0.0, 0.99 ]</td>
+        <td>[ 0.2, 1.0 ]</td>
+        <td>[ 0.5, 1.0 ]</td>
+        <td>[ 0.75, 1.0 ]</td>
+        <td>[ 1.0, 24500.67 ]</td>
+        <td>[ 0.04, 42344.04 ]</td>
+        <td>[ 1.54, 64.77 ]</td>
+        <td>[ 0.66, 5083.46 ]</td>
+        <td>[ 1.0, 1152.0 ]</td>
+        <td>[ 1.0, 66058.0 ]</td>
+        <td>[ 34.0, 466141.0 ]</td>
+        <td>[ 4.13, 66058.0 ]</td>
+        <td>[ 2.0, 66058.0 ]</td>
+        <td>[ 0.0, 120522.25 ]</td>
+        <td>[ 0.0, 14525612122.34 ]</td>
+        <td>[ 1.0, 66058.0 ]</td>
+        <td>[ 4.0, 79860.0 ]</td>
+        <td>[ 0.0, 77290.0 ]</td>
+        <td>[ -0.06, 15.21 ]</td>
+        <td>[ -1.5, 315.84 ]</td>
+        <td>[ 1.0, 809.0 ]</td>
+        <td>[ 1.0, 150370.0 ]</td>
+        <td>[ 27.0, 199867.0 ]</td>
+        <td>[ 3.7, 150370.0 ]</td>
+        <td>[ 1.0, 150370.0 ]</td>
+        <td>[ 0.0, 65387.49 ]</td>
+        <td>[ 0.0, 4275524278.19 ]</td>
+        <td>[ 1.0, 150370.0 ]</td>
+        <td>[ 4.0, 150370.0 ]</td>
+        <td>[ 0.0, 23387.25 ]</td>
+        <td>[ 0.0, 9.3 ]</td>
+        <td>[ -2.0, 101.82 ]</td>
+        <td>[ 1.0, 757.0 ]</td>
+        <td>[ 1.0, 16653.0 ]</td>
+        <td>[ 28.0, 181328.0 ]</td>
+        <td>[ 3.53, 24500.67 ]</td>
+        <td>[ 1.0, 16653.0 ]</td>
+        <td>[ 0.0, 42344.04 ]</td>
+        <td>[ 0.0, 1793017566.89 ]</td>
+        <td>[ 1.0, 16653.0 ]</td>
+        <td>[ 3.0, 39876.0 ]</td>
+        <td>[ 0.0, 39766.0 ]</td>
+        <td>[ -0.7, 13.82 ]</td>
+        <td>[ -2.0, 255.39 ]</td>
+        <td>[ 0.0, 13.36 ]</td>
+        <td>[ 0.0, 16.77 ]</td>
+        <td>[ 0.0, 24.71 ]</td>
+        <td>[ 0.0, 685.0 ]</td>
+        <td>[ -328.0, 962.0 ]</td>
+        <td>[ 0.0, 871.0 ]</td>
+        <td>[ 0.0, 881.0 ]</td>
+        <td>[ 0.0, 935.0 ]</td>
+        <td>[ 0.0, 7.11 ]</td>
+        <td>[ 0.0, 7.11 ]</td>
+        <td>[ 0.0, 8.93 ]</td>
+        <td>[ 0.0, 648.0 ]</td>
+        <td>[ 0.0, 618.0 ]</td>
+        <td>[ 0.0, 11563842.15 ]</td>
+        <td>[ 0.0, 0.9 ]</td>
+        <td>[ 0.0, 21146257.12 ]</td>
+        <td>[ 0.0, 0.76 ]</td>
+        <td>[ 0.0, 14140225.9 ]</td>
+        <td>[ 0.0, 0.42 ]</td>
+        <td>[ 0.0, 15576076.83 ]</td>
+        <td>[ 0.0, 0.51 ]</td>
+        </tr>
+    </tbody>
+    </table>
 </div>
 
 ### Benchmark
