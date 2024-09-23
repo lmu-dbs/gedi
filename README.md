@@ -125,7 +125,7 @@ In the `generation.json`, we have the following key-value pairs:
 
 The BPIC ranges of the feature values are as follows:
 <div style="overflow-x:auto;">
-  <iframe src="gedi/utils/bpic_feat_ranges.html" title="Table"></iframe>
+  <iframe src="gedi\utils\bpic_feat_ranges.html" title="Table"></iframe>
 </div>
 
 ### Benchmark
