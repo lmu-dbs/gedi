@@ -123,6 +123,32 @@ In the `generation.json`, we have the following key-value pairs:
 
     - plot_reference_feature: defines the feature, which is used on the x-axis on the output plots, i.e., each feature defined in the 'objectives' of the 'experiment' is plotted against the reference feature being defined in this value
 
+The BPIC ranges of the feature values are as follows:
+<div style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr>
+        <th>Header 1</th>
+        <th>Header 2</th>
+        <th>Header 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Row 1, Cell 1</td>
+        <td>Row 1, Cell 2</td>
+        <td>Row 1, Cell 3</td>
+      </tr>
+      <tr>
+        <td>Row 2, Cell 1</td>
+        <td>Row 2, Cell 2</td>
+        <td>Row 2, Cell 3</td>
+      </tr>
+      <!-- Add more rows as needed -->
+    </tbody>
+  </table>
+</div>
+
 ### Benchmark
 The benchmarking defines the downstream task which is used for evaluating the goodness of the synthesized event log datasets with the metrics of real-world datasets. The command to execute a benchmarking is shown in the following script:
 
