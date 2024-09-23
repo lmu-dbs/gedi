@@ -124,9 +124,7 @@ In the `generation.json`, we have the following key-value pairs:
     - plot_reference_feature: defines the feature, which is used on the x-axis on the output plots, i.e., each feature defined in the 'objectives' of the 'experiment' is plotted against the reference feature being defined in this value
 
 The BPIC ranges of the feature values are as follows:
-<div style="overflow-x:auto;">
-  <iframe src="gedi/utils/bpic_feat_ranges.html" title="Table"></iframe>
-</div>
+[here](gedi/utils/bpic_feat_ranges.html)
 
 ### Benchmark
 The benchmarking defines the downstream task which is used for evaluating the goodness of the synthesized event log datasets with the metrics of real-world datasets. The command to execute a benchmarking is shown in the following script:
