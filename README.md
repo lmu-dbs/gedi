@@ -4,7 +4,7 @@ Codebase for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) published a
 
 ## Table of Contents
 
-- [Requirements](#requirements)
+- [Requirements](#requirements) 
 - [Installation](#installation)
 - [General Usage](#general-usage)
 - [Experiments](#experiments)
