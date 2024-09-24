@@ -25,7 +25,7 @@ A video tutorial on how to use this tool can be found [here](https://youtu.be/9i
 ## Table of Contents
 
 - [Interactive Web Application (iGEDI)](#interactive-web-application)
-- [Installation](#installation)
+- [Installation](#installation) 
   -  [as PyPi Package](#install-as-pypi-package)
   -  [of iGEDI](#install-igedi)
   -  [as local repository](#install-as-local-repository)
