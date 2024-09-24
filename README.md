@@ -17,18 +17,12 @@ license: mit
 
 **i**nteractive **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
 This repository contains the codebase for the interactive web application tool (iGEDI) as well as for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
-Our documentation also includes both frameworks. From [General Usage](#general-usage) and beyond, documentation refers especially to reproducibility of the [GEDI paper](https://mcml.ai/publications/gedi.pdf).
-
-A video tutorial on how to use this tool can be found [here](https://youtu.be/9iQhaYwyQ9E).
-
 
 ## Table of Contents
 
 - [Interactive Web Application (iGEDI)](#interactive-web-application)
+- [Requirements](#requirements)
 - [Installation](#installation)
-  -  [as PyPi Package](#install-as-pypi-package)
-  -  [of iGEDI](#install-igedi)
-  -  [as local repository](#install-as-local-repository)
 - [General Usage](#general-usage)
 - [Experiments](#experiments)
 - [Citation](#citation)
@@ -37,8 +31,7 @@ A video tutorial on how to use this tool can be found [here](https://youtu.be/9i
 Our [interactive web application](https://huggingface.co/spaces/andreamalhera/gedi) (iGEDI) guides you through the specification process, runs GEDI for you. You can directly download the resulting generated logs or the configuration file to run GEDI locally.
 ![Interface Screenshot](gedi/utils/iGEDI_interface.png)
 
-## Installation
-### Requirements
+## Requirements
 - [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 - Graphviz on your OS e.g.
 For MacOS:
@@ -50,30 +43,13 @@ brew install swig
 ```console
 conda install pyrfr swig
 ```
-### Install as PyPi package
-To directly use GEDI methods via `import`, install directly from [PyPi](https://pypi.org/project/gedi/) with
-```shell
-pip install gedi
-```
-and run:
-```shell
-python -c "from gedi import gedi; gedi('config_files/pipeline_steps/generation.json')"
-```
-### Install iGEDI
-Our [interactive GEDI (iGEDI)](https://huggingface.co/spaces/andreamalhera/gedi) can be employed to create all necessary [configuration files](config_files) to reproduce our experiements.
-Users can directly use our [web application service](https://huggingface.co/spaces/andreamalhera/gedi) or locally start the following dashboard:
-```
-streamlit run utils/config_fabric.py # To tunnel to local machine add: --server.port 8501 --server.headless true
+## Installation
+- `conda env create -f .conda.yml`
 
-# In local machine (only in case you are tunneling):
-ssh -N -f -L 9000:localhost:8501 <user@remote_machine.com>
-open "http://localhost:9000/"
-```
-
-### Install as local repository
+### Startup
 ```console
-conda env create -f .conda.yml
-from gedi import gedi; gedi('config_files/test/experiment_test.json
+conda activate gedi
+python main.py -a config_files/test/experiment_test.json
 ```
 The last step should take only a few minutes to run.
 
@@ -85,8 +61,9 @@ Our pipeline offers several pipeline steps, which can be run sequentially or par
 - [Evaluation Plotter](https://github.com/lmu-dbs/gedi/blob/16-documentation-update-readme/README.md#evaluation-plotting)
 
 To run different steps of the GEDI pipeline, please adapt the `.json` accordingly.
-```python
-from gedi import gedi; gedi('config_files/pipeline_steps/<pipeline-step>.json')
+```console
+conda activate gedi
+python main.py -a config_files/pipeline_steps/<pipeline-step>.json
 ```
 For reference of possible keys and values for each step, please see `config_files/test/experiment_test.json`.
 To run the whole pipeline please create a new `.json` file, specifying all steps you want to run and specify desired keys and values for each step.
@@ -95,8 +72,9 @@ To reproduce results from our paper, please refer to [Experiments](#experiments)
 ### Feature Extraction
 ---
 To extract the features on the event-log level and use them for hyperparameter optimization, we employ the following script:
-```python
-from gedi import gedi; gedi('config_files/pipeline_steps/feature_extraction.json')
+```console
+conda activate gedi
+python main.py -a config_files/pipeline_steps/feature_extraction.json
 ```
 The JSON file consists of the following key-value pairs:
 
@@ -116,8 +94,9 @@ After having extracted meta features from the files, the next step is to generat
 
 The command to execute the generation step is given by a exemplarily generation.json file:
 
-```python
-from gedi import gedi; gedi('config_files/pipeline_steps/generation.json')
+```console
+conda activate gedi
+python main.py -a config_files/pipeline_steps/generation.json
 ```
 
 In the `generation.json`, we have the following key-value pairs:
@@ -144,11 +123,228 @@ In the `generation.json`, we have the following key-value pairs:
 
     - plot_reference_feature: defines the feature, which is used on the x-axis on the output plots, i.e., each feature defined in the 'objectives' of the 'experiment' is plotted against the reference feature being defined in this value
 
+In case of manually defining the targets for the features in config space, the following table shows the range of the features in the real-world event log data (BPIC's) for reference:
+<div style="overflow-x:auto;">
+    <table border="1" class="dataframe">
+    <thead>
+        <tr style="text-align: right;">
+        <th></th>
+        <th>n_traces</th>
+        <th>n_unique_traces</th>
+        <th>ratio_variants_per_number_of_traces</th>
+        <th>trace_len_min</th>
+        <th>trace_len_max</th>
+        <th>trace_len_mean</th>
+        <th>trace_len_median</th>
+        <th>trace_len_mode</th>
+        <th>trace_len_std</th>
+        <th>trace_len_variance</th>
+        <th>trace_len_q1</th>
+        <th>trace_len_q3</th>
+        <th>trace_len_iqr</th>
+        <th>trace_len_geometric_mean</th>
+        <th>trace_len_geometric_std</th>
+        <th>trace_len_harmonic_mean</th>
+        <th>trace_len_skewness</th>
+        <th>trace_len_kurtosis</th>
+        <th>trace_len_coefficient_variation</th>
+        <th>trace_len_entropy</th>
+        <th>trace_len_hist1</th>
+        <th>trace_len_hist2</th>
+        <th>trace_len_hist3</th>
+        <th>trace_len_hist4</th>
+        <th>trace_len_hist5</th>
+        <th>trace_len_hist6</th>
+        <th>trace_len_hist7</th>
+        <th>trace_len_hist8</th>
+        <th>trace_len_hist9</th>
+        <th>trace_len_hist10</th>
+        <th>trace_len_skewness_hist</th>
+        <th>trace_len_kurtosis_hist</th>
+        <th>ratio_most_common_variant</th>
+        <th>ratio_top_1_variants</th>
+        <th>ratio_top_5_variants</th>
+        <th>ratio_top_10_variants</th>
+        <th>ratio_top_20_variants</th>
+        <th>ratio_top_50_variants</th>
+        <th>ratio_top_75_variants</th>
+        <th>mean_variant_occurrence</th>
+        <th>std_variant_occurrence</th>
+        <th>skewness_variant_occurrence</th>
+        <th>kurtosis_variant_occurrence</th>
+        <th>n_unique_activities</th>
+        <th>activities_min</th>
+        <th>activities_max</th>
+        <th>activities_mean</th>
+        <th>activities_median</th>
+        <th>activities_std</th>
+        <th>activities_variance</th>
+        <th>activities_q1</th>
+        <th>activities_q3</th>
+        <th>activities_iqr</th>
+        <th>activities_skewness</th>
+        <th>activities_kurtosis</th>
+        <th>n_unique_start_activities</th>
+        <th>start_activities_min</th>
+        <th>start_activities_max</th>
+        <th>start_activities_mean</th>
+        <th>start_activities_median</th>
+        <th>start_activities_std</th>
+        <th>start_activities_variance</th>
+        <th>start_activities_q1</th>
+        <th>start_activities_q3</th>
+        <th>start_activities_iqr</th>
+        <th>start_activities_skewness</th>
+        <th>start_activities_kurtosis</th>
+        <th>n_unique_end_activities</th>
+        <th>end_activities_min</th>
+        <th>end_activities_max</th>
+        <th>end_activities_mean</th>
+        <th>end_activities_median</th>
+        <th>end_activities_std</th>
+        <th>end_activities_variance</th>
+        <th>end_activities_q1</th>
+        <th>end_activities_q3</th>
+        <th>end_activities_iqr</th>
+        <th>end_activities_skewness</th>
+        <th>end_activities_kurtosis</th>
+        <th>eventropy_trace</th>
+        <th>eventropy_prefix</th>
+        <th>eventropy_global_block</th>
+        <th>eventropy_lempel_ziv</th>
+        <th>eventropy_k_block_diff_1</th>
+        <th>eventropy_k_block_diff_3</th>
+        <th>eventropy_k_block_diff_5</th>
+        <th>eventropy_k_block_ratio_1</th>
+        <th>eventropy_k_block_ratio_3</th>
+        <th>eventropy_k_block_ratio_5</th>
+        <th>eventropy_knn_3</th>
+        <th>eventropy_knn_5</th>
+        <th>eventropy_knn_7</th>
+        <th>epa_variant_entropy</th>
+        <th>epa_normalized_variant_entropy</th>
+        <th>epa_sequence_entropy</th>
+        <th>epa_normalized_sequence_entropy</th>
+        <th>epa_sequence_entropy_linear_forgetting</th>
+        <th>epa_normalized_sequence_entropy_linear_forgetting</th>
+        <th>epa_sequence_entropy_exponential_forgetting</th>
+        <th>epa_normalized_sequence_entropy_exponential_forgetting</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td>[ min, max ]</td>
+        <td>[ 226.0, 251734.0 ]</td>
+        <td>[ 6.0, 28457.0 ]</td>
+        <td>[ 0.0, 1.0 ]</td>
+        <td>[ 1.0, 24.0 ]</td>
+        <td>[ 1.0, 2973.0 ]</td>
+        <td>[ 1.0, 131.49 ]</td>
+        <td>[ 1.0, 55.0 ]</td>
+        <td>[ 1.0, 61.0 ]</td>
+        <td>[ 0.0, 202.53 ]</td>
+        <td>[ 0.0, 41017.89 ]</td>
+        <td>[ 1.0, 44.0 ]</td>
+        <td>[ 1.0, 169.0 ]</td>
+        <td>[ 0.0, 161.0 ]</td>
+        <td>[ 1.0, 53.78 ]</td>
+        <td>[ 1.0, 5.65 ]</td>
+        <td>[ 1.0, 51.65 ]</td>
+        <td>[ -0.58, 111.97 ]</td>
+        <td>[ -0.97, 14006.75 ]</td>
+        <td>[ 0.0, 4.74 ]</td>
+        <td>[ 5.33, 12.04 ]</td>
+        <td>[ 0.0, 1.99 ]</td>
+        <td>[ 0.0, 0.42 ]</td>
+        <td>[ 0.0, 0.4 ]</td>
+        <td>[ 0.0, 0.19 ]</td>
+        <td>[ 0.0, 0.14 ]</td>
+        <td>[ 0.0, 10.0 ]</td>
+        <td>[ 0.0, 0.02 ]</td>
+        <td>[ 0.0, 0.04 ]</td>
+        <td>[ 0.0, 0.0 ]</td>
+        <td>[ 0.0, 2.7 ]</td>
+        <td>[ -0.58, 111.97 ]</td>
+        <td>[ -0.97, 14006.75 ]</td>
+        <td>[ 0.0, 0.79 ]</td>
+        <td>[ 0.0, 0.87 ]</td>
+        <td>[ 0.0, 0.98 ]</td>
+        <td>[ 0.0, 0.99 ]</td>
+        <td>[ 0.2, 1.0 ]</td>
+        <td>[ 0.5, 1.0 ]</td>
+        <td>[ 0.75, 1.0 ]</td>
+        <td>[ 1.0, 24500.67 ]</td>
+        <td>[ 0.04, 42344.04 ]</td>
+        <td>[ 1.54, 64.77 ]</td>
+        <td>[ 0.66, 5083.46 ]</td>
+        <td>[ 1.0, 1152.0 ]</td>
+        <td>[ 1.0, 66058.0 ]</td>
+        <td>[ 34.0, 466141.0 ]</td>
+        <td>[ 4.13, 66058.0 ]</td>
+        <td>[ 2.0, 66058.0 ]</td>
+        <td>[ 0.0, 120522.25 ]</td>
+        <td>[ 0.0, 14525612122.34 ]</td>
+        <td>[ 1.0, 66058.0 ]</td>
+        <td>[ 4.0, 79860.0 ]</td>
+        <td>[ 0.0, 77290.0 ]</td>
+        <td>[ -0.06, 15.21 ]</td>
+        <td>[ -1.5, 315.84 ]</td>
+        <td>[ 1.0, 809.0 ]</td>
+        <td>[ 1.0, 150370.0 ]</td>
+        <td>[ 27.0, 199867.0 ]</td>
+        <td>[ 3.7, 150370.0 ]</td>
+        <td>[ 1.0, 150370.0 ]</td>
+        <td>[ 0.0, 65387.49 ]</td>
+        <td>[ 0.0, 4275524278.19 ]</td>
+        <td>[ 1.0, 150370.0 ]</td>
+        <td>[ 4.0, 150370.0 ]</td>
+        <td>[ 0.0, 23387.25 ]</td>
+        <td>[ 0.0, 9.3 ]</td>
+        <td>[ -2.0, 101.82 ]</td>
+        <td>[ 1.0, 757.0 ]</td>
+        <td>[ 1.0, 16653.0 ]</td>
+        <td>[ 28.0, 181328.0 ]</td>
+        <td>[ 3.53, 24500.67 ]</td>
+        <td>[ 1.0, 16653.0 ]</td>
+        <td>[ 0.0, 42344.04 ]</td>
+        <td>[ 0.0, 1793017566.89 ]</td>
+        <td>[ 1.0, 16653.0 ]</td>
+        <td>[ 3.0, 39876.0 ]</td>
+        <td>[ 0.0, 39766.0 ]</td>
+        <td>[ -0.7, 13.82 ]</td>
+        <td>[ -2.0, 255.39 ]</td>
+        <td>[ 0.0, 13.36 ]</td>
+        <td>[ 0.0, 16.77 ]</td>
+        <td>[ 0.0, 24.71 ]</td>
+        <td>[ 0.0, 685.0 ]</td>
+        <td>[ -328.0, 962.0 ]</td>
+        <td>[ 0.0, 871.0 ]</td>
+        <td>[ 0.0, 881.0 ]</td>
+        <td>[ 0.0, 935.0 ]</td>
+        <td>[ 0.0, 7.11 ]</td>
+        <td>[ 0.0, 7.11 ]</td>
+        <td>[ 0.0, 8.93 ]</td>
+        <td>[ 0.0, 648.0 ]</td>
+        <td>[ 0.0, 618.0 ]</td>
+        <td>[ 0.0, 11563842.15 ]</td>
+        <td>[ 0.0, 0.9 ]</td>
+        <td>[ 0.0, 21146257.12 ]</td>
+        <td>[ 0.0, 0.76 ]</td>
+        <td>[ 0.0, 14140225.9 ]</td>
+        <td>[ 0.0, 0.42 ]</td>
+        <td>[ 0.0, 15576076.83 ]</td>
+        <td>[ 0.0, 0.51 ]</td>
+        </tr>
+    </tbody>
+    </table>
+</div>
+
 ### Benchmark
 The benchmarking defines the downstream task which is used for evaluating the goodness of the synthesized event log datasets with the metrics of real-world datasets. The command to execute a benchmarking is shown in the following script:
 
-```python
-from gedi import gedi; gedi('config_files/pipeline_steps/benchmark.json')
+```console
+conda activate gedi
+python main.py -a config_files/pipeline_steps/benchmark.json
 ```
 
 In the `benchmark.json`, we have the following key-value pairs:
@@ -164,8 +360,9 @@ In the `benchmark.json`, we have the following key-value pairs:
 The purpose of the evaluation plotting step is used just for visualization. Some examples of how the plotter can be used is shown in the following exemplarily script:
 
 
-```python
-from gedi import gedi; gedi('config_files/pipeline_steps/evaluation_plotter.json')
+```console
+conda activate gedi
+python main.py -a config_files/pipeline_steps/evaluation_plotter.json
 ```
 
 Generally, in the `evaluation_plotter.json`, we have the following key-value pairs:
@@ -183,8 +380,9 @@ We present two settings for generating intentional event logs, using [real targe
 ### Generating data with real targets
 To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/experiment_real_targets.json). The script's pipeline will output the [generated event logs (GenBaselineED)](data/event_logs/GenBaselineED), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
 
-```python
-from gedi import gedi; gedi('config_files/experiment_real_targets.json')
+```console
+conda activate gedi
+python main.py -a config_files/experiment_real_targets.json
 ```
 
 ### Generating data with grid targets
@@ -195,10 +393,15 @@ python execute_grid_experiments.py config_files/grid_2obj
 ```
 We employ the [experiment_grid_2obj_configfiles_fabric.ipynb](notebooks/experiment_grid_2obj_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/grid_2obj) and [objective](data/grid_2obj) files for this experiment.
 For more details about these config_files, please refer to [Feature Extraction](#feature-extraction), [Generation](#generation), and [Benchmark](#benchmark).
-To create configuration files for grid objectives interactively, you can use iGEDI(https://huggingface.co/spaces/andreamalhera/gedi).
+To create configuration files for grid objectives interactively, you can use the start the following dashboard:
+```
+streamlit run utils/config_fabric.py # To tunnel to local machine add: --server.port 8501 --server.headless true
 
+# In local machine (only in case you are tunneling):
+ssh -N -f -L 9000:localhost:8501 <user@remote_machine.com>
+open "http://localhost:9000/"
+```
 ### Visualizations
-Visualizations correspond to the [GEDI paper](https://mcml.ai/publications/gedi.pdf).
 To run the visualizations, we employ [jupyter notebooks](https://jupyter.org/install) and [add the installed environment to the jupyter notebook](https://medium.com/@nrk25693/how-to-add-your-conda-environment-to-your-jupyter-notebook-in-just-4-steps-abeab8b8d084). We then start all visualizations by running e.g.: `jupyter noteboook`. In the following, we describe the `.ipynb`-files in the folder `\notebooks` to reproduce the figures from our paper. 
 
 #### [Fig. 4 and fig. 5 Representativeness](notebooks/gedi_figs4and5_representativeness.ipynb)
@@ -218,23 +421,14 @@ Likewise to the evaluation on the statistical tests in notebook `gedi_figs7and8_
 The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl and is *to appear on BPM'24*.
 
 ```bibtex
-@InProceedings{10.1007/978-3-031-70396-6_13,
-author="Maldonado, Andrea
-and Frey, Christian M. M.
-and Tavares, Gabriel Marques
-and Rehwald, Nikolina
-and Seidl, Thomas",
-editor="Marrella, Andrea
-and Resinas, Manuel
-and Jans, Mieke
-and Rosemann, Michael",
-title="GEDI: Generating Event Data with Intentional Features for Benchmarking Process Mining",
-booktitle="Business Process Management",
-year="2024",
-publisher="Springer Nature Switzerland",
-address="Cham",
-pages="221--237",
-abstract="Process mining solutions include enhancing performance, conserving resources, and alleviating bottlenecks in organizational contexts. However, as in other data mining fields, success hinges on data quality and availability. Existing analyses for process mining solutions lack diverse and ample data for rigorous testing, hindering insights' generalization. To address this, we propose Generating Event Data with Intentional features, a framework producing event data sets satisfying specific meta-features. Considering the meta-feature space that defines feasible event logs, we observe that existing real-world datasets describe only local areas within the overall space. Hence, our framework aims at providing the capability to generate an event data benchmark, which covers unexplored regions. Therefore, our approach leverages a discretization of the meta-feature space to steer generated data towards regions, where a combination of meta-features is not met yet by existing benchmark datasets. Providing a comprehensive data pool enriches process mining analyses, enables methods to capture a wider range of real-world scenarios, and improves evaluation quality. Moreover, it empowers analysts to uncover correlations between meta-features and evaluation metrics, enhancing explainability and solution effectiveness. Experiments demonstrate GEDI's ability to produce a benchmark of intentional event data sets and robust analyses for process mining tasks.",
-isbn="978-3-031-70396-6"
+@article{maldonado2024gedi,
+  author       = {Maldonado, Andrea and Frey, {Christian M. M.} and Tavares, {Gabriel M.} and Rehwald, Nikolina and Seidl, Thomas},
+  title        = {{GEDI:} Generating Event Data with Intentional Features for Benchmarking Process Mining},
+  journal      = {To be published in BPM 2024. Krakow, Poland, Sep 01-06},
+  volume       = {},
+  year         = {2024},
+  url          = {https://mcml.ai/publications/gedi.pdf},
+  doi          = {},
+  eprinttype    = {website},
 }
 ```

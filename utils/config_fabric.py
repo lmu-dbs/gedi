@@ -13,6 +13,7 @@ import time
 import shutil
 import zipfile
 import io
+from column_mappings import column_mappings
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
@@ -174,6 +175,10 @@ def set_generator_experiments(generator_params):
             df = pd.read_csv(uploaded_file)
             if len(df.columns) <= 1:
                 raise pd.errors.ParserError("Please select a file withat least two columns (e.g. log, feature) and use ',' as a delimiter.")
+            columns_to_rename = {col: column_mappings()[col] for col in df.columns if col in column_mappings()}
+
+            # Rename the matching columns
+            df.rename(columns=columns_to_rename, inplace=True)
             sel_features = st.multiselect("Selected features", list(df.columns), list(df.columns)[-1])
             if sel_features:
                 df = df[sel_features]
