@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - demo-icpm
+      - demo-icpm24
   # to run this workflow manually from the Actions tab
   workflow_dispatch:
 
