@@ -4,10 +4,6 @@
     "benchmark_test": "discovery",
     "input_path":"data/test",
     "output_path":"output",
-<<<<<<<< HEAD:config_files/pipeline_steps/benchmark.json
     "miners" : ["ind", "heu", "imf", "ilp"]
-========
-    "miners" : ["inductive", "heu", "imf", "ilp"]
->>>>>>>> main:config_files/algorithm/pipeline_steps/benchmark.json
   }
 ]
