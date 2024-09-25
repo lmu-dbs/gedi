@@ -32,7 +32,7 @@ setup(
             'seaborn==0.13.2',
             'smac==2.0.2',
             'tqdm==4.65.0',
-            'streamlit-toggle-switch>=1.0.2'
+            'streamlit-toggle-switch>=1.0.2',
             'click==8.1.7',
             'cloudpickle==3.0.0',
             'configspace==0.7.1',
