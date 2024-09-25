@@ -68,7 +68,6 @@ setup(
             'rapidfuzz==3.6.1',
             'regex==2023.12.25',
             'scikit-learn==1.2.2',
-            'scipy==1.10.1',
             'seaborn==0.13.2',
             'smac==2.0.2',
             'sortedcontainers==2.4.0',
