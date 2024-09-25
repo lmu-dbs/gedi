@@ -12,10 +12,10 @@ license: mit
 
 <p>
   <img src="gedi/utils/logo.png" alt="Logo" width="100" align="left" />
-  <h1 style="display: inline;">iGEDI</h1>
+  <h1 style="display: inline;">(i)GEDI</h1>
 </p>
 
-**i**nteractive **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
+(**i**nteractive) **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
 This repository contains the codebase for the interactive web application tool (iGEDI) as well as for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
 
 ## Table of Contents
@@ -86,7 +86,6 @@ The JSON file consists of the following key-value pairs:
 - plot_type: defines the style of the output plotting (possible values: violinplot, boxplot)
 - font_size: label font size of the output plot
 - boxplot_width: width of the violinplot/boxplot
-
 
 ### Generation
 ---
@@ -389,7 +388,7 @@ python main.py -a config_files/experiment_real_targets.json
 To execute the experiments with grid targets, a single [configuration](config_files/grid_2obj) can be selected or all [grid objectives](data/grid_2obj) can be run with one command using the following script. This script will output the [generated event logs (GenED)](data/event_logs/GenED), alongside their respectively measured [feature values](data/GenED_feat.csv) and [benchmark metrics values](data/GenED_bench.csv).
 ```
 conda activate gedi
-python execute_grid_experiments.py config_files/grid_2obj
+python gedi/utils/execute_grid_experiments.py config_files/test
 ```
 We employ the [experiment_grid_2obj_configfiles_fabric.ipynb](notebooks/experiment_grid_2obj_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/grid_2obj) and [objective](data/grid_2obj) files for this experiment.
 For more details about these config_files, please refer to [Feature Extraction](#feature-extraction), [Generation](#generation), and [Benchmark](#benchmark).
@@ -401,6 +400,7 @@ streamlit run utils/config_fabric.py # To tunnel to local machine add: --server.
 ssh -N -f -L 9000:localhost:8501 <user@remote_machine.com>
 open "http://localhost:9000/"
 ```
+
 ### Visualizations
 To run the visualizations, we employ [jupyter notebooks](https://jupyter.org/install) and [add the installed environment to the jupyter notebook](https://medium.com/@nrk25693/how-to-add-your-conda-environment-to-your-jupyter-notebook-in-just-4-steps-abeab8b8d084). We then start all visualizations by running e.g.: `jupyter noteboook`. In the following, we describe the `.ipynb`-files in the folder `\notebooks` to reproduce the figures from our paper. 
 
@@ -418,17 +418,43 @@ This notebook is used to answer the question if there is a statistically signifi
 Likewise to the evaluation on the statistical tests in notebook `gedi_figs7and8_benchmarking_statisticalTests.ipynb`, this notebook is used to compute the differences between two correlation matrices $\Delta C = C_1 - C_2$. This logic is employed to evaluate and visualize the distance of two correlation matrices. Furthermore, we show how significant scores are retained from the correlations being evaluated on real-world datasets coompared to synthesized event log datasets with real-world targets. In Fig. 9 and 10 in the paper, the results of the notebook are shown. 
 
 ## Citation
-The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl and is *to appear on BPM'24*.
+The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl on BPM'24.
 
-```bibtex
-@article{maldonado2024gedi,
-  author       = {Maldonado, Andrea and Frey, {Christian M. M.} and Tavares, {Gabriel M.} and Rehwald, Nikolina and Seidl, Thomas},
-  title        = {{GEDI:} Generating Event Data with Intentional Features for Benchmarking Process Mining},
-  journal      = {To be published in BPM 2024. Krakow, Poland, Sep 01-06},
-  volume       = {},
+```
+@InProceedings{maldonado2024gedi,
+author="Maldonado, Andrea
+and Frey, Christian M. M.
+and Tavares, Gabriel Marques
+and Rehwald, Nikolina
+and Seidl, Thomas",
+editor="Marrella, Andrea
+and Resinas, Manuel
+and Jans, Mieke
+and Rosemann, Michael",
+title="GEDI: Generating Event Data with Intentional Features for Benchmarking Process Mining",
+booktitle="Business Process Management",
+year="2024",
+publisher="Springer Nature Switzerland",
+address="Cham",
+pages="221--237",
+abstract="Process mining solutions include enhancing performance, conserving resources, and alleviating bottlenecks in organizational contexts. However, as in other data mining fields, success hinges on data quality and availability. Existing analyses for process mining solutions lack diverse and ample data for rigorous testing, hindering insights' generalization. To address this, we propose Generating Event Data with Intentional features, a framework producing event data sets satisfying specific meta-features. Considering the meta-feature space that defines feasible event logs, we observe that existing real-world datasets describe only local areas within the overall space. Hence, our framework aims at providing the capability to generate an event data benchmark, which covers unexplored regions. Therefore, our approach leverages a discretization of the meta-feature space to steer generated data towards regions, where a combination of meta-features is not met yet by existing benchmark datasets. Providing a comprehensive data pool enriches process mining analyses, enables methods to capture a wider range of real-world scenarios, and improves evaluation quality. Moreover, it empowers analysts to uncover correlations between meta-features and evaluation metrics, enhancing explainability and solution effectiveness. Experiments demonstrate GEDI's ability to produce a benchmark of intentional event data sets and robust analyses for process mining tasks.",
+isbn="978-3-031-70396-6"
+}
+```
+
+Furthermore, the `iGEDI` web application is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Aryasomayajula, Frey, and Seidl and is *to appear on Demos@ICPM'24*.
+```
+@inproceedings{maldonado2024igedi,
+  author       = {Andrea Maldonado and
+                  Sai Anirudh Aryasomayajula and
+                  Christian M. M. Frey and
+                  Thomas Seidl},
+  editor       = {Jochen De Weerdt, Giovanni Meroni, Han van der Aa, and Karolin Winter},
+  title        = {iGEDI: interactive Generating Event Data with Intentional Features},
+  booktitle    = {ICPM 2024 Tool Demonstration Track, October 14-18, 2024, Kongens Lyngby, Denmark},
+  series       = {{CEUR} Workshop Proceedings},
+  publisher    = {CEUR-WS.org},
   year         = {2024},
-  url          = {https://mcml.ai/publications/gedi.pdf},
-  doi          = {},
-  eprinttype    = {website},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 ```

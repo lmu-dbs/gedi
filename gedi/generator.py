@@ -152,6 +152,7 @@ class GenerateEventLogs():
 
         self.params = params.get(GENERATOR_PARAMS)
         experiment = self.params.get(EXPERIMENT)
+
         if experiment is not None:
             tasks, output_path = get_tasks(experiment, self.output_path)
             columns_to_rename = {col: column_mappings()[col] for col in tasks.columns if col in column_mappings()}
