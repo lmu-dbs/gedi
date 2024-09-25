@@ -4,7 +4,7 @@ import os
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-version_string = os.environ.get("VERSION_PLACEHOLDER", "0.0.5")
+version_string = os.environ.get("VERSION_PLACEHOLDER", "0.0.6")
 print(version_string)
 version = version_string
 
@@ -25,9 +25,10 @@ setup(
             'Levenshtein==0.23.0',
             'matplotlib==3.8.4',
             'numpy==1.26.4',
+            'pandas==2.2.2',
             'pm4py==2.7.2',
             'scikit-learn==1.2.2',
-            'scipy==1.10.1',
+            'scipy==1.13.0',
             'seaborn==0.13.2',
             'smac==2.0.2',
             'tqdm==4.65.0',
@@ -67,7 +68,6 @@ setup(
             'rapidfuzz==3.6.1',
             'regex==2023.12.25',
             'scikit-learn==1.2.2',
-            'scipy==1.10.1',
             'seaborn==0.13.2',
             'smac==2.0.2',
             'sortedcontainers==2.4.0',
@@ -88,3 +88,4 @@ setup(
             'Programming Language :: Python :: 3.9',
     ],
 )
+
