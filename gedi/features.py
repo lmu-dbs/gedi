@@ -10,7 +10,7 @@ from pathlib import Path
 from utils.param_keys import INPUT_PATH
 from utils.param_keys.features import FEATURE_PARAMS, FEATURE_SET
 from gedi.utils.io_helpers import dump_features_json
-
+from utils.column_mappings import column_mappings
 def get_sortby_parameter(elem):
     number = int(elem.rsplit(".")[0].rsplit("_", 1)[1])
     return number
@@ -63,6 +63,8 @@ class EventLogFeatures(EventLogFile):
 
             if str(self.filename).endswith('csv'): # Returns dataframe from loaded metafeatures file
                 self.feat = pd.read_csv(self.filepath)
+                columns_to_rename = {col: column_mappings()[col] for col in self.feat.columns if col in column_mappings()}
+                self.feat.rename(columns=columns_to_rename, inplace=True)
                 print(f"SUCCESS: EventLogFeatures loaded features from {self.filepath}")
             elif isinstance(self.filename, list): # Computes metafeatures for list of .xes files
                 combined_features=pd.DataFrame()

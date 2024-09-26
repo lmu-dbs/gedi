@@ -21,6 +21,7 @@ from utils.param_keys import OUTPUT_PATH, INPUT_PATH
 from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG_SPACE, N_TRIALS
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
+from utils.column_mappings import column_mappings
 import xml.etree.ElementTree as ET
 import re
 from xml.dom import minidom
@@ -153,6 +154,8 @@ class GenerateEventLogs():
         experiment = self.params.get(EXPERIMENT)
         if experiment is not None:
             tasks, output_path = get_tasks(experiment, self.output_path)
+            columns_to_rename = {col: column_mappings()[col] for col in tasks.columns if col in column_mappings()}
+            tasks = tasks.rename(columns=columns_to_rename)
             self.output_path = output_path
 
         if 'ratio_variants_per_number_of_traces' in tasks.columns:#HOTFIX
