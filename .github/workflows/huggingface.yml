@@ -19,6 +19,9 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+      - name: Set current branch as a variable
+        id: set_branch
+        run: echo "CURRENT_BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
