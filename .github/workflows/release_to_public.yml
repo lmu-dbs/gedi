@@ -29,22 +29,24 @@ jobs:
           cd gedi
           git checkout main  # Ensure we are on the main branch
 
-      # Step 3: Create a new branch for the merge
-      - name: Create a new branch for merging
-        run: |
-          cd gedi
-          git checkout -b temp-branch  # Create a new branch to merge changes into
 
-      # Step 4: Merge external repo's main into the new branch
+      # Step 3: Merge external repo's main into the new branch
       - name: Merge external repo's main into the new branch
         run: |
-          git merge origin/main --allow-unrelated-histories -m "Merge main from external repo" || echo "Merge conflicts encountered"
+          cd gedi
+          git remote add source ../  # Assuming the current repo is in the parent directory
+          git fetch source
+          # Checkout the branch from the current repo
+          CURRENT_BRANCH=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Get the current branch name
+          git checkout -b temp-branch source/$CURRENT_BRANCH  # Create a temporary branch from current repo's branch
+          git merge origin/main --allow-unrelated-histories
 
-      # Step 5: Push the new branch to the current repository
-      - name: Push new branch to current repository
+      # Step 4: Push the changes to the current repository
+      - name: Push merged changes to current repository
         run: |
-          git remote add private ../  # Add current repo as a remote
-          git push private temp-branch  # Push the new branch to the current repo
+          cd target-repository
+          git push origin temp-branch  # Push the temporary branch to the target repo
+
 
       # Step 6: Open PR from temp-branch in current repo to the current branch
       - name: Create PR from temp-branch to current branch
