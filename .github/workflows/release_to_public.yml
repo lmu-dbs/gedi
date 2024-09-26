@@ -91,23 +91,30 @@ jobs:
         run: |
           git checkout -b temp-branch  # Create and switch to a new temporary branch
 
-      # Step 3: Add the external repository as a remote
+      # Step 4: Set Git user info
+      - name: Set Git user info
+        run: |
+          cd gedi
+          git config user.name "GitHub Actions"  # Set a name for the user
+          git config user.email "actions@github.com"  # Set an email for the user
+
+      # Step 5: Add the external repository as a remote
       - name: Add external repository
         run: |
           git remote add external https://github.com/lmu-dbs/gedi.git
           git fetch external  # Fetch the latest changes from the external repo
 
-      # Step 4: Merge the main branch from the external repository
+      # Step 6: Merge the main branch from the external repository
       - name: Merge external main into temp-branch
         run: |
           git merge external/main --allow-unrelated-histories -m "Merging main from lmu-dbs/gedi into temp-branch"
 
-      # Step 5: Push the temporary branch to the current repository
+      # Step 7: Push the temporary branch to the current repository
       - name: Push temp-branch
         run: |
           git push origin temp-branch  # Push the temporary branch to your current repository
 
-      # Step 7: Create a PR from temp-branch to main in the current repo
+      # Step 8: Create a PR from temp-branch to main in the current repo
       - name: Create PR from temp-branch to main in current repository
         run: |
           curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
