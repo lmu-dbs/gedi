@@ -29,7 +29,7 @@ jobs:
        # Step 3: Set Git user info
       - name: Set Git user info
         run: |
-          cd target-repository
+          cd gedi
           git config user.name "GitHub Actions"  # Set a name for the user
           git config user.email "actions@github.com"  # Set an email for the user
 
