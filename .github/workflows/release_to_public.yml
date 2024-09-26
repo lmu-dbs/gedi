@@ -122,7 +122,7 @@ jobs:
       - name: Merge target repository's main into temp branch
         run: |
           cd gedi
-          git merge -s ours origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
+          git merge -s theirs origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
 
       # Step 6: Push the merged changes to the current repository (current repo)
       - name: Push merged changes to current repository
@@ -136,5 +136,5 @@ jobs:
           curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/${{ github.repository }}/pulls \
-          -d "{\"title\":\"Merge temp-branch into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
+          -d "{\"title\":\"Merge public repo into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
 
