@@ -82,15 +82,14 @@ jobs:
       # Step 3: Push the current branch to the target repository
       - name: Push current branch to target repository
         run: |
-          CURRENT_BRANCH=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Get the current branch name
           cd gedi
           git checkout -b temp-branch  # Create a new branch from main
+          git merge origin/main
           git push origin temp-branch  # Push the current branch to target repo
 
       # Step 4: Create a PR from the current branch to the target repo's main
       - name: Create PR from current branch to target repo's main
         run: |
-          CURRENT_BRANCH=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Get the current branch name
           curl -X POST -H "Authorization: token ${{ secrets.TARGET_REPO_PAT }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/lmu-dbs/gedi/pulls \
