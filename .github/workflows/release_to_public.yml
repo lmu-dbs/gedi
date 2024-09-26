@@ -25,7 +25,14 @@ jobs:
           git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/lmu-dbs/gedi.git
           cd gedi
           git checkout main  # Ensure we are on the main branch
-          
+       
+       # Step 3: Set Git user info
+      - name: Set Git user info
+        run: |
+          cd target-repository
+          git config user.name "GitHub Actions"  # Set a name for the user
+          git config user.email "actions@github.com"  # Set an email for the user
+
       # Step 3: Fetch changes from the current repository
       - name: Fetch current repository changes
         run: |
