@@ -5,6 +5,10 @@ on:
     branches:
       - main  # Trigger the workflow when changes are pushed to the main branch of the current repository
 
+permissions:
+  contents: write
+  workflows: write  # Allow GitHub Actions to create/update workflows
+
 jobs:
   export_pr:
     runs-on: ubuntu-latest
