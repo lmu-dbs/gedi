@@ -1,7 +1,7 @@
 ---
-title: iGedi
+title: iGedi (beta)
 emoji: 🌖
-colorFrom: indigo
+colorFrom: pink
 colorTo: blue
 sdk: streamlit
 sdk_version: 1.37.1
@@ -12,7 +12,7 @@ license: mit
 
 <p>
   <img src="gedi/utils/logo.png" alt="Logo" width="100" align="left" />
-  <h1 style="display: inline;">iGEDI</h1>
+  <h1 style="display: inline;">iGEDI (beta)</h1>
 </p>
 
 **i**nteractive **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
