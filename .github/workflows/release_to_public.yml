@@ -6,7 +6,7 @@ on:
       - main  # Trigger the workflow when changes are pushed to the main branch of the current repository
 
 jobs:
-  import_pr:
+  export_pr:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,6 +15,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Fetch all history for all branches
+      - name: Get Repository Name
+        id: get_repo_name
+        run: |
+          REPO_NAME=${GITHUB_REPOSITORY#*/}
+
 
       # Step 2: Clone the target repository
       - name: Remove existing directory
@@ -25,7 +30,7 @@ jobs:
           git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/lmu-dbs/gedi.git
           cd gedi
           git checkout main  # Ensure we are on the main branch
-       
+
        # Step 3: Set Git user info
       - name: Set Git user info
         run: |
@@ -33,67 +38,103 @@ jobs:
           git config user.name "GitHub Actions"  # Set a name for the user
           git config user.email "actions@github.com"  # Set an email for the user
 
-      # Step 3: Fetch changes from the current repository
+      # Step 4: Fetch changes from the current repository
       - name: Fetch current repository changes
         run: |
           cd gedi
           # Add current repo as a remote
           git remote add current-repo ../  # Give it a descriptive name
           git fetch current-repo  # Fetch from the current repo
-          
+
           # Get the current branch name
           CURRENT_BRANCH=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Get the current branch name
-          
+
           # Checkout the current branch from the current repository
           git checkout -b temp-branch current-repo/$CURRENT_BRANCH  # Create a new branch based on the current repo's branch
 
-      # Step 4: Merge the target repository's main into the temporary branch
+      # Step 5: Merge the target repository's main into the temporary branch
       - name: Merge target repository's main into temp branch
         run: |
           cd gedi
           git merge -s ours origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
-          
-      # Step 5: Push the merged changes to the target repository
+
+      # Step 6: Push the merged changes to the target repository
       - name: Push merged changes to target repository
         run: |
           cd gedi
           git push origin temp-branch  # Push the temporary branch to the target repo
 
-      # Step 6: Create a PR from the temporary branch to the target repo's main
+      # Step 7: Create a PR from the temporary branch to the target repo's main
       - name: Create PR from temporary branch to target repo's main
         run: |
           curl -X POST -H "Authorization: token ${{ secrets.TARGET_REPO_PAT }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/lmu-dbs/gedi/pulls \
-          -d "{\"title\":\"Merge $CURRENT_BRANCH into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
+          -d "{\"title\":\"Merge $REPO_NAME (private) into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
 
-  export_pr:
+  import_pr:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the current repository (your repository's main branch)
+      # Step 1: Checkout the current repository
       - name: Checkout current repository
         uses: actions/checkout@v3
-
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
       - name: Get Repository Name
         id: get_repo_name
         run: |
           REPO_NAME=${GITHUB_REPOSITORY#*/}
-      # Step 2: Set up the target repository
+
+
+      # Step 2: Clone the target repository
       - name: Remove existing directory
         run: |
           rm -rf gedi  # Ensure the directory is clean before cloning
-      - name: Set up target repository
+      - name: Clone target repository
         run: |
           git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/lmu-dbs/gedi.git
           cd gedi
           git checkout main  # Ensure we are on the main branch
-      # Step 3: Push the current branch to the target repository
-      - name: Push current branch to target repository
+
+       # Step 3: Set Git user info
+      - name: Set Git user info
         run: |
           cd gedi
-          git checkout -b temp-branch  # Create a new branch from main
-          git merge origin/main
-          git push origin temp-branch  # Push the current branch to target repo
+          git config user.name "GitHub Actions"  # Set a name for the user
+          git config user.email "actions@github.com"  # Set an email for the user
 
+      # Step 4: Fetch changes from the current repository
+      - name: Fetch current repository changes
+        run: |
+          cd gedi
+          # Add current repo as a remote
+          git remote add current-repo ../  # Give it a descriptive name
+          git fetch current-repo  # Fetch from the current repo
+
+          # Get the current branch name
+          CURRENT_BRANCH=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Get the current branch name
+
+          # Checkout the current branch from the current repository
+          git checkout -b temp-branch current-repo/$CURRENT_BRANCH  # Create a new branch based on the current repo's branch
+
+      # Step 5: Merge the target repository's main into the temporary branch
+      - name: Merge target repository's main into temp branch
+        run: |
+          cd gedi
+          git merge -s ours origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
+
+      # Step 6: Push the merged changes to the current repository (current repo)
+      - name: Push merged changes to current repository
+        run: |
+          cd gedi
+          git push ../ temp-branch  # Push the temp-branch to the current repo
+
+      # Step 7: Create a PR from temp-branch to main in the current repo
+      - name: Create PR from temp-branch to main in current repository
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/pulls \
+          -d "{\"title\":\"Merge temp-branch into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
 
