@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: write
-  workflows: write  # Allow GitHub Actions to create/update workflows
+  actions: read  # Allow GitHub Actions to create/update workflows
 
 jobs:
   export_pr:
@@ -66,7 +66,8 @@ jobs:
       - name: Push merged changes to target repository
         run: |
           cd gedi
-          git push origin temp-branch  # Push the temporary branch to the target repo
+          git push https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/andreamalhera/shainy_gedi.git temp-branch
+          #git push origin temp-branch  # Push the temporary branch to the target repo
 
       # Step 7: Create a PR from the temporary branch to the target repo's main
       - name: Create PR from temporary branch to target repo's main
