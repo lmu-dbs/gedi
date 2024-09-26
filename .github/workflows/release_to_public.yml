@@ -56,3 +56,34 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/other-username/target-repository/pulls \
           -d "{\"title\":\"Merge $CURRENT_BRANCH into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
+
+  export_pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the current repository (your repository's main branch)
+      - name: Checkout current repository
+        uses: actions/checkout@v3
+
+      - name: Get Repository Name
+        id: get_repo_name
+        run: |
+          REPO_NAME=${GITHUB_REPOSITORY#*/}
+      # Step 2: Set up the target repository
+      - name: Remove existing directory
+        run: |
+          rm -rf gedi  # Ensure the directory is clean before cloning
+      - name: Set up target repository
+        run: |
+          git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/lmu-dbs/gedi.git
+          cd gedi
+          git checkout main  # Ensure we are on the main branch
+      # Step 3: Push the current branch to the target repository
+      - name: Push current branch to target repository
+        run: |
+          cd gedi
+          git checkout -b temp-branch  # Create a new branch from main
+          git merge origin/main
+          git push origin temp-branch  # Push the current branch to target repo
+
+
