@@ -4,7 +4,7 @@ emoji: 🌖
 colorFrom: indigo
 colorTo: blue
 sdk: streamlit
-sdk_version: 1.37.1
+sdk_version: 1.38.0
 app_file: utils/config_fabric.py
 pinned: false
 license: mit
