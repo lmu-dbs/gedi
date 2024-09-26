@@ -107,7 +107,7 @@ jobs:
       # Step 6: Merge the main branch from the external repository
       - name: Merge external main into temp-branch
         run: |
-          git merge external/main --allow-unrelated-histories -m "Merging main from lmu-dbs/gedi into temp-branch"
+          git merge -X theirs external/main --allow-unrelated-histories -m "Merging main from lmu-dbs/gedi into temp-branch"
 
       # Step 7: Push the temporary branch to the current repository
       - name: Push temp-branch
