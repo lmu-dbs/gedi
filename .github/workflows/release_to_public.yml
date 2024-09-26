@@ -122,7 +122,7 @@ jobs:
       - name: Merge target repository's main into temp branch
         run: |
           cd gedi
-          git merge -s theirs origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
+          git merge -X theirs origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
 
       # Step 6: Push the merged changes to the current repository (current repo)
       - name: Push merged changes to current repository
