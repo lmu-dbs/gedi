@@ -8,7 +8,6 @@ on:
 permissions:
   contents: write
   actions: read
-  workflow: write
 
 jobs:
   export_pr:
@@ -117,6 +116,8 @@ jobs:
       # Step 7: Push the temporary branch to the current repository
       - name: Push temp-branch
         run: |
+          git add .  # Stage changes
+          git commit -m "Update merge from public"  # Commit changes
           git push origin temp-branch
         env:
           GITHUB_TOKEN: ${{ secrets.TARGET_REPO_PAT }}  # Ensure the token is set
