@@ -25,11 +25,14 @@ jobs:
           sudo apt-get install gh
 
       # Step 3: Clone the target repository (replace with your target repository URL)
+      - name: Remove existing directory
+        run: |
+          rm -rf gedi  # Ensure the directory is clean before cloning
       - name: Clone other repository
         run: |
           git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/lmu-dbs/gedi.git
           cd gedi
-          
+
       # Step 4: Checkout the current branch in the current repository
       - name: Checkout current branch
         run: |
