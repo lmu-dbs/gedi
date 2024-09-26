@@ -44,9 +44,9 @@ jobs:
         run: |
           cd gedi
           git checkout -b private_release  # Create a new branch called 'private_release' in the target repository
-          git remote add $REPO_NAME ../  # Add the current repo as a remote
-          git fetch $REPO_NAME
-          git merge $REPO_NAME/main --allow-unrelated-histories  # Merge the current branch with changes from your repo
+          git remote add source ../  # Add the current repo as a remote
+          git fetch source
+          git merge source/main --allow-unrelated-histories  # Merge the current branch with changes from your repo
           git push origin private_release  # Push the new branch with merged changes to the target repository
 
       # Step 6: Open a pull request to the main branch of the target repository using GitHub CLI
