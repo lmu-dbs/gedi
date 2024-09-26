@@ -65,6 +65,8 @@ jobs:
       # Step 1: Checkout the current repository (your repository's main branch)
       - name: Checkout current repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
 
       - name: Get Repository Name
         id: get_repo_name
