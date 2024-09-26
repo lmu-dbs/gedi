@@ -116,9 +116,7 @@ jobs:
       # Step 7: Push the temporary branch to the current repository
       - name: Push temp-branch
         run: |
-          git add .  # Stage changes
-          git commit -m "Update merge from public"  # Commit changes
-          git push origin temp-branch
+          git push https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/andreamalhera/shainy_gedi.git temp-branch
         env:
           GITHUB_TOKEN: ${{ secrets.TARGET_REPO_PAT }}  # Ensure the token is set
 
