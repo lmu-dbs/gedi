@@ -1,18 +1,16 @@
 import json
 import multiprocessing
-import numpy as np
 import pandas as pd
 import os
 
 from datetime import datetime as dt
 from functools import partial
 from feeed.feature_extractor import extract_features
-from pathlib import Path, PurePath
-from sklearn.impute import SimpleImputer
+from pathlib import Path
 from utils.param_keys import INPUT_PATH
 from utils.param_keys.features import FEATURE_PARAMS, FEATURE_SET
 from gedi.utils.io_helpers import dump_features_json
-
+from utils.column_mappings import column_mappings
 def get_sortby_parameter(elem):
     number = int(elem.rsplit(".")[0].rsplit("_", 1)[1])
     return number
@@ -28,7 +26,7 @@ class EventLogFile:
         return str(os.path.join(self.root_path, self.filename))
 
 class EventLogFeatures(EventLogFile):
-    def __init__(self, filename, folder_path='data/event_log', params=None, logs=None, ft_params=None):
+    def __init__(self, filename=None, folder_path='data/event_log', params=None, logs=None, ft_params=None):
         super().__init__(filename, folder_path)
         if ft_params == None:
             self.params = None
@@ -65,6 +63,8 @@ class EventLogFeatures(EventLogFile):
 
             if str(self.filename).endswith('csv'): # Returns dataframe from loaded metafeatures file
                 self.feat = pd.read_csv(self.filepath)
+                columns_to_rename = {col: column_mappings()[col] for col in self.feat.columns if col in column_mappings()}
+                self.feat.rename(columns=columns_to_rename, inplace=True)
                 print(f"SUCCESS: EventLogFeatures loaded features from {self.filepath}")
             elif isinstance(self.filename, list): # Computes metafeatures for list of .xes files
                 combined_features=pd.DataFrame()
@@ -159,6 +159,6 @@ class EventLogFeatures(EventLogFile):
 
         identifier = file.rsplit(".", 1)[0]
         print(f"  DONE: {file_path}. FEEED computed {feature_set}")
-        dump_features_json(features, self.root_path, identifier)
+        dump_features_json(features, os.path.join(self.root_path,identifier))
         return features
 

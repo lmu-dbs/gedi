@@ -31,7 +31,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/feature_extraction.json
+        python main.py -a config_files/pipeline_steps/feature_extraction.json
 
     - name: Compare output
       run: diff data/validation/test_feat.csv data/test_feat.csv
@@ -60,15 +60,23 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/generation.json
+        python main.py -a config_files/pipeline_steps/generation.json
 
     - name: Compare output 1
       run: 
-        diff data/validation/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
+        diff data/validation/genELexperiment1_04_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment1_04_02.json
 
     - name: Compare output 2
       run: 
-        diff data/validation/genELexperiment1_04_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment1_04_02.json
+        diff data/validation/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
+
+    - name: Compare output 3
+      run:
+        diff data/validation/genELexperiment3_04_nan.json output/features/grid_feat/2_enself_rt20v/genELexperiment3_04_nan.json
+
+    - name: Compare output 4
+      run: 
+        diff data/validation/genELexperiment4_nan_02.json output/features/grid_feat/2_enself_rt20v/genELexperiment4_nan_02.json
 
   test_benchmark:
     runs-on: ubuntu-latest
@@ -90,10 +98,12 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/benchmark.json
+        python main.py -a config_files/pipeline_steps/benchmark.json
 
     - name: Convert output and validation to same encoding
-      run: iconv -f UTF-8 -t ASCII output/benchmark/test_benchmark.csv > data/validation/test_benchmark.csv
+      run: |
+        iconv -f UTF-8 -t ASCII data/validation/test_benchmark.csv > data/validation/test_benchmark.csv
+        iconv -f UTF-8 -t ASCII output/benchmark/test_benchmark.csv > output/benchmark/test_benchmark.csv
 
     - name: Compare output
       run: diff data/validation/test_benchmark.csv output/benchmark/test_benchmark.csv
@@ -118,7 +128,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/augmentation.json
+        python main.py -a config_files/pipeline_steps/augmentation.json
 
   test_evaluation-plotter:
     runs-on: ubuntu-latest
@@ -144,7 +154,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/pipeline_steps/evaluation_plotter.json
+        python main.py -a config_files/pipeline_steps/evaluation_plotter.json
 
   test_integration:
     runs-on: ubuntu-latest
@@ -170,7 +180,7 @@ jobs:
 
     - name: Run test
       run:
-        python main.py -o config_files/options/baseline.json -a config_files/algorithm/experiment_test.json
+        python main.py -a config_files/test/experiment_test.json
 
   test_grid_experiments_script:
     runs-on: ubuntu-latest
@@ -196,10 +206,40 @@ jobs:
 
     - name: Run test
       run:
-        python execute_grid_experiments.py config_files/algorithm/test
+        python gedi/utils/execute_grid_experiments.py config_files/test
 
     - name: Convert output and validation to same encoding
       run: iconv -f UTF-8 -t ASCII output/features/generated/2_bpic_features/2_ense_enseef_feat.csv > data/validation/2_ense_enseef_feat.csv
 
     - name: Compare output
       run: diff data/validation/2_ense_enseef_feat.csv output/features/generated/2_bpic_features/2_ense_enseef_feat.csv
+
+  test_abbrv:
+    runs-on: ubuntu-latest
+
+    # Setting up a python envronment  for the test script to run
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install build-essential python3 python3-dev
+
+    - name: Install feeed
+      run: |
+        python -m pip install --upgrade pip
+        pip install .
+
+    - name: Run test
+      run:
+        python main.py -a config_files/test/test_abbrv_generation.json
+
+    - name: Compare output
+      run:
+        diff data/validation/2_ense_rmcv_feat.csv output/test/igedi_table_1/2_ense_rmcv_feat.csv
