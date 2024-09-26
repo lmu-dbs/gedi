@@ -113,6 +113,9 @@ jobs:
       - name: Push temp-branch
         run: |
           git push origin temp-branch  # Push the temporary branch to your current repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.TARGET_REPO_PAT }}  # Ensure the token is set
+
 
       # Step 8: Create a PR from temp-branch to main in the current repo
       - name: Create PR from temp-branch to main in current repository
