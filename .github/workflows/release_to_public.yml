@@ -1,0 +1,54 @@
+name: Merge and Push to Other Repository
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow when changes are pushed to the main branch of the current repository
+
+jobs:
+  merge-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the current repository (your repository's main branch)
+      - name: Checkout current repository
+        uses: actions/checkout@v3
+
+      - name: Get Repository Name
+        id: get_repo_name
+        run: |
+          REPO_NAME=${GITHUB_REPOSITORY#*/}
+
+      # Step 2: Install GitHub CLI (required for opening a PR later)
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get install gh
+
+      # Step 3: Clone the target repository (replace with your target repository URL)
+      - name: Clone other repository
+        run: |
+          git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/lmu-dbs/gedi.git
+          cd gedi
+          
+      # Step 4: Checkout the current branch in the current repository
+      - name: Checkout current branch
+        run: |
+          git checkout main  # Create a new branch based on your current repository's main
+          git merge origin/main --allow-unrelated-histories  # Merge the target repository's main branch into your new branch
+
+      # Step 5: Push the merged changes to a new branch in the target repository
+      - name: Push changes to target repository
+        run: |
+          cd gedi
+          git checkout -b private_release  # Create a new branch called 'private_release' in the target repository
+          git remote add $REPO_NAME ../  # Add the current repo as a remote
+          git fetch $REPO_NAME
+          git merge $REPO_NAME/main --allow-unrelated-histories  # Merge the current branch with changes from your repo
+          git push origin private_release  # Push the new branch with merged changes to the target repository
+
+      # Step 6: Open a pull request to the main branch of the target repository using GitHub CLI
+      - name: Open pull request to main branch
+        run: |
+          cd gedi
+          gh auth login --with-token <<< "${{ secrets.TARGET_REPO_PAT }}"  # Authenticate GitHub CLI with PAT
+          gh pr create --title "Merge changes from current repository" --body "This PR merges changes from the private repository's main branch" --base main --head private_release  # Open a pull request
