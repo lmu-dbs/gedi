@@ -23,13 +23,13 @@ jobs:
       - name: Clone target repository
         run: |
           git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/lmu-dbs/gedi.git
-          cd target-repository
+          cd gedi
           git checkout main  # Ensure we are on the main branch
           
       # Step 3: Fetch changes from the current repository
       - name: Fetch current repository changes
         run: |
-          cd target-repository
+          cd gedi
           # Add current repo as a remote
           git remote add current-repo ../  # Give it a descriptive name
           git fetch current-repo  # Fetch from the current repo
@@ -43,13 +43,13 @@ jobs:
       # Step 4: Merge the target repository's main into the temporary branch
       - name: Merge target repository's main into temp branch
         run: |
-          cd target-repository
+          cd gedi
           git merge origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
           
       # Step 5: Push the merged changes to the target repository
       - name: Push merged changes to target repository
         run: |
-          cd target-repository
+          cd gedi
           git push origin temp-branch  # Push the temporary branch to the target repo
 
       # Step 6: Create a PR from the temporary branch to the target repo's main
@@ -57,7 +57,7 @@ jobs:
         run: |
           curl -X POST -H "Authorization: token ${{ secrets.TARGET_REPO_PAT }}" \
           -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/other-username/target-repository/pulls \
+          https://api.github.com/repos/lmu-dbs/gedi/pulls \
           -d "{\"title\":\"Merge $CURRENT_BRANCH into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
 
   export_pr:
