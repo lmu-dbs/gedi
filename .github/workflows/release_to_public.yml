@@ -116,7 +116,7 @@ jobs:
       # Step 7: Push the temporary branch to the current repository
       - name: Push temp-branch
         run: |
-          git push https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/andreamalhera/shainy_gedi.git temp-branch
+          git push origin temp-branch
         env:
           GITHUB_TOKEN: ${{ secrets.TARGET_REPO_PAT }}  # Ensure the token is set
 
