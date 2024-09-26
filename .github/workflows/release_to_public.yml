@@ -20,6 +20,9 @@ jobs:
           REPO_NAME=${GITHUB_REPOSITORY#*/}
 
       # Step 2: Set up the target repository
+      - name: Remove existing directory
+        run: |
+          rm -rf gedi  # Ensure the directory is clean before cloning
       - name: Set up target repository
         run: |
           git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/lmu-dbs/gedi.git
