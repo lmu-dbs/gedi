@@ -117,7 +117,7 @@ jobs:
       # Step 8: Create a PR from temp-branch to main in the current repo
       - name: Create PR from temp-branch to main in current repository
         run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          curl -X POST -H "Authorization: token ${{ secrets.TARGET_REPO_PAT }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/${{ github.repository }}/pulls \
           -d "{\"title\":\"Merge public repo into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
