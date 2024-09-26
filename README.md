@@ -2,7 +2,7 @@
 title: iGedi
 emoji: 🌖
 colorFrom: indigo
-colorTo: blue
+colorTo: pink
 sdk: streamlit
 sdk_version: 1.38.0
 app_file: utils/config_fabric.py
