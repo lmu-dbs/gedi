@@ -277,7 +277,7 @@ def set_generator_experiments(generator_params):
                 # removing the temporary file
                 if os.path.exists(f"{uploaded_file.name}"):
                     os.remove(f"{uploaded_file.name}")
-                
+                xes_features = {key: float(value) for key, value in xes_features.items()}
                 experiments = [xes_features]
                 
             if uploaded_file.name.endswith('.csv'):
