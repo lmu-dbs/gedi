@@ -275,6 +275,7 @@ def set_generator_experiments(generator_params):
                 xes_features = extract_features(f"{uploaded_file.name}", sel_features)
                 del xes_features['log']
                 # removing the temporary file
+                uploaded_file.close()
                 if os.path.exists(f"{uploaded_file.name}"):
                     os.remove(f"{uploaded_file.name}")
                 xes_features = {key: float(value) for key, value in xes_features.items()}
