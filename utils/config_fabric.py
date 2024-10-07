@@ -14,6 +14,7 @@ import shutil
 import zipfile
 import io
 from column_mappings import column_mappings
+from feeed.feature_extractor import extract_features
 
 st.set_page_config(layout='wide')
 INPUT_XES="output/inputlog_temp.xes"
@@ -169,8 +170,8 @@ def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial")
             sys.exit(1)
 
 def set_generator_experiments(generator_params):
-    def handle_csv_file(grid_option):
-        uploaded_file = st.file_uploader("Pick a csv-file containing feature values for features:", type="csv")
+    def handle_csv_file(uploaded_file,grid_option):
+        # uploaded_file = st.file_uploader("Pick a csv-file containing feature values for features:", type="csv")
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
             if len(df.columns) <= 1:
@@ -257,14 +258,35 @@ def set_generator_experiments(generator_params):
         return[]
 
 
-    grid_option, csv_option = double_switch("Point-", "Grid-based", third_label="Manual", fourth_label="From CSV")
+    grid_option, csv_option = double_switch("Point-", "Grid-based", third_label="Manual", fourth_label="From File")
 
     if csv_option:
-        df, sel_features = handle_csv_file(grid_option)
-        if df is not None and sel_features is not None:
-            experiments = handle_csv_option(grid_option, df, sel_features)
-        else:
-            experiments = []
+        uploaded_file = st.file_uploader("Pick a csv-file containing feature values for features (or) an xes-event log:", type=["csv","xes"])
+        experiments = []
+        if uploaded_file is not None:
+            if uploaded_file.name.endswith('.xes'):
+                with open(f"{uploaded_file.name}", 'wb') as f:
+                    f.write(uploaded_file.getbuffer())
+
+                sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
+                if 'ratio_variants_per_number_of_traces' in sel_features: #Hotfix
+                    sel_features[sel_features.index('ratio_variants_per_number_of_traces')] = 'ratio_unique_traces_per_trace'
+                
+                xes_features = extract_features(f"{uploaded_file.name}", sel_features)
+                del xes_features['log']
+                # removing the temporary file
+                uploaded_file.close()
+                if os.path.exists(f"{uploaded_file.name}"):
+                    os.remove(f"{uploaded_file.name}")
+                xes_features = {key: float(value) for key, value in xes_features.items()}
+                experiments = [xes_features]
+                
+            if uploaded_file.name.endswith('.csv'):
+                df, sel_features = handle_csv_file(uploaded_file,grid_option)
+                if df is not None and sel_features is not None:
+                    experiments = handle_csv_option(grid_option, df, sel_features)
+                else:
+                    experiments = []
     else:  # Manual
         experiments = handle_manual_option(grid_option)
 
@@ -368,12 +390,6 @@ if __name__ == '__main__':
             # Clean existing output path if it exists
             if os.path.exists(path):
                 shutil.rmtree(path)
-
-            if os.path.exists(path_to_logs): 
-                shutil.rmtree(path_to_logs)
-
-            if os.path.exists(path_to_logs):
-                shutil.rmtree(path_to_logs)
 
             if os.path.exists(path_to_logs):
                 shutil.rmtree(path_to_logs)
