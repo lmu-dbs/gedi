@@ -89,7 +89,7 @@ jobs:
       - name: Push merged changes to target repository
         run: |
           cd ${{ vars.TARGET_DIR }}
-          git push origin temp-branch  # Push the temporary branch to the target repo
+          git push origin temp-branch --force  # Push the temporary branch to the target repo
 
       # Step 8: Create a PR from the temporary branch to the target repo's main
       - name: Create PR from temporary branch to target repo's main
