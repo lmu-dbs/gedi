@@ -47,7 +47,7 @@ jobs:
       # Step 4: Fetch changes from the current repository
       - name: Fetch current repository changes
         run: |
-          cd gedi
+          cd ${{ vars.TARGET_DIR }}
           # Add current repo as a remote
           git remote add current-repo ../  # Use the correct name for the remote
           git fetch current-repo main  # Fetch from the current repo's main branch
