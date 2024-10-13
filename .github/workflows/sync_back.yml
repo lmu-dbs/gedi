@@ -74,5 +74,5 @@ jobs:
         run: |
           curl -X POST -H "Authorization: token ${{ secrets.TARGET_REPO_PAT }}" \
           -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/lmu-dbs/gedi/pulls \
-          -d "{\"title\":\"Merge $REPO_NAME (private) into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
+          https://api.github.com/repos/${{ vars.TARGET_REPO }}/pulls \
+          -d "{\"title\":\"Sync $REPO_NAME (public) into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
