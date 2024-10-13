@@ -1,7 +1,6 @@
 *.pyc
 .ipynb_checkpoints/
 build/
-config_files/algorithm/grid_*/*
 data/
 gedi.egg-info/
 notebooks/.ipynb_checkpoints/*
