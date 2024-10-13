@@ -10,7 +10,7 @@ permissions:
   actions: read
 
 jobs:
-  check_label:
+  export_pr:
     runs-on: ubuntu-latest
     steps:
 
@@ -72,39 +72,12 @@ jobs:
         run: |
           cd ${{ vars.TARGET_DIR }}
 
-          # Fetch the branches and get the default branch
-          git fetch --all
-          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f3)
-          echo "Default branch is: $DEFAULT_BRANCH"
-          echo "DEFAULT_BRANCH=$DEFAULT_BRANCH" >> $GITHUB_ENV
-
-          # Add current repo as a remote
           git remote add current-repo ../  # Give it a descriptive name
           git fetch current-repo  # Fetch from the current repo
-          git fetch --tags current-repo # Fetch from the current repo
-
-          # Debugging step to list branches and tags
-          git branch -a  # List all branches
-          git tag  # List all tags
-
           # Get the current branch name
           CURRENT_BRANCH=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Get the current branch name
-
-          # Get latest tag
-          LATEST_TAG=$(gh release list --limit 1 | awk '{print $1}')  # Get the latest release tag
-          echo "Latest release tag: $LATEST_TAG"
-          echo "latest_tag=$LATEST_TAG" >> $GITHUB_ENV  # Store in an environment variable
-
           # Checkout the current branch from the current repository
-          # git checkout -b temp-branch current-repo/$GITHUB_REF_NAME  # Create a new branch based on the current repo's branch
-          git checkout -b temp-branch tags/$LATEST_TAG  # Create a new branch based on the latest tag
-
-          # Create a new branch based on the latest release tag or use main if no tags exist
-          if [ -n "$LATEST_TAG" ]; then
-            git checkout -b temp-branch $LATEST_TAG  # Create a new branch based on the latest tag
-          else
-            git checkout -b temp-branch current-repo/$DEFAULT_BRANCH  # Fallback to main if no tags found
-          fi
+          git checkout -b temp-branch current-repo/$CURRENT_BRANCH  # Create a new branch based on the current repo's branch
 
       # Step 6: Merge the target repository's main into the temporary branch
       - name: Merge target repository's main into temp branch
