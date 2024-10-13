@@ -23,14 +23,13 @@ jobs:
         run: |
           REPO_NAME=${GITHUB_REPOSITORY#*/}
 
-
       # Step 2: Clone the target repository
       - name: Remove existing directory
         run: |
           rm -rf ${{ env.TARGET_DIR }}  # Ensure the directory is clean before cloning
       - name: Clone target repository
         run: |
-          git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/$REPO_NAME.git
+          git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/${{ env.TARGET_REPO }}.git
           cd ${{ env.TARGET_DIR }}
           git checkout main  # Ensure we are on the main branch
 
