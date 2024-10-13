@@ -1,22 +1,22 @@
 ---
-title: iGedi (beta)
-emoji: 🌖
-colorFrom: pink
-colorTo: indigo
-sdk: streamlit
-sdk_version: 1.37.1
-app_file: utils/config_fabric.py
-pinned: false
-license: mit
----
+ title: iGedi
+ emoji: 🌖
+ colorFrom: indigo
+ colorTo: pink
+ sdk: streamlit
+ sdk_version: 1.38.0
+ app_file: utils/config_fabric.py
+ pinned: false
+ license: mit
+ ---
 
-<p>
-  <img src="gedi/utils/logo.png" alt="Logo" width="100" align="left" />
-  <h1 style="display: inline;">iGEDI (beta)</h1>
-</p>
+ <p>
+   <img src="gedi/utils/logo.png" alt="Logo" width="100" align="left" />
+   <h1 style="display: inline;">(i)GEDI</h1>
+ </p>
 
-**i**nteractive **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
-This repository contains the codebase for the interactive web application tool (iGEDI) as well as for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
+ (**i**nteractive) **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
+ This repository contains the codebase for the interactive web application tool (iGEDI) as well as for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
 
 ## Table of Contents
 
@@ -389,7 +389,7 @@ python main.py -a config_files/experiment_real_targets.json
 To execute the experiments with grid targets, a single [configuration](config_files/grid_2obj) can be selected or all [grid objectives](data/grid_2obj) can be run with one command using the following script. This script will output the [generated event logs (GenED)](data/event_logs/GenED), alongside their respectively measured [feature values](data/GenED_feat.csv) and [benchmark metrics values](data/GenED_bench.csv).
 ```
 conda activate gedi
-python execute_grid_experiments.py config_files/grid_2obj
+python gedi/utils/execute_grid_experiments.py config_files/test
 ```
 We employ the [experiment_grid_2obj_configfiles_fabric.ipynb](notebooks/experiment_grid_2obj_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/grid_2obj) and [objective](data/grid_2obj) files for this experiment.
 For more details about these config_files, please refer to [Feature Extraction](#feature-extraction), [Generation](#generation), and [Benchmark](#benchmark).
@@ -418,7 +418,7 @@ This notebook is used to answer the question if there is a statistically signifi
 Likewise to the evaluation on the statistical tests in notebook `gedi_figs7and8_benchmarking_statisticalTests.ipynb`, this notebook is used to compute the differences between two correlation matrices $\Delta C = C_1 - C_2$. This logic is employed to evaluate and visualize the distance of two correlation matrices. Furthermore, we show how significant scores are retained from the correlations being evaluated on real-world datasets coompared to synthesized event log datasets with real-world targets. In Fig. 9 and 10 in the paper, the results of the notebook are shown. 
 
 ## Citation
-The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl and is *to appear on BPM'24*.
+The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl on BPM'24.
 
 ```bibtex
 @InProceedings{maldonado2024gedi,
