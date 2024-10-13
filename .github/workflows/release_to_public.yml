@@ -48,6 +48,13 @@ jobs:
       - name: Fetch current repository changes
         run: |
           cd ${{ vars.TARGET_DIR }}
+
+          # Fetch the branches and get the default branch
+          git fetch --all
+          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f3)
+          echo "Default branch is: $DEFAULT_BRANCH"
+          echo "DEFAULT_BRANCH=$DEFAULT_BRANCH" >> $GITHUB_ENV
+          
           # Add current repo as a remote
           git remote add current-repo ../  # Use the correct name for the remote
           git fetch current-repo main  # Fetch from the current repo's main branch
@@ -59,7 +66,7 @@ jobs:
           if [ -n "$LATEST_TAG" ]; then
             git checkout -b temp-branch $LATEST_TAG  # Create a new branch based on the latest tag
           else
-            git checkout -b temp-branch current-repo/main  # Fallback to main if no tags found
+            git checkout -b temp-branch current-repo/$DEFAULT_BRANCH  # Fallback to main if no tags found
           fi
           
       # Step 5: Merge the target repository's main into the temporary branch
@@ -80,4 +87,4 @@ jobs:
           curl -X POST -H "Authorization: token ${{ secrets.TARGET_REPO_PAT }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/${{ vars.TARGET_REPO }}/pulls \
-          -d "{\"title\":\"Sync $REPO_NAME (public) into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
+          -d "{\"title\":\"Merges $REPO_NAME (private) into main\",\"head\":\"temp-branch\",\"base\":\"main\",\"body\":\"Automated PR from GitHub Actions\"}"
