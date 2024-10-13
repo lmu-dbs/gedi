@@ -1,7 +1,9 @@
 name: Sync to Hugging Face hub
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - demo-icpm24
   # to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -23,4 +25,4 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://andreamalhera:$HF_TOKEN@huggingface.co/spaces/andreamalhera/igedi_beta $CURRENT_BRANCH:main
+        run: git push --force https://andreamalhera:$HF_TOKEN@huggingface.co/spaces/${{ secrets.HF_SPACE }} $CURRENT_BRANCH:main
