@@ -87,7 +87,6 @@ The JSON file consists of the following key-value pairs:
 - font_size: label font size of the output plot
 - boxplot_width: width of the violinplot/boxplot
 
-
 ### Generation
 ---
 After having extracted meta features from the files, the next step is to generate event log data accordingly. Generally, there are two settings on how the targets are defined: i) meta feature targets are defined by the meta features from the real event log data; ii) a configuration space is defined which resembles the feasible meta features space. 
@@ -401,6 +400,7 @@ streamlit run utils/config_fabric.py # To tunnel to local machine add: --server.
 ssh -N -f -L 9000:localhost:8501 <user@remote_machine.com>
 open "http://localhost:9000/"
 ```
+
 ### Visualizations
 To run the visualizations, we employ [jupyter notebooks](https://jupyter.org/install) and [add the installed environment to the jupyter notebook](https://medium.com/@nrk25693/how-to-add-your-conda-environment-to-your-jupyter-notebook-in-just-4-steps-abeab8b8d084). We then start all visualizations by running e.g.: `jupyter noteboook`. In the following, we describe the `.ipynb`-files in the folder `\notebooks` to reproduce the figures from our paper. 
 
@@ -441,6 +441,7 @@ abstract="Process mining solutions include enhancing performance, conserving res
 isbn="978-3-031-70396-6"
 }
 ```
+
 Furthermore, the `iGEDI` web application is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Aryasomayajula, Frey, and Seidl and is *to appear on Demos@ICPM'24*.
 ```
 @inproceedings{maldonado2024igedi,
