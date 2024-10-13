@@ -29,21 +29,21 @@ jobs:
           rm -rf ${{ env.TARGET_DIR }}  # Ensure the directory is clean before cloning
       - name: Clone target repository
         run: |
-          git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/${{ secrets.TARGET_REPO }}.git
-          cd ${{ env.TARGET_DIR }}
+          git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/${{ vars.TARGET_REPO }}.git
+          cd ${{ vars.TARGET_DIR }}
           git checkout main  # Ensure we are on the main branch
 
        # Step 3: Set Git user info
       - name: Set Git user info
         run: |
-          cd ${{ env.TARGET_DIR }}
+          cd ${{ vars.TARGET_DIR }}
           git config user.name "GitHub Actions"  # Set a name for the user
           git config user.email "actions@github.com"  # Set an email for the user
 
       # Step 4: Fetch changes from the current repository
       - name: Fetch current repository changes
         run: |
-          cd ${{ env.TARGET_DIR }}
+          cd ${{ vars.TARGET_DIR }}
           # Add current repo as a remote
           git remote add current-repo ../  # Give it a descriptive name
           git fetch current-repo  # Fetch from the current repo
@@ -57,13 +57,13 @@ jobs:
       # Step 5: Merge the target repository's main into the temporary branch
       - name: Merge target repository's main into temp branch
         run: |
-          cd ${{ env.TARGET_DIR }}
+          cd ${{ vars.TARGET_DIR }}
           git merge -s ours origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
 
       # Step 6: Push the merged changes to the target repository
       - name: Push merged changes to target repository
         run: |
-          cd ${{ env.TARGET_DIR }}
+          cd ${{ vars.TARGET_DIR }}
           git push origin temp-branch  # Push the temporary branch to the target repo
 
       # Step 7: Create a PR from the temporary branch to the target repo's main
