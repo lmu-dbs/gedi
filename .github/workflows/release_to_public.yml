@@ -30,7 +30,7 @@ jobs:
       # Step 2: Clone the target repository
       - name: Remove existing directory
         run: |
-          rm -rf ${{ env.TARGET_DIR }}  # Ensure the directory is clean before cloning
+          rm -rf ${{ vars.TARGET_DIR }}  # Ensure the directory is clean before cloning
       - name: Clone target repository
         run: |
           git clone https://$GITHUB_ACTOR:${{ secrets.TARGET_REPO_PAT }}@github.com/${{ vars.TARGET_REPO }}.git
