@@ -47,17 +47,21 @@ jobs:
       # Step 4: Fetch changes from the current repository
       - name: Fetch current repository changes
         run: |
-          cd ${{ vars.TARGET_DIR }}
+          cd gedi
           # Add current repo as a remote
-          git remote add current-repo-p ../  # Give it a descriptive name
-          git fetch current-repo-p  # Fetch from the current repo
+          git remote add current-repo ../  # Use the correct name for the remote
+          git fetch current-repo main  # Fetch from the current repo's main branch
 
-          # Get the current branch name
-          CURRENT_BRANCH=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Get the current branch name
+          # Get the latest release tag
+          LATEST_TAG=$(git tag -l "release*" | sort -V | tail -n 1)  # Get the latest release tag
 
-          # Checkout the current branch from the current repository
-          git checkout -b temp-branch current-repo-p/$CURRENT_BRANCH  # Create a new branch based on the current repo's branch
-
+          # Create a new branch based on the latest release tag or use main if no tags exist
+          if [ -n "$LATEST_TAG" ]; then
+            git checkout -b temp-branch $LATEST_TAG  # Create a new branch based on the latest tag
+          else
+            git checkout -b temp-branch current-repo/main  # Fallback to main if no tags found
+          fi
+          
       # Step 5: Merge the target repository's main into the temporary branch
       - name: Merge target repository's main into temp branch
         run: |
