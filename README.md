@@ -1,22 +1,22 @@
 ---
- title: iGedi
- emoji: 🌖
- colorFrom: indigo
- colorTo: pink
- sdk: streamlit
- sdk_version: 1.38.0
- app_file: utils/config_fabric.py
- pinned: false
- license: mit
- ---
+title: iGedi
+emoji: 🌖
+colorFrom: indigo
+colorTo: pink
+sdk: streamlit
+sdk_version: 1.38.0
+app_file: utils/config_fabric.py
+pinned: false
+license: mit
+---
 
- <p>
-   <img src="gedi/utils/logo.png" alt="Logo" width="100" align="left" />
-   <h1 style="display: inline;">(i)GEDI</h1>
- </p>
+<p>
+  <img src="gedi/utils/logo.png" alt="Logo" width="100" align="left" />
+  <h1 style="display: inline;">(i)GEDI</h1>
+</p>
 
- (**i**nteractive) **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
- This repository contains the codebase for the interactive web application tool (iGEDI) as well as for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
+(**i**nteractive) **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining<br />
+This repository contains the codebase for the interactive web application tool (iGEDI) as well as for the [GEDI paper](https://mcml.ai/publications/gedi.pdf) accepted at the BPM'24 conference.
 
 ## Table of Contents
 
