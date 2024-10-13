@@ -1,7 +1,7 @@
 name: gedi
 channels:
-  - defaults
   - conda-forge
+  - defaults
 dependencies:
   - certifi=2024.2.2=pyhd8ed1ab_0
   - cycler=0.12.1=pyhd8ed1ab_0
