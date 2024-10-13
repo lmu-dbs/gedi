@@ -3,20 +3,17 @@ name: Merge and Push to Other Repository
 on:
   push:
     branches:
-      - main  # Trigger the workflow when changes are pushed to the main branch of the current repository
-    tags:
-      - 'release*'
+      - main  # Trigger the workflow when changes are pushed to the main branch
 
 permissions:
   contents: write
   actions: read
 
 jobs:
-  export_pr:
+  check_label:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/release') || github.ref == 'refs/heads/main'  # Check if the event is a release tag OR a push to the main branch
-    
     steps:
+
       # Step 1: Checkout the current repository
       - name: Checkout current repository
         uses: actions/checkout@v3
@@ -27,8 +24,34 @@ jobs:
         run: |
           REPO_NAME=${GITHUB_REPOSITORY#*/}
 
-      # Step 2: Clone the target repository
+      # Step 2: Check for specific labels in commit messages
+      - name: Check for specific labels
+        id: label_check
+        run: |
+          # Fetch the last commit message
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+
+          # Define labels you want to check for
+          LABELS=("release-candidate")
+
+          # Initialize a flag
+          MATCHING_LABEL=false
+
+          # Check if any label is in the commit message
+          for LABEL in "${LABELS[@]}"; do
+            if [[ "$COMMIT_MESSAGE" == *"$LABEL"* ]]; then
+              MATCHING_LABEL=true
+              break
+            fi
+          done
+
+          # Set the output based on the label check
+          echo "matching_label=${MATCHING_LABEL}" >> $GITHUB_ENV
+
+
+      # Step 3: Clone the target repository
       - name: Remove existing directory
+        if: env.matching_label == 'true'
         run: |
           rm -rf ${{ vars.TARGET_DIR }}  # Ensure the directory is clean before cloning
       - name: Clone target repository
@@ -37,14 +60,14 @@ jobs:
           cd ${{ vars.TARGET_DIR }}
           git checkout main  # Ensure we are on the main branch
 
-       # Step 3: Set Git user info
+       # Step 4: Set Git user info
       - name: Set Git user info
         run: |
           cd ${{ vars.TARGET_DIR }}
           git config user.name "GitHub Actions"  # Set a name for the user
           git config user.email "actions@github.com"  # Set an email for the user
 
-      # Step 4: Fetch changes from the current repository
+      # Step 5: Fetch changes from the current repository
       - name: Fetch current repository changes
         run: |
           cd ${{ vars.TARGET_DIR }}
@@ -54,13 +77,27 @@ jobs:
           DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f3)
           echo "Default branch is: $DEFAULT_BRANCH"
           echo "DEFAULT_BRANCH=$DEFAULT_BRANCH" >> $GITHUB_ENV
-          
-          # Add current repo as a remote
-          git remote add current-repo ../  # Use the correct name for the remote
-          git fetch current-repo main  # Fetch from the current repo's main branch
 
-          # Get the latest release tag
-          LATEST_TAG=$(git tag -l "release*" | sort -V | tail -n 1)  # Get the latest release tag
+          # Add current repo as a remote
+          git remote add current-repo ../  # Give it a descriptive name
+          git fetch current-repo  # Fetch from the current repo
+          git fetch --tags current-repo # Fetch from the current repo
+
+          # Debugging step to list branches and tags
+          git branch -a  # List all branches
+          git tag  # List all tags
+
+          # Get the current branch name
+          CURRENT_BRANCH=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Get the current branch name
+
+          # Get latest tag
+          LATEST_TAG=$(gh release list --limit 1 | awk '{print $1}')  # Get the latest release tag
+          echo "Latest release tag: $LATEST_TAG"
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_ENV  # Store in an environment variable
+
+          # Checkout the current branch from the current repository
+          # git checkout -b temp-branch current-repo/$GITHUB_REF_NAME  # Create a new branch based on the current repo's branch
+          git checkout -b temp-branch tags/$LATEST_TAG  # Create a new branch based on the latest tag
 
           # Create a new branch based on the latest release tag or use main if no tags exist
           if [ -n "$LATEST_TAG" ]; then
@@ -68,20 +105,20 @@ jobs:
           else
             git checkout -b temp-branch current-repo/$DEFAULT_BRANCH  # Fallback to main if no tags found
           fi
-          
-      # Step 5: Merge the target repository's main into the temporary branch
+
+      # Step 6: Merge the target repository's main into the temporary branch
       - name: Merge target repository's main into temp branch
         run: |
           cd ${{ vars.TARGET_DIR }}
           git merge -s ours origin/main --allow-unrelated-histories  # Allow unrelated histories if necessary
 
-      # Step 6: Push the merged changes to the target repository
+      # Step 7: Push the merged changes to the target repository
       - name: Push merged changes to target repository
         run: |
           cd ${{ vars.TARGET_DIR }}
           git push origin temp-branch  # Push the temporary branch to the target repo
 
-      # Step 7: Create a PR from the temporary branch to the target repo's main
+      # Step 8: Create a PR from the temporary branch to the target repo's main
       - name: Create PR from temporary branch to target repo's main
         run: |
           curl -X POST -H "Authorization: token ${{ secrets.TARGET_REPO_PAT }}" \
