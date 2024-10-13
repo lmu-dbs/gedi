@@ -67,7 +67,8 @@ jobs:
           echo "latest_tag=$LATEST_TAG" >> $GITHUB_ENV  # Store in an environment variable
 
           # Checkout the current branch from the current repository
-          git checkout -b temp-branch current-repo/$GITHUB_REF_NAME  # Create a new branch based on the current repo's branch
+          # git checkout -b temp-branch current-repo/$GITHUB_REF_NAME  # Create a new branch based on the current repo's branch
+          git checkout -b temp-branch tags/$LATEST_TAG  # Create a new branch based on the latest tag
 
       # Step 5: Merge the target repository's main into the temporary branch
       - name: Merge target repository's main into temp branch
