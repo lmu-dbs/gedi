@@ -441,3 +441,19 @@ abstract="Process mining solutions include enhancing performance, conserving res
 isbn="978-3-031-70396-6"
 }
 ```
+Furthermore, the `iGEDI` web application is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Aryasomayajula, Frey, and Seidl and is *to appear on Demos@ICPM'24*.
+```
+@inproceedings{maldonado2024igedi,
+  author       = {Andrea Maldonado and
+                  Sai Anirudh Aryasomayajula and
+                  Christian M. M. Frey and
+                  Thomas Seidl},
+  editor       = {Jochen De Weerdt, Giovanni Meroni, Han van der Aa, and Karolin Winter},
+  title        = {iGEDI: interactive Generating Event Data with Intentional Features},
+  booktitle    = {ICPM 2024 Tool Demonstration Track, October 14-18, 2024, Kongens Lyngby, Denmark},
+  series       = {{CEUR} Workshop Proceedings},
+  publisher    = {CEUR-WS.org},
+  year         = {2024},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+```
