@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - bpm24
+      - demo-icpm24
   workflow_dispatch:
 
 # Specifies the jobs that are to be run
@@ -34,7 +35,6 @@ jobs:
 
     - name: Compare output
       run: diff data/validation/test_feat.csv data/test_feat.csv
-
 
   test_generation:
     runs-on: ubuntu-latest
@@ -71,7 +71,7 @@ jobs:
         diff data/validation/genELexperiment2_07_04.json output/features/grid_feat/2_enself_rt20v/genELexperiment2_07_04.json
 
     - name: Compare output 3
-      run: 
+      run:
         diff data/validation/genELexperiment3_04_nan.json output/features/grid_feat/2_enself_rt20v/genELexperiment3_04_nan.json
 
     - name: Compare output 4
@@ -107,7 +107,6 @@ jobs:
 
     - name: Compare output
       run: diff data/validation/test_benchmark.csv output/benchmark/test_benchmark.csv
-
 
   test_augmentation:
     runs-on: ubuntu-latest
@@ -155,7 +154,6 @@ jobs:
 
     - name: Run test
       run:
-
         python main.py -a config_files/pipeline_steps/evaluation_plotter.json
 
   test_integration:
@@ -215,10 +213,10 @@ jobs:
 
     - name: Compare output
       run: diff data/validation/2_ense_enseef_feat.csv output/features/generated/2_bpic_features/2_ense_enseef_feat.csv
-  
+
   test_abbrv:
     runs-on: ubuntu-latest
-    
+
     # Setting up a python envronment  for the test script to run
     steps:
     - name: Checkout code
@@ -243,5 +241,5 @@ jobs:
         python main.py -a config_files/test/test_abbrv_generation.json
 
     - name: Compare output
-      run: 
+      run:
         diff data/validation/2_ense_rmcv_feat.csv output/test/igedi_table_1/2_ense_rmcv_feat.csv
