@@ -50,9 +50,9 @@ jobs:
         run: |
           cd gedi
           # Add current repo as a remote
-          git remote add $REPO_NAME ../  # Give it a descriptive name
-          git fetch $REPO_NAME  # Fetch from the current repo
-          git fetch --tags $REPO_NAME # Fetch from the current repo
+          git remote add current-repo ../  # Give it a descriptive name
+          git fetch current-repo  # Fetch from the current repo
+          git fetch --tags current-repo # Fetch from the current repo
 
           # Debugging step to list branches and tags
           git branch -a  # List all branches
@@ -67,7 +67,7 @@ jobs:
           echo "latest_tag=$LATEST_TAG" >> $GITHUB_ENV  # Store in an environment variable
 
           # Checkout the current branch from the current repository
-          # git checkout -b temp-branch $REPO_NAME/$GITHUB_REF_NAME  # Create a new branch based on the current repo's branch
+          # git checkout -b temp-branch current-repo/$GITHUB_REF_NAME  # Create a new branch based on the current repo's branch
           git checkout -b temp-branch tags/$LATEST_TAG  # Create a new branch based on the latest tag
 
       # Step 5: Merge the target repository's main into the temporary branch
