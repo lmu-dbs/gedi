@@ -420,7 +420,7 @@ Likewise to the evaluation on the statistical tests in notebook `gedi_figs7and8_
 ## Citation
 The `GEDI` framework is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Frey, Tavares, Rehwald and Seidl on BPM'24.
 
-```
+```bibtex
 @InProceedings{maldonado2024gedi,
 author="Maldonado, Andrea
 and Frey, Christian M. M.

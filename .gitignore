@@ -1,8 +1,8 @@
-smac3_output/
-data/
-output/
-.ipynb_checkpoints/
-notebooks/.ipynb_checkpoints/*
-gedi.egg-info/
-build/
 *.pyc
+.ipynb_checkpoints/
+build/
+data/
+gedi.egg-info/
+notebooks/.ipynb_checkpoints/*
+output/
+smac3_output/

@@ -96,6 +96,6 @@ jobs:
         gh release upload
         '${{ github.ref_name }}' dist/**
         --repo '${{ github.repository }}'
-        
+
     - name: Cleanup
       run: rm -rf dist
