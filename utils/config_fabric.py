@@ -53,7 +53,7 @@ def play_header():
     )
     with head2:
         """
-        # interactive GEDI (beta)
+        # interactive GEDI
         """
     """
     ## **G**enerating **E**vent **D**ata with **I**ntentional Features for Benchmarking Process Mining
