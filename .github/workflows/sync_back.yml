@@ -13,7 +13,7 @@ permissions:
   
 jobs:
   export_pr:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'sync_branch'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'temp-branch'
     runs-on: ubuntu-latest
     steps:
       # Step 1: Checkout the current repository
