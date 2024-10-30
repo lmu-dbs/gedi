@@ -18,6 +18,7 @@ setup(
         url='https://github.com/lmu-dbs/gedi.git',
         long_description=long_description,
         long_description_content_type="text/markdown",
+        include_package_data=True,
         install_requires=[
             'ConfigSpace==0.7.1',
             'feeed==1.2.0',
