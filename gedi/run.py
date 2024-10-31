@@ -1,4 +1,4 @@
-import config
+import gedi.config
 import pandas as pd
 from datetime import datetime as dt
 from gedi.generator import GenerateEventLogs
@@ -7,7 +7,7 @@ from gedi.augmentation import InstanceAugmentator
 from gedi.benchmark import BenchmarkTest
 from gedi.plotter import BenchmarkPlotter, FeaturesPlotter, AugmentationPlotter, GenerationPlotter
 from utils.default_argparse import ArgParser
-from utils.param_keys import *
+from utils.param_keys import PARAMS, PIPELINE_STEP
 
 def run(kwargs:dict, model_params_list: list, filename_list:list):
     """
