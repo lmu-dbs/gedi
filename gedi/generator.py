@@ -135,8 +135,11 @@ def add_extension_before_traces(xes_file):
 
 class GenerateEventLogs():
     # TODO: Clarify nomenclature: experiment, task, objective as in notebook (https://github.com/lmu-dbs/gedi/blob/main/notebooks/grid_objectives.ipynb)
-    def __init__(self, params):
+    def __init__(self, params=None) -> None:
         print("=========================== Generator ==========================")
+        if params is None:
+            default_params = {'generator_params': {'experiment': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4}, 'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1], 'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]}, 'n_trials': 50}}
+            raise TypeError(f"Missing 'params'. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
         print(f"INFO: Running with {params}")
         start = dt.now()
         if params.get(OUTPUT_PATH) is None:
@@ -188,7 +191,7 @@ class GenerateEventLogs():
             write_xes(temp['log'], save_path)
             add_extension_before_traces(save_path)
             print("SUCCESS: Saved generated event log in", save_path)
-        print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.log_config)} event logs.")
+        print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.log_config)} event log(s).")
         print(f"         Saved generated logs in {self.output_path}")
         print("========================= ~ Generator ==========================")
 
