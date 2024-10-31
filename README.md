@@ -64,13 +64,6 @@ python main.py -a config_files/test/experiment_test.json
 ```
 The last step should take only a few minutes to run.
 
-### Startup
-```console
-conda activate gedi
-python main.py -a config_files/test/experiment_test.json
-```
-The last step should take only a few minutes to run.
-
 ## General Usage
 Our pipeline offers several pipeline steps, which can be run sequentially or partially ordered:
 - [Feature Extraction](#feature-extraction)
