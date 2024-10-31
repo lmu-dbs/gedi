@@ -43,6 +43,7 @@ brew install swig
 ```console
 conda install pyrfr swig
 ```
+
 ## Installation
 To directly use GEDI methods via `import gedi`, install directly from [PyPi](https://pypi.org/project/gedi/).
 ```console
