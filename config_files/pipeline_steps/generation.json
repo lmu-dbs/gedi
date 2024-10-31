@@ -3,9 +3,12 @@
     "pipeline_step": "event_logs_generation",
     "output_path": "output",
     "generator_params": {
-      "experiment": {"input_path": "data/test/grid_feat.csv",
-        "objectives": ["ratio_top_20_variants", "epa_normalized_sequence_entropy_linear_forgetting"]
-      },
+      "experiment": [
+          {"ratio_top_20_variants": 0.2, "epa_normalized_sequence_entropy_linear_forgetting": 0.4},
+          {"ratio_top_20_variants": 0.4, "epa_normalized_sequence_entropy_linear_forgetting": 0.7},
+          {"epa_normalized_sequence_entropy_linear_forgetting": 0.4},
+          {"ratio_top_20_variants": 0.2}
+         ],
       "config_space": {
         "mode": [5, 20],
         "sequence": [0.01, 1],
