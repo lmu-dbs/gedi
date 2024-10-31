@@ -1,4 +1,4 @@
-import config
+import gedi.config
 from datetime import datetime as dt
 from gedi.run import gedi, run
 from utils.default_argparse import ArgParser

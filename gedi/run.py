@@ -1,4 +1,4 @@
-import gedi.config
+import gedi.config as config
 import pandas as pd
 from datetime import datetime as dt
 from gedi.generator import GenerateEventLogs
