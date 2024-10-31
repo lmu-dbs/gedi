@@ -64,19 +64,19 @@ jobs:
 
     - name: Compare output 1
       run: 
-        diff data/validation/genELexperiment1_04_02.json output/features/2_enself_rt20v/genEL1_04_02.json
+        diff data/validation/genEL1_04_02.json output/features/2_enself_rt20v/genEL1_04_02.json
 
     - name: Compare output 2
       run: 
-        diff data/validation/genELexperiment2_07_04.json output/features/2_enself_rt20v/genEL2_07_04.json
+        diff data/validation/genEL2_07_04.json output/features/2_enself_rt20v/genEL2_07_04.json
 
     - name: Compare output 3
       run:
-        diff data/validation/genELexperiment3_04_nan.json output/features/2_enself_rt20v/genEL3_04_nan.json
+        diff data/validation/genEL3_04_nan.json output/features/2_enself_rt20v/genEL3_04_nan.json
 
     - name: Compare output 4
       run: 
-        diff data/validation/genELexperiment4_nan_02.json output/features/2_enself_rt20v/genEL4_nan_02.json
+        diff data/validation/genEL4_nan_02.json output/features/2_enself_rt20v/genEL4_nan_02.json
 
   test_benchmark:
     runs-on: ubuntu-latest
