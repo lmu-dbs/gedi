@@ -1,5 +1,5 @@
 def column_mappings():
-    
+
     column_names_short = {
     'rutpt': 'ratio_unique_traces_per_trace',
     'rmcv': 'ratio_most_common_variant',
@@ -12,5 +12,5 @@ def column_mappings():
     'eseef': 'epa_sequence_entropy_exponential_forgetting',
     'enseef': 'epa_normalized_sequence_entropy_exponential_forgetting'
     }
-    
+
     return column_names_short

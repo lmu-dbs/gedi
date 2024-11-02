@@ -14,9 +14,9 @@ from pm4py import precision_alignments
 from pm4py.objects.bpmn.obj import BPMN
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from gedi.utils.io_helpers import dump_features_json
+from gedi.utils.param_keys import INPUT_PATH, OUTPUT_PATH
+from gedi.utils.param_keys.benchmark import MINERS
 from tqdm import tqdm
-from utils.param_keys import INPUT_PATH, OUTPUT_PATH
-from utils.param_keys.benchmark import MINERS
 
 class BenchmarkTest:
     def __init__(self, params=None, event_logs=None):

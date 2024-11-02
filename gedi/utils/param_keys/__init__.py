@@ -1,3 +1,5 @@
+from .features import FEATURE_PARAMS, FEATURE_SET
+
 # Model params
 ALGORITHM_NAME = 'algorithm_name'
 PIPELINE_STEP = 'pipeline_step'

@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
 with open("README.md", "r") as fh:
@@ -11,6 +11,7 @@ version = version_string
 setup(
         name = 'gedi',
         version = str(version),
+        packages=find_packages(),
         description = 'Generating Event Data with Intentional Features for Benchmarking Process Mining',
         author = 'Andrea Maldonado',
         author_email = 'andreamalher.works@gmail.com',
@@ -80,7 +81,6 @@ setup(
             'urllib3==2.2.1',
             'zict==3.0.0'
             ],
-        packages = ['gedi'],
         classifiers=[
             'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
             'Intended Audience :: Science/Research',      # Define that your audience are developers

@@ -1,13 +1,14 @@
-import gedi.config as config
 import pandas as pd
+
 from datetime import datetime as dt
-from gedi.generator import GenerateEventLogs
-from gedi.features import EventLogFeatures
 from gedi.augmentation import InstanceAugmentator
 from gedi.benchmark import BenchmarkTest
+from gedi.config import get_model_params_list
+from gedi.features import EventLogFeatures
+from gedi.generator import GenerateEventLogs
 from gedi.plotter import BenchmarkPlotter, FeaturesPlotter, AugmentationPlotter, GenerationPlotter
-from utils.default_argparse import ArgParser
-from utils.param_keys import PARAMS, PIPELINE_STEP
+from gedi.utils.default_argparse import ArgParser
+from gedi.utils.param_keys import PARAMS, PIPELINE_STEP
 
 def run(kwargs:dict, model_params_list: list, filename_list:list):
     """
@@ -49,5 +50,5 @@ def gedi(config_path):
         contains the path to the config file
     @return:
     """
-    model_params_list = config.get_model_params_list(config_path)
+    model_params_list = get_model_params_list(config_path)
     run({'params':""}, model_params_list, [])

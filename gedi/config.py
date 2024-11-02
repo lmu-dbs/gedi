@@ -1,8 +1,8 @@
 import json
 import warnings
 
-from utils.param_keys import PIPELINE_STEP, INPUT_PATH, OUTPUT_PATH
-from utils.param_keys.features import FEATURE_SET, FEATURE_PARAMS
+from gedi.utils.param_keys import PIPELINE_STEP, INPUT_PATH, OUTPUT_PATH
+from gedi.utils.param_keys.features import FEATURE_SET, FEATURE_PARAMS
 
 def get_model_params_list(alg_json_file: str) :#-> list[dict]:
     """

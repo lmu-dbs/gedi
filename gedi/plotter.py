@@ -8,20 +8,20 @@ import seaborn as sns
 import os
 import glob
 
-from matplotlib.axes import Axes
-from matplotlib.figure import Figure
-from matplotlib.lines import Line2D
-from utils.param_keys import PLOT_TYPE, PROJECTION, EXPLAINED_VAR, PLOT_3D_MAP
-from utils.param_keys import OUTPUT_PATH, PIPELINE_STEP
-from utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, PLOT_REFERENCE_FEATURE
-from utils.param_keys.plotter import REAL_EVENTLOG_PATH, FONT_SIZE, BOXPLOT_WIDTH
 from collections import defaultdict
-
-from sklearn.preprocessing import Normalizer, StandardScaler
-from sklearn.decomposition import PCA
 from gedi.generator import get_tasks
 from gedi.utils.io_helpers import get_keys_abbreviation
 from gedi.utils.io_helpers import read_csvs, select_instance
+from gedi.utils.param_keys import PLOT_TYPE, PROJECTION, EXPLAINED_VAR, PLOT_3D_MAP
+from gedi.utils.param_keys import OUTPUT_PATH, PIPELINE_STEP
+from gedi.utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, PLOT_REFERENCE_FEATURE
+from gedi.utils.param_keys.plotter import REAL_EVENTLOG_PATH, FONT_SIZE, BOXPLOT_WIDTH
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
+from matplotlib.lines import Line2D
+from sklearn.preprocessing import Normalizer, StandardScaler
+from sklearn.decomposition import PCA
+
 
 def insert_newlines(string, every=140):
     return '\n'.join(string[i:i+every] for i in range(0, len(string), every))
