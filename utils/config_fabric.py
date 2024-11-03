@@ -13,7 +13,7 @@ import time
 import shutil
 import zipfile
 import io
-from column_mappings import column_mappings
+import sys
 from feeed.feature_extractor import extract_features
 
 st.set_page_config(layout='wide')
@@ -171,6 +171,22 @@ def create_objectives_grid(df, objectives, n_para_obj=2, method="combinatorial")
 
 def set_generator_experiments(generator_params):
     def handle_csv_file(uploaded_file,grid_option):
+        #TODO: This code is duplicated. Should be moved and removed.
+        def column_mappings():
+            column_names_short = {
+            'rutpt': 'ratio_unique_traces_per_trace',
+            'rmcv': 'ratio_most_common_variant',
+            'tlcv': 'trace_len_coefficient_variation',
+            'mvo': 'mean_variant_occurrence',
+            'enve': 'epa_normalized_variant_entropy',
+            'ense': 'epa_normalized_sequence_entropy',
+            'eself': 'epa_sequence_entropy_linear_forgetting',
+            'enself': 'epa_normalized_sequence_entropy_linear_forgetting',
+            'eseef': 'epa_sequence_entropy_exponential_forgetting',
+            'enseef': 'epa_normalized_sequence_entropy_exponential_forgetting'
+            }
+
+            return column_names_short
         # uploaded_file = st.file_uploader("Pick a csv-file containing feature values for features:", type="csv")
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
