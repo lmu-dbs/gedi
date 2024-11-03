@@ -452,7 +452,6 @@ abstract="Process mining solutions include enhancing performance, conserving res
 isbn="978-3-031-70396-6"
 }
 ```
-
 Furthermore, the `iGEDI` web application is taken directly from the original paper by [Maldonado](mailto:andreamalher.works@gmail.com), Aryasomayajula, Frey, and Seidl and is *to appear on Demos@ICPM'24*.
 ```bibtex
 @inproceedings{maldonado2024igedi,
