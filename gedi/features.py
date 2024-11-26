@@ -140,7 +140,8 @@ class EventLogFeatures(EventLogFile):
             print(err)
             print(f"Cannot load {self.filepath}. Double check for file or change config 'load_results' to false")
         else:
-            print(f"SUCCESS: EventLogFeatures took {dt.now()-start} sec. Saved {len(self.feat.columns)-1} features for {len(self.feat)} in {self.filepath}")
+            # -2 because of 'log' and 'similarity'
+            print(f"SUCCESS: EventLogFeatures took {dt.now()-start} sec. Saved {len(self.feat.columns)-2} features for {len(self.feat)} in {self.filepath}")
             print("=========================== ~ EventLogFeatures Computation=========================")
 
     #TODO: Implement optional trying to read already computed jsons first.
