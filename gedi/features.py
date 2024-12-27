@@ -16,6 +16,7 @@ def get_sortby_parameter(elem):
     number = int(elem.rsplit(".")[0].rsplit("_", 1)[1])
     return number
 
+
 class EventLogFile:
     def __init__(self, filename, folder_path):
         self.root_path: Path = Path(folder_path)

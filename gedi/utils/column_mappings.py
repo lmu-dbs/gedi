@@ -1,7 +1,7 @@
 def column_mappings():
 
     column_names_short = {
-    'rutpt': 'ratio_unique_traces_per_trace',
+    'rvpnot': 'ratio_variants_per_number_of_traces',
     'rmcv': 'ratio_most_common_variant',
     'tlcv': 'trace_len_coefficient_variation',
     'mvo': 'mean_variant_occurrence',
