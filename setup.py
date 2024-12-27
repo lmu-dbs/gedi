@@ -22,7 +22,7 @@ setup(
         include_package_data=True,
         install_requires=[
             'ConfigSpace==0.7.1',
-            'feeed==1.2.0',
+            'feeed==1.3.2',
             'imblearn==0.0',
             'Levenshtein==0.23.0',
             'matplotlib==3.8.4',
