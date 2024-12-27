@@ -4,7 +4,7 @@ import os
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-version_string = os.environ.get("VERSION_PLACEHOLDER", "1.0.0")
+version_string = os.environ.get("VERSION_PLACEHOLDER", "1.0.1")
 print(version_string)
 version = version_string
 
@@ -22,7 +22,6 @@ setup(
         include_package_data=True,
         install_requires=[
             'ConfigSpace==0.7.1',
-            'feeed>=1.3.2',
             'imblearn==0.0',
             'Levenshtein==0.23.0',
             'matplotlib==3.8.4',
@@ -44,7 +43,7 @@ setup(
             'deprecation==2.1.0',
             'distributed==2024.2.1',
             'emcee==3.1.4',
-            'feeed == 1.2.0',
+            'feeed>=1.3.2',
             'fsspec==2024.2.0',
             'imbalanced-learn==0.12.0',
             'imblearn==0.0',
