@@ -174,7 +174,7 @@ def set_generator_experiments(generator_params):
         #TODO: This code is duplicated. Should be moved and removed.
         def column_mappings():
             column_names_short = {
-            'rutpt': 'ratio_unique_traces_per_trace',
+            'rvpnot': 'ratio_variants_per_number_of_traces',
             'rmcv': 'ratio_most_common_variant',
             'tlcv': 'trace_len_coefficient_variation',
             'mvo': 'mean_variant_occurrence',
@@ -285,9 +285,6 @@ def set_generator_experiments(generator_params):
                     f.write(uploaded_file.getbuffer())
 
                 sel_features = st.multiselect("Selected features", list(generator_params['experiment'].keys()))
-                if 'ratio_variants_per_number_of_traces' in sel_features: #Hotfix
-                    sel_features[sel_features.index('ratio_variants_per_number_of_traces')] = 'ratio_unique_traces_per_trace'
-                
                 xes_features = extract_features(f"{uploaded_file.name}", sel_features)
                 del xes_features['log']
                 # removing the temporary file
@@ -296,7 +293,7 @@ def set_generator_experiments(generator_params):
                     os.remove(f"{uploaded_file.name}")
                 xes_features = {key: float(value) for key, value in xes_features.items()}
                 experiments = [xes_features]
-                
+
             if uploaded_file.name.endswith('.csv'):
                 df, sel_features = handle_csv_file(uploaded_file,grid_option)
                 if df is not None and sel_features is not None:

@@ -19,7 +19,7 @@ def get_model_params_list(alg_json_file: str) :#-> list[dict]:
                       '  Use a configuration from the `config_files`-folder together with the args `-a`.')
         return [
             {PIPELINE_STEP: 'feature_extraction', INPUT_PATH: 'data/test',
-             FEATURE_PARAMS: {FEATURE_SET: ['ratio_unique_traces_per_trace',
+             FEATURE_PARAMS: {FEATURE_SET: ['ratio_variants_per_number_of_traces',
                                             'ratio_most_common_variant']},
              OUTPUT_PATH: 'output/plots'}
             ]

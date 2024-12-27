@@ -140,7 +140,7 @@ In case of manually defining the targets for the features in config space, the f
         <tr style="text-align: right;">
         <th></th>
         <th>n_traces</th>
-        <th>n_unique_traces</th>
+        <th>n_variants</th>
         <th>ratio_variants_per_number_of_traces</th>
         <th>trace_len_min</th>
         <th>trace_len_max</th>
