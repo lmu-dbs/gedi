@@ -204,7 +204,6 @@ class GenerateEventLogs():
         else:
             log_config = self.generate_optimized_log(self.configs)
 
-        identifier = 'genEL'+str(identifier)
         save_path = get_output_key_value_location(task.to_dict(),
                                          self.output_path, identifier, self.feature_keys)+".xes"
 
