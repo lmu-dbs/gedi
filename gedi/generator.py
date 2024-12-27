@@ -192,7 +192,9 @@ class GenerateEventLogs():
         try:
             identifier = [x for x in task[1] if isinstance(x, str)][0]
         except IndexError:
-            identifier = "genEL"+str(task[0]+1)
+            identifier = task[0]+1
+        identifier = "genEL" +str(identifier)
+
         task = task[1].drop('log', errors='ignore')
         self.objectives = task.dropna().to_dict()
         random.seed(RANDOM_SEED)
