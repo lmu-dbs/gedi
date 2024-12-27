@@ -60,7 +60,7 @@ def get_output_key_value_location(obj, output_path, identifier, obj_keys=None):
 
     obj_values = [round(x, 4) for x in [*obj_sorted.values()]]
 
-    if len(obj_keys) > 7:
+    if len(obj_keys) > 10:
         folder_path = os.path.join(output_path, f"{len(obj_keys)}_features")
         generated_file_name = f"{identifier}"
     else:

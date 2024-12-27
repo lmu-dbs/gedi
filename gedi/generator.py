@@ -193,7 +193,9 @@ class GenerateEventLogs():
             identifier = [x for x in task[1] if isinstance(x, str)][0]
         except IndexError:
             identifier = task[0]+1
-        task = task[1].loc[lambda x, identifier=identifier: x!=identifier]
+        identifier = "genEL" +str(identifier)
+
+        task = task[1].drop('log', errors='ignore')
         self.objectives = task.dropna().to_dict()
         random.seed(RANDOM_SEED)
         self.configs = self.optimize()
@@ -204,7 +206,6 @@ class GenerateEventLogs():
         else:
             log_config = self.generate_optimized_log(self.configs)
 
-        identifier = 'genEL'+str(identifier)
         save_path = get_output_key_value_location(task.to_dict(),
                                          self.output_path, identifier, self.feature_keys)+".xes"
 
