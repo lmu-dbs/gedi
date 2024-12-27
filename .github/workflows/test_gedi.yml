@@ -266,4 +266,4 @@ jobs:
 
     - name: Run test
       run: |
-        python -c "from gedi import GenerateEventLogs;default_params = {'generator_params': {'experiment': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4}, 'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1], 'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]}, 'n_trials': 50}}; GenerateEventLogs(default_params)"
+        python -c "from gedi import GenerateEventLogs;default_params = {'generator_params': {'experiment': {'ratio_variants_per_number_of_traces': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4}, 'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1], 'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]}, 'n_trials': 50}}; GenerateEventLogs(default_params)"

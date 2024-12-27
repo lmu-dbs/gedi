@@ -90,10 +90,6 @@ def compute_similarity(v1, v2):
     v1 = {k: (float(v) if k != "log" else v) for k, v in v1.items()}
     v2 = {k: (float(v) if k != "log" else v) for k, v in v2.items()}
 
-    # HOTFIX: Rename 'ratio_unique_traces_per_trace'
-    if 'ratio_unique_traces_per_trace' in v1:
-        v1['ratio_variants_per_number_of_traces'] = v1.pop('ratio_unique_traces_per_trace')
-
     # Filter out non-numeric values and ensure the same keys exist in both dictionaries
     common_keys = set(v1.keys()).intersection(set(v2.keys()))
     numeric_keys = [k for k in common_keys if isinstance(v1[k], (int, float)) and isinstance(v2[k], (int, float))]
