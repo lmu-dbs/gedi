@@ -25,7 +25,6 @@ from gedi.utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG
 import xml.etree.ElementTree as ET
 import re
 from xml.dom import minidom
-from memory_profiler import profile
 
 """
    Parameters
