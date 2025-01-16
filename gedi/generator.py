@@ -25,6 +25,7 @@ from gedi.utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG
 import xml.etree.ElementTree as ET
 import re
 from xml.dom import minidom
+from memory_profiler import profile
 
 """
    Parameters
@@ -188,6 +189,15 @@ class GenerateEventLogs():
         print(f"         Saved generated logs in {self.output_path}")
         print("========================= ~ Generator ==========================")
 
+    
+    def clear(self):
+        self.log_config = None
+        self.configs = None
+        self.params = None
+        self.output_path = None
+        self.feature_keys = None
+        
+        
     def generator_wrapper(self, task):
         try:
             identifier = [x for x in task[1] if isinstance(x, str)][0]
