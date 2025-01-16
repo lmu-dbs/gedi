@@ -179,8 +179,8 @@ class GenerateEventLogs():
             if type(self.configs) is not list:
                 self.configs = [self.configs]
             temp = self.generate_optimized_log(self.configs[0])
-            # self.log_config = [temp]
-            self.log_config = [temp['metafeatures']]
+            self.log_config = [temp]
+            # self.log_config = [temp['metafeatures']] if 'metafeatures' in temp else []
             save_path = get_output_key_value_location(self.params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
