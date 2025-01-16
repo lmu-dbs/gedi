@@ -170,7 +170,7 @@ class GenerateEventLogs():
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
                 log_config = p.map(self.generator_wrapper, [(index, row) for index, row in tasks.iterrows()])
-            self.log_config = log_config
+            self.log_config = [config['metafeatures'] for config in log_config if 'metafeatures' in config]
 
         else:
             random.seed(RANDOM_SEED)
@@ -178,7 +178,7 @@ class GenerateEventLogs():
             if type(self.configs) is not list:
                 self.configs = [self.configs]
             temp = self.generate_optimized_log(self.configs[0])
-            self.log_config = [temp]
+            self.log_config = [temp['metafeatures']] if 'metafeatures' in temp else []
             save_path = get_output_key_value_location(self.params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
@@ -190,6 +190,7 @@ class GenerateEventLogs():
 
     
     def clear(self):
+        print("Clearing parameters...")
         self.log_config = None
         self.configs = None
         self.params = None
