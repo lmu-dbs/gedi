@@ -181,10 +181,10 @@ class GenerateEventLogs():
 
         else:
             random.seed(RANDOM_SEED)
-            self.configs = self.optimize()
-            if type(self.configs) is not list:
-                self.configs = [self.configs]
-            temp = self.generate_optimized_log(self.configs[0])
+            configs = self.optimize()
+            if type(configs) is not list:
+                configs = [configs]
+            temp = self.generate_optimized_log(configs[0])
             self.log_config = [temp['metafeatures']] if 'metafeatures' in temp else []
             save_path = get_output_key_value_location(self.params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
@@ -199,7 +199,7 @@ class GenerateEventLogs():
     def clear(self):
         print("Clearing parameters...")
         self.log_config = None
-        self.configs = None
+        # self.configs = None
         self.params = None
         self.output_path = None
         self.feature_keys = None
@@ -215,13 +215,13 @@ class GenerateEventLogs():
         task = task[1].drop('log', errors='ignore')
         self.objectives = task.dropna().to_dict()
         random.seed(RANDOM_SEED)
-        self.configs = self.optimize()
+        configs = self.optimize()
 
         random.seed(RANDOM_SEED)
-        if isinstance(self.configs, list):
-            log_config = self.generate_optimized_log(self.configs[0])
+        if isinstance(configs, list):
+            log_config = self.generate_optimized_log(configs[0])
         else:
-            log_config = self.generate_optimized_log(self.configs)
+            log_config = self.generate_optimized_log(configs)
 
         save_path = get_output_key_value_location(task.to_dict(),
                                          self.output_path, identifier, self.feature_keys)+".xes"
