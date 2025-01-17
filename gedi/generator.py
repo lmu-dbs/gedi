@@ -170,6 +170,9 @@ class GenerateEventLogs():
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
                 log_config = p.map(self.generator_wrapper, [(index, row) for index, row in tasks.iterrows()])
+            # TODO: Split log and metafeatures into separate object attributes
+            # TODO: Access not storing log in memory
+            # TODO: identify why log is needed in self.log_config
             self.log_config = [
                         {'log': config.get('log'), 'metafeatures': config.get('metafeatures')}
                         for config in log_config
