@@ -151,7 +151,7 @@ class GenerateEventLogs():
             os.makedirs(self.output_path, exist_ok=True)
 
         if self.output_path.endswith('csv'):
-            self.log_config = pd.read_csv(self.output_path)
+            self.log_features = pd.read_csv(self.output_path)
             return
 
         generator_params = params.get(GENERATOR_PARAMS)
@@ -171,13 +171,13 @@ class GenerateEventLogs():
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
                 partial_wrapper = partial(self.generator_wrapper, generator_params=generator_params)
-                log_config = p.map(partial_wrapper, [(index, row) for index, row in tasks.iterrows()])
+                log_features = p.map(partial_wrapper, [(index, row) for index, row in tasks.iterrows()])
             # TODO: Split log and metafeatures into separate object attributes
             # TODO: Access not storing log in memory
-            # TODO: identify why log is needed in self.log_config
-            self.log_config = [
+            # TODO: identify why log is needed in self.log_features
+            self.log_features = [
                         {'log': config.get('log'), 'metafeatures': config.get('metafeatures')}
-                        for config in log_config
+                        for config in log_features
                         if 'metafeatures' in config and 'log' in config
                     ]
 
@@ -187,26 +187,25 @@ class GenerateEventLogs():
             if type(configs) is not list:
                 configs = [configs]
             temp = self.generate_optimized_log(configs[0])
-            self.log_config = [temp['metafeatures']] if 'metafeatures' in temp else []
+            self.log_features = [temp['metafeatures']] if 'metafeatures' in temp else []
             save_path = get_output_key_value_location(generator_params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
             add_extension_before_traces(save_path)
             print("SUCCESS: Saved generated event log in", save_path)
-        print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.log_config)} event log(s).")
+        import pdb; pdb.set_trace()
+        print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.log_features)} event log(s).")
         print(f"         Saved generated logs in {self.output_path}")
         print("========================= ~ Generator ==========================")
 
-    
     def clear(self):
         print("Clearing parameters...")
-        self.log_config = None
+        self.log_features = None
         # self.configs = None
         # self.params = None
         self.output_path = None
         self.feature_keys = None
-        
-        
+
     def generator_wrapper(self, task, generator_params=None):
         try:
             identifier = [x for x in task[1] if isinstance(x, str)][0]
@@ -221,17 +220,17 @@ class GenerateEventLogs():
 
         random.seed(RANDOM_SEED)
         if isinstance(configs, list):
-            log_config = self.generate_optimized_log(configs[0])
+            log_features = self.generate_optimized_log(configs[0])
         else:
-            log_config = self.generate_optimized_log(configs)
+            log_features = self.generate_optimized_log(configs)
 
         save_path = get_output_key_value_location(task.to_dict(),
                                          self.output_path, identifier, self.feature_keys)+".xes"
 
-        write_xes(log_config['log'], save_path)
+        write_xes(log_features['log'], save_path)
         add_extension_before_traces(save_path)
         print("SUCCESS: Saved generated event log in", save_path)
-        features_to_dump = log_config['metafeatures']
+        features_to_dump = log_features['metafeatures']
 
         features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
         # calculating the manhattan distance of the generated log to the target features
@@ -239,7 +238,7 @@ class GenerateEventLogs():
         features_to_dump['target_similarity'] = compute_similarity(self.objectives, features_to_dump)
         dump_features_json(features_to_dump, save_path)
 
-        return log_config
+        return log_features
 
     def generate_optimized_log(self, config):
         ''' Returns event log from given configuration'''
