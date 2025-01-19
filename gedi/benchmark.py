@@ -25,7 +25,7 @@ class BenchmarkTest:
 
         print(f"INFO: Running with {params}")
 
-        if len(event_logs) == 0:
+        if event_logs is None or len(event_logs) == 0:
             log_path = params[INPUT_PATH]
             if log_path.endswith(".xes"):
                 event_logs = [""]

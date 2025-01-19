@@ -24,21 +24,21 @@ def run(kwargs:dict, model_params_list: list, filename_list:list):
     params = kwargs[PARAMS]
     ft = EventLogFeatures(None)
     augmented_ft = InstanceAugmentator()
-    gen = pd.DataFrame(columns=['log'])
+    gen = pd.DataFrame(columns=['metafeatures'])
 
     for model_params in model_params_list:
         if model_params.get(PIPELINE_STEP) == 'instance_augmentation':
             augmented_ft = InstanceAugmentator(aug_params=model_params, samples=ft.feat)
             AugmentationPlotter(augmented_ft, model_params)
         elif model_params.get(PIPELINE_STEP) == 'event_logs_generation':
-            gen = pd.DataFrame(GenerateEventLogs(model_params).log_config)
+            gen = pd.DataFrame(GenerateEventLogs(model_params).generated_features)
             #gen = pd.read_csv("output/features/generated/grid_2objectives_enseef_enve/2_enseef_enve_feat.csv")
             #GenerationPlotter(gen, model_params, output_path="output/plots")
         elif model_params.get(PIPELINE_STEP) == 'benchmark_test':
-            benchmark = BenchmarkTest(model_params, event_logs=gen['log'])
+            benchmark = BenchmarkTest(model_params)#, event_logs=gen['log'])
             # BenchmarkPlotter(benchmark.features, output_path="output/plots")
         elif model_params.get(PIPELINE_STEP) == 'feature_extraction':
-            ft = EventLogFeatures(**kwargs, logs=gen['log'], ft_params=model_params)
+            ft = EventLogFeatures(**kwargs, ft_params=model_params)
             FeaturesPlotter(ft.feat, model_params)
         elif model_params.get(PIPELINE_STEP) == "evaluation_plotter":
             GenerationPlotter(gen, model_params, output_path=model_params['output_path'], input_path=model_params['input_path'])

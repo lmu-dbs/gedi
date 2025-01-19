@@ -25,6 +25,7 @@ from gedi.utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG
 import xml.etree.ElementTree as ET
 import re
 from xml.dom import minidom
+from functools import partial
 
 """
    Parameters
@@ -150,11 +151,11 @@ class GenerateEventLogs():
             os.makedirs(self.output_path, exist_ok=True)
 
         if self.output_path.endswith('csv'):
-            self.log_config = pd.read_csv(self.output_path)
+            self.generated_features = pd.read_csv(self.output_path)
             return
 
-        self.params = params.get(GENERATOR_PARAMS)
-        experiment = self.params.get(EXPERIMENT)
+        generator_params = params.get(GENERATOR_PARAMS)
+        experiment = generator_params.get(EXPERIMENT)
 
         if experiment is not None:
             tasks, output_path = get_tasks(experiment, self.output_path)
@@ -169,26 +170,44 @@ class GenerateEventLogs():
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
-                log_config = p.map(self.generator_wrapper, [(index, row) for index, row in tasks.iterrows()])
-            self.log_config = log_config
+                partial_wrapper = partial(self.generator_wrapper, generator_params=generator_params)
+                generated_features = p.map(partial_wrapper, [(index, row) for index, row in tasks.iterrows()])
+            # TODO: Split log and metafeatures into separate object attributes
+            # TODO: Access not storing log in memory
+            # TODO: identify why log is needed in self.generated_features
+            self.generated_features = [
+                        {
+                            #'log': config.get('log'),
+                            'metafeatures': config.get('metafeatures')}
+                            for config in generated_features
+                            if 'metafeatures' in config #and 'log' in config
+                    ]
 
         else:
             random.seed(RANDOM_SEED)
-            self.configs = self.optimize()
-            if type(self.configs) is not list:
-                self.configs = [self.configs]
-            temp = self.generate_optimized_log(self.configs[0])
-            self.log_config = [temp]
-            save_path = get_output_key_value_location(self.params[EXPERIMENT],
+            configs = self.optimize(generator_params=generator_params)
+            if type(configs) is not list:
+                configs = [configs]
+            temp = self.generate_optimized_log(configs[0])
+            self.generated_features = [temp['metafeatures']] if 'metafeatures' in temp else []
+            save_path = get_output_key_value_location(generator_params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
             add_extension_before_traces(save_path)
             print("SUCCESS: Saved generated event log in", save_path)
-        print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.log_config)} event log(s).")
+        print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.generated_features)} event log(s).")
         print(f"         Saved generated logs in {self.output_path}")
         print("========================= ~ Generator ==========================")
 
-    def generator_wrapper(self, task):
+    def clear(self):
+        print("Clearing parameters...")
+        self.generated_features = None
+        # self.configs = None
+        # self.params = None
+        self.output_path = None
+        self.feature_keys = None
+
+    def generator_wrapper(self, task, generator_params=None):
         try:
             identifier = [x for x in task[1] if isinstance(x, str)][0]
         except IndexError:
@@ -198,21 +217,21 @@ class GenerateEventLogs():
         task = task[1].drop('log', errors='ignore')
         self.objectives = task.dropna().to_dict()
         random.seed(RANDOM_SEED)
-        self.configs = self.optimize()
+        configs = self.optimize(generator_params = generator_params)
 
         random.seed(RANDOM_SEED)
-        if isinstance(self.configs, list):
-            log_config = self.generate_optimized_log(self.configs[0])
+        if isinstance(configs, list):
+            generated_features = self.generate_optimized_log(configs[0])
         else:
-            log_config = self.generate_optimized_log(self.configs)
+            generated_features = self.generate_optimized_log(configs)
 
         save_path = get_output_key_value_location(task.to_dict(),
                                          self.output_path, identifier, self.feature_keys)+".xes"
 
-        write_xes(log_config['log'], save_path)
+        write_xes(generated_features['log'], save_path)
         add_extension_before_traces(save_path)
         print("SUCCESS: Saved generated event log in", save_path)
-        features_to_dump = log_config['metafeatures']
+        features_to_dump = generated_features['metafeatures']
 
         features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
         # calculating the manhattan distance of the generated log to the target features
@@ -220,7 +239,7 @@ class GenerateEventLogs():
         features_to_dump['target_similarity'] = compute_similarity(self.objectives, features_to_dump)
         dump_features_json(features_to_dump, save_path)
 
-        return log_config
+        return generated_features
 
     def generate_optimized_log(self, config):
         ''' Returns event log from given configuration'''
@@ -296,8 +315,8 @@ class GenerateEventLogs():
             log_evaluation[key] = abs(self.objectives[key] - metafeatures[key])
         return log_evaluation
 
-    def optimize(self):
-        if self.params.get(CONFIG_SPACE) is None:
+    def optimize(self, generator_params):
+        if generator_params.get(CONFIG_SPACE) is None:
             configspace = ConfigurationSpace({
                 "mode": (5, 40),
                 "sequence": (0.01, 1),
@@ -312,7 +331,7 @@ class GenerateEventLogs():
             })
             print(f"WARNING: No config_space specified in config file. Continuing with {configspace}")
         else:
-            configspace_lists = self.params[CONFIG_SPACE]
+            configspace_lists = generator_params[CONFIG_SPACE]
             configspace_tuples = {}
             for k, v in configspace_lists.items():
                 if len(v) == 1:
@@ -321,11 +340,11 @@ class GenerateEventLogs():
                     configspace_tuples[k] = tuple(v)
             configspace = ConfigurationSpace(configspace_tuples)
 
-        if self.params.get(N_TRIALS) is None:
+        if generator_params.get(N_TRIALS) is None:
             n_trials = 20
             print(f"INFO: Running with n_trials={n_trials}")
         else:
-            n_trials = self.params[N_TRIALS]
+            n_trials = generator_params[N_TRIALS]
 
         objectives = [*self.objectives.keys()]
 
