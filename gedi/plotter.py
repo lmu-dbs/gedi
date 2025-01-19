@@ -635,6 +635,8 @@ class GenerationPlotter(object):
         self.output_path = output_path
         self.input_path = input_path
         self.model_params = model_params
+        if gen_cfg.empty: # Deactivated for tests
+            return
         if "metafeatures" in gen_cfg.columns:
             self.gen = gen_cfg.metafeatures
             self.gen=pd.concat([pd.DataFrame.from_dict(entry, orient="Index").T for entry in self.gen]).reset_index(drop=True)
