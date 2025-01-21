@@ -135,7 +135,6 @@ def add_extension_before_traces(xes_file):
         f.write(xml_str)
 
 class GenerateEventLogs():
-    # TODO: Clarify nomenclature: experiment, task, objective as in notebook (https://github.com/lmu-dbs/gedi/blob/main/notebooks/grid_objectives.ipynb)
     def __init__(self, params=None) -> None:
         print("=========================== Generator ==========================")
         if params is None:
@@ -172,9 +171,6 @@ class GenerateEventLogs():
                 random.seed(RANDOM_SEED)
                 partial_wrapper = partial(self.generator_wrapper, generator_params=generator_params)
                 generated_features = p.map(partial_wrapper, [(index, row) for index, row in tasks.iterrows()])
-            # TODO: Split log and metafeatures into separate object attributes
-            # TODO: Access not storing log in memory
-            # TODO: identify why log is needed in self.generated_features
             self.generated_features = [
                         {
                             #'log': config.get('log'),
