@@ -11,7 +11,7 @@ from feeed.end_activities import EndActivities as end_activities
 from feeed.epa_based import Epa_based as epa_based
 from feeed.eventropies import Eventropies as eventropies
 from feeed.feature_extractor import extract_features
-from feeed.feature_extractor import feature_type
+from feeed.feature_extractor import feature_type, read_pm4py_log
 from feeed.simple_stats import SimpleStats as simple_stats
 from feeed.start_activities import StartActivities as start_activities
 from feeed.trace_length import TraceLength as trace_length
@@ -41,6 +41,7 @@ def get_feature_type(ft_name):
     ft_type = feature_type(ft_name)
     return ft_type
 
+#TODO: Asses if to move within class
 def compute_features_from_event_data(feature_set, event_data: EventLog):
     features_computation = {}
     for ft_name in feature_set:
@@ -181,8 +182,11 @@ class EventDataFeatures(EventLogFile):
         try:
             file_path = os.path.join(self.root_path, file)
             print(f"  INFO: Starting FEEED for {file_path} and {feature_set}")
-            features = extract_features(file_path, feature_set)
 
+            #NOTE: Current implementation saves features in "_feat.csv" within feeed in extract_features()
+            #log = read_pm4py_log(file_path)
+            #features = compute_features_from_event_data(feature_set, log)
+            features = extract_features(file_path, feature_set)
         except Exception as e:
             print("ERROR: for ",file.rsplit(".", 1)[0], feature_set, "skipping and continuing with next log.")
             print(e)
