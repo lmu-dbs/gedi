@@ -16,16 +16,13 @@ from feeed.trace_variant import TraceVariant as trace_variant
 from pm4py import write_xes
 from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
-from gedi.generation.model import create_model
-from gedi.generation.simulation import simulate_log
+from gedi.features import compute_features_from_event_data
+from gedi.generation.generator import generate_log, generate_optimized_log, add_extension_before_traces
 from gedi.utils.column_mappings import column_mappings
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
 from gedi.utils.param_keys import OUTPUT_PATH, INPUT_PATH
 from gedi.utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG_SPACE, N_TRIALS
-import xml.etree.ElementTree as ET
-import re
-from xml.dom import minidom
 from functools import partial
 
 RANDOM_SEED = 10
@@ -60,69 +57,25 @@ def get_tasks(experiment, output_path="", reference_feature=None):
     return tasks, output_path
 
 
-def removeextralines(elem):
-    hasWords = re.compile("\\w")
-    for element in elem.iter():
-        if not re.search(hasWords,str(element.tail)):
-            element.tail=""
-        if not re.search(hasWords,str(element.text)):
-            element.text = ""
-
-def add_extension_before_traces(xes_file):
-    # Register the namespace
-    ET.register_namespace('', "http://www.xes-standard.org/")
-
-    # Parse the original XML
-    tree = ET.parse(xes_file)
-    root = tree.getroot()
-
-    # Add extensions
-    extensions = [
-        {'name': 'Lifecycle', 'prefix': 'lifecycle', 'uri': 'http://www.xes-standard.org/lifecycle.xesext'},
-        {'name': 'Time', 'prefix': 'time', 'uri': 'http://www.xes-standard.org/time.xesext'},
-        {'name': 'Concept', 'prefix': 'concept', 'uri': 'http://www.xes-standard.org/concept.xesext'}
-    ]
-
-    for ext in extensions:
-        extension_elem = ET.Element('extension', ext)
-        root.insert(0, extension_elem)
-
-    # Add global variables
-    globals = [
-        {
-            'scope': 'event',
-            'attributes': [
-                {'key': 'lifecycle:transition', 'value': 'complete'},
-                {'key': 'concept:name', 'value': '__INVALID__'},
-                {'key': 'time:timestamp', 'value': '1970-01-01T01:00:00.000+01:00'}
-            ]
-        },
-        {
-            'scope': 'trace',
-            'attributes': [
-                {'key': 'concept:name', 'value': '__INVALID__'}
-            ]
-        }
-    ]
-
-    for global_var in globals:
-        global_elem = ET.Element('global', {'scope': global_var['scope']})
-        for attr in global_var['attributes']:
-            string_elem = ET.SubElement(global_elem, 'string', {'key': attr['key'], 'value': attr['value']})
-        root.insert(len(extensions), global_elem)
-
-
-    # Pretty print the Xes
-    removeextralines(root)
-    xml_str = minidom.parseString(ET.tostring(root)).toprettyxml()
-    with open(xes_file, "w") as f:
-        f.write(xml_str)
-
 class GenerateEventLogs():
+    """
+    Generates event logs with the provided parameters.
+    @param params: dict
+        contains the generator parameters
+        experiment: contains a dict with the desired feature values
+        config_space: contains a dict with possible configuration parameter ranges
+        n_trials: contains the number of trials
+        #system_params: contains the system parameters, which don't change e.g. n_trials
+        #generator_type: contains the generator type as a string
+    @return: None
+    """
     def __init__(self, params=None) -> None:
         print("=========================== Generator ==========================")
         if params is None:
-            default_params = {'generator_params': {'experiment': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4}, 'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1], 'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]}, 'n_trials': 50}}
+            default_params = {'generator_params': {'experiment': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4},
+                                                   'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1],
+                                                                    'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]},
+                                                   'n_trials': 50}}
             raise TypeError(f"Missing 'params'. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
         print(f"INFO: Running with {params}")
         start = dt.now()
@@ -200,57 +153,20 @@ class GenerateEventLogs():
         configs = self.optimize(generator_params = generator_params)
 
         random.seed(RANDOM_SEED)
-        if isinstance(configs, list):
-            generated_features = self.generate_optimized_log(configs[0])
-        else:
-            generated_features = self.generate_optimized_log(configs)
 
-        save_path = get_output_key_value_location(task.to_dict(),
-                                         self.output_path, identifier, self.feature_keys)+".xes"
-
-        write_xes(generated_features['log'], save_path)
-        add_extension_before_traces(save_path)
-        print("SUCCESS: Saved generated event log in", save_path)
-        features_to_dump = generated_features['features']
-
-        features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
-        # calculating the manhattan distance of the generated log to the target features
-        #features_to_dump['distance_to_target'] = calculate_manhattan_distance(self.objectives, features_to_dump)
-        features_to_dump['target_similarity'] = compute_similarity(self.objectives, features_to_dump)
-        dump_features_json(features_to_dump, save_path)
-
+        generated_features = generate_optimized_log(configs, self.feature_keys, self.output_path, self.objectives, task, identifier)
         return generated_features
 
-    def generate_optimized_log(self, config):
-        tree = create_model(config)
-        log = simulate_log(tree, config)
+    def gen_log(self, config: Configuration, seed: int = RANDOM_SEED):
         random.seed(RANDOM_SEED)
-        features = self.compute_features(log)
-        return {
-            "configuration": config,
-            "log": log,
-            "features": features,
-        }
-
-    def gen_log(self, config: Configuration, seed: int = 0):
-        random.seed(RANDOM_SEED)
-        tree = create_model(config)
-        random.seed(RANDOM_SEED)
-        log = simulate_log(tree, config)
+        log = generate_log(config, seed=seed)
         random.seed(RANDOM_SEED)
         result = self.eval_log(log)
         return result
 
-    def compute_features(self, log):
-        features_computation = {}
-        for ft_name in self.objectives.keys():
-            ft_type = feature_type(ft_name)
-            features_computation.update(eval(f"{ft_type}(feature_names=['{ft_name}']).extract(log)"))
-        return features_computation
-
     def eval_log(self, log):
         random.seed(RANDOM_SEED)
-        features = self.compute_features(log)
+        features = compute_features_from_event_data(self.objectives.keys(), log)
         log_evaluation = {}
         for key in self.objectives.keys():
             log_evaluation[key] = abs(self.objectives[key] - features[key])
