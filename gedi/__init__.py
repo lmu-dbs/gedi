@@ -1,4 +1,4 @@
 from .run import gedi
-from .generation.generator import GenerateEventLogs
+from .generation.hpo import GenerateEventLogs
 
 __all__=['gedi', 'GenerateEventLogs']

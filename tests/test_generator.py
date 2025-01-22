@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 from gedi.run import gedi
-from gedi.generation.generator import GenerateEventLogs
+from gedi.generation.hpo import GenerateEventLogs
 from gedi.utils.param_keys.features import FEATURE_SET, FEATURE_PARAMS
 
 def test_GenerateEventLogs():
