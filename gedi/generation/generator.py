@@ -13,10 +13,10 @@ from feeed.simple_stats import SimpleStats as simple_stats
 from feeed.start_activities import StartActivities as start_activities
 from feeed.trace_length import TraceLength as trace_length
 from feeed.trace_variant import TraceVariant as trace_variant
-from pm4py import generate_process_tree
 from pm4py import write_xes
 from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
+from gedi.generation.model import create_model
 from gedi.utils.column_mappings import column_mappings
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
@@ -27,23 +27,6 @@ import re
 from xml.dom import minidom
 from functools import partial
 
-"""
-   Parameters
-    --------------
-    parameters
-        Parameters of the algorithm, according to the paper:
-        - Parameters.MODE: most frequent number of visible activities
-        - Parameters.MIN: minimum number of visible activities
-        - Parameters.MAX: maximum number of visible activities
-        - Parameters.SEQUENCE: probability to add a sequence operator to tree
-        - Parameters.CHOICE: probability to add a choice operator to tree
-        - Parameters.PARALLEL: probability to add a parallel operator to tree
-        - Parameters.LOOP: probability to add a loop operator to tree
-        - Parameters.OR: probability to add an or operator to tree
-        - Parameters.SILENT: probability to add silent activity to a choice or loop operator
-        - Parameters.DUPLICATE: probability to duplicate an activity label
-        - Parameters.NO_MODELS: number of trees to generate from model population
-"""
 RANDOM_SEED = 10
 random.seed(RANDOM_SEED)
 
@@ -238,21 +221,7 @@ class GenerateEventLogs():
         return generated_features
 
     def generate_optimized_log(self, config):
-        ''' Returns event log from given configuration'''
-        tree = generate_process_tree(parameters={
-            "min": config["mode"],
-            "max": config["mode"],
-            "mode": config["mode"],
-            "sequence": config["sequence"],
-            "choice": config["choice"],
-            "parallel": config["parallel"],
-            "loop": config["loop"],
-            "silent": config["silent"],
-            "lt_dependency": config["lt_dependency"],
-            "duplicate": config["duplicate"],
-            "or": config["or"],
-            "no_models": 1
-        })
+        tree = create_model(config)
         log = play_out(tree, parameters={"num_traces": config["num_traces"]})
 
         for i, trace in enumerate(log):
@@ -270,20 +239,7 @@ class GenerateEventLogs():
 
     def gen_log(self, config: Configuration, seed: int = 0):
         random.seed(RANDOM_SEED)
-        tree = generate_process_tree(parameters={
-            "min": config["mode"],
-            "max": config["mode"],
-            "mode": config["mode"],
-            "sequence": config["sequence"],
-            "choice": config["choice"],
-            "parallel": config["parallel"],
-            "loop": config["loop"],
-            "silent": config["silent"],
-            "lt_dependency": config["lt_dependency"],
-            "duplicate": config["duplicate"],
-            "or": config["or"],
-            "no_models": 1
-        })
+        tree = create_model(config)
         random.seed(RANDOM_SEED)
         log = play_out(tree, parameters={"num_traces": config["num_traces"]})
         random.seed(RANDOM_SEED)
