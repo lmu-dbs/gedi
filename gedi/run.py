@@ -24,7 +24,7 @@ def run(kwargs:dict, model_params_list: list, filename_list:list):
     params = kwargs[PARAMS]
     ft = EventDataFeatures(None)
     augmented_ft = InstanceAugmentator()
-    gen = pd.DataFrame(columns=['metafeatures'])
+    gen = pd.DataFrame(columns=['features'])
 
     for model_params in model_params_list:
         if model_params.get(PIPELINE_STEP) == 'instance_augmentation':

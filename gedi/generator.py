@@ -174,9 +174,9 @@ class GenerateEventLogs():
             self.generated_features = [
                         {
                             #'log': config.get('log'),
-                            'metafeatures': config.get('metafeatures')}
+                            'features': config.get('features')}
                             for config in generated_features
-                            if 'metafeatures' in config #and 'log' in config
+                            if 'features' in config #and 'log' in config
                     ]
 
         else:
@@ -185,7 +185,7 @@ class GenerateEventLogs():
             if type(configs) is not list:
                 configs = [configs]
             temp = self.generate_optimized_log(configs[0])
-            self.generated_features = [temp['metafeatures']] if 'metafeatures' in temp else []
+            self.generated_features = [temp['features']] if 'features' in temp else []
             save_path = get_output_key_value_location(generator_params[EXPERIMENT],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
@@ -227,7 +227,7 @@ class GenerateEventLogs():
         write_xes(generated_features['log'], save_path)
         add_extension_before_traces(save_path)
         print("SUCCESS: Saved generated event log in", save_path)
-        features_to_dump = generated_features['metafeatures']
+        features_to_dump = generated_features['features']
 
         features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
         # calculating the manhattan distance of the generated log to the target features
@@ -261,11 +261,11 @@ class GenerateEventLogs():
                 event['time:timestamp'] = dt.now()
                 event['lifecycle:transition'] = "complete"
         random.seed(RANDOM_SEED)
-        metafeatures = self.compute_metafeatures(log)
+        features = self.compute_features(log)
         return {
             "configuration": config,
             "log": log,
-            "metafeatures": metafeatures,
+            "features": features,
         }
 
     def gen_log(self, config: Configuration, seed: int = 0):
@@ -290,25 +290,25 @@ class GenerateEventLogs():
         result = self.eval_log(log)
         return result
 
-    def compute_metafeatures(self, log):
+    def compute_features(self, log):
         for i, trace in enumerate(log):
             trace.attributes['concept:name'] = str(i)
             for j, event in enumerate(trace):
                 event['time:timestamp'] = dt.fromtimestamp(j * 1000)
                 event['lifecycle:transition'] = "complete"
 
-        metafeatures_computation = {}
+        features_computation = {}
         for ft_name in self.objectives.keys():
             ft_type = feature_type(ft_name)
-            metafeatures_computation.update(eval(f"{ft_type}(feature_names=['{ft_name}']).extract(log)"))
-        return metafeatures_computation
+            features_computation.update(eval(f"{ft_type}(feature_names=['{ft_name}']).extract(log)"))
+        return features_computation
 
     def eval_log(self, log):
         random.seed(RANDOM_SEED)
-        metafeatures = self.compute_metafeatures(log)
+        features = self.compute_features(log)
         log_evaluation = {}
         for key in self.objectives.keys():
-            log_evaluation[key] = abs(self.objectives[key] - metafeatures[key])
+            log_evaluation[key] = abs(self.objectives[key] - features[key])
         return log_evaluation
 
     def optimize(self, generator_params):

@@ -95,12 +95,12 @@ class EventDataFeatures(EventLogFile):
 
             print(f"INFO: Running with {ft_params}")
 
-            if str(self.filename).endswith('csv'): # Returns dataframe from loaded metafeatures file
+            if str(self.filename).endswith('csv'): # Returns dataframe from loaded features file
                 self.feat = pd.read_csv(self.filepath)
                 columns_to_rename = {col: column_mappings()[col] for col in self.feat.columns if col in column_mappings()}
                 self.feat.rename(columns=columns_to_rename, inplace=True)
                 print(f"SUCCESS: EventDataFeatures loaded features from {self.filepath}")
-            elif isinstance(self.filename, list): # Computes metafeatures for list of .xes files
+            elif isinstance(self.filename, list): # Computes features for list of .xes files
                 combined_features=pd.DataFrame()
                 if self.filename[0].endswith(".json"):
                     self.filename = [ filename for filename in self.filename if filename.endswith(".json")]
@@ -151,7 +151,7 @@ class EventDataFeatures(EventLogFile):
 
                 except KeyError as error:
                     print("Ignoring KeyError", error)
-                    # Aggregates metafeatures in saved Jsons into dataframe
+                    # Aggregates features in saved Jsons into dataframe
                     path_to_json = f"output/features/{str(self.root_path).split('/',1)[1]}"
                     df = pd.DataFrame()
                     # Iterate over the files in the directory

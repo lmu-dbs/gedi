@@ -48,7 +48,7 @@ class BenchmarkTest:
                  print(f"INFO: Benchmark starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(event_logs)} files...")
                  p.starmap(self.benchmark_wrapper, zip(event_logs, log_counter, repeat(self.params[MINERS])))
 
-             # Aggregates metafeatures in saved Jsons into dataframe
+             # Aggregates features in saved Jsons into dataframe
              self.root_path = self.params[INPUT_PATH]
              path_to_json = f"output/benchmark/{str(self.root_path).split('/',1)[1]}"
              if path_to_json.endswith(".xes"):
