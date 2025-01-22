@@ -221,7 +221,6 @@ class GenerateEventLogs():
                 objective_weights=[1]*len(self.objectives),
             )
 
-
         random.seed(RANDOM_SEED)
         smac = HyperparameterOptimizationFacade(
             scenario=scenario,
