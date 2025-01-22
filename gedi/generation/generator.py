@@ -17,6 +17,7 @@ from pm4py import write_xes
 from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
 from gedi.generation.model import create_model
+from gedi.generation.simulation import simulate_log
 from gedi.utils.column_mappings import column_mappings
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
@@ -222,13 +223,7 @@ class GenerateEventLogs():
 
     def generate_optimized_log(self, config):
         tree = create_model(config)
-        log = play_out(tree, parameters={"num_traces": config["num_traces"]})
-
-        for i, trace in enumerate(log):
-            trace.attributes['concept:name'] = str(i)
-            for j, event in enumerate(trace):
-                event['time:timestamp'] = dt.now()
-                event['lifecycle:transition'] = "complete"
+        log = simulate_log(tree, config)
         random.seed(RANDOM_SEED)
         features = self.compute_features(log)
         return {
@@ -241,18 +236,12 @@ class GenerateEventLogs():
         random.seed(RANDOM_SEED)
         tree = create_model(config)
         random.seed(RANDOM_SEED)
-        log = play_out(tree, parameters={"num_traces": config["num_traces"]})
+        log = simulate_log(tree, config)
         random.seed(RANDOM_SEED)
         result = self.eval_log(log)
         return result
 
     def compute_features(self, log):
-        for i, trace in enumerate(log):
-            trace.attributes['concept:name'] = str(i)
-            for j, event in enumerate(trace):
-                event['time:timestamp'] = dt.fromtimestamp(j * 1000)
-                event['lifecycle:transition'] = "complete"
-
         features_computation = {}
         for ft_name in self.objectives.keys():
             ft_type = feature_type(ft_name)
