@@ -9,7 +9,7 @@ import os
 import glob
 
 from collections import defaultdict
-from gedi.generator import get_tasks
+from gedi.generation.generator import get_tasks
 from gedi.utils.io_helpers import get_keys_abbreviation
 from gedi.utils.io_helpers import read_csvs, select_instance
 from gedi.utils.param_keys import PLOT_TYPE, PROJECTION, EXPLAINED_VAR, PLOT_3D_MAP

@@ -5,7 +5,7 @@ from gedi.augmentation import InstanceAugmentator
 from gedi.benchmark import BenchmarkTest
 from gedi.config import get_model_params_list
 from gedi.features import EventDataFeatures
-from gedi.generator import GenerateEventLogs
+from gedi.generation.generator import GenerateEventLogs
 from gedi.plotter import BenchmarkPlotter, FeaturesPlotter, AugmentationPlotter, GenerationPlotter
 from gedi.utils.default_argparse import ArgParser
 from gedi.utils.param_keys import PARAMS, PIPELINE_STEP
