@@ -66,6 +66,7 @@ setup(
             'pynisher==1.0.10',
             'pyrfr==0.9.0',
             'pyyaml==6.0.1',
+            'pytest~=8.3.4',
             'rapidfuzz==3.6.1',
             'regex==2023.12.25',
             'scikit-learn==1.2.2',
