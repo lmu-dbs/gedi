@@ -141,11 +141,12 @@ class GenerateEventLogs():
         self.feature_keys = None
 
     def generator_wrapper(self, task, generator_params=None):
+        # TODO Asses removing 'identifier', pros: less irrelevant code specially for generation from scratch, cons: harder to map targets and when reproducing BPICS
         try:
             identifier = [x for x in task[1] if isinstance(x, str)][0]
+            identifier = str(identifier)
         except IndexError:
-            identifier = task[0]+1
-        identifier = "genEL" +str(identifier)
+            identifier = ""
 
         task = task[1].drop('log', errors='ignore')
         self.objectives = task.dropna().to_dict()
@@ -154,7 +155,7 @@ class GenerateEventLogs():
 
         random.seed(RANDOM_SEED)
 
-        generated_features = generate_optimized_log(configs, self.feature_keys, self.output_path, self.objectives, task, identifier)
+        generated_features = generate_optimized_log(configs, self.output_path, self.objectives, identifier)
         return generated_features
 
     def gen_log(self, config: Configuration, seed: int = RANDOM_SEED):

@@ -78,13 +78,15 @@ def generate_log(config: Configuration, feature_keys, seed: int = 0):
     features = compute_features_from_event_data(feature_keys, log)
     return log, features
 
-#TODO: See what parameters we can spare
-def generate_optimized_log(config: Configuration, feature_keys, output_path, objectives, task, identifier):
+def generate_optimized_log(config: Configuration, output_path, objectives, identifier=""):
     if isinstance(config, list):
         config = config[0]
+    feature_keys = objectives.keys()
     log, generated_features = generate_log(config, feature_keys)
+
+    identifier = "genEL" +str(identifier)
     random.seed(RANDOM_SEED)
-    save_path = get_output_key_value_location(task.to_dict(),
+    save_path = get_output_key_value_location(objectives,
                                         output_path, identifier, feature_keys)+".xes"
     write_xes(log, save_path)
     add_extension_before_traces(save_path)
