@@ -70,22 +70,20 @@ def add_extension_before_traces(xes_file):
     with open(xes_file, "w") as f:
         f.write(xml_str)
 
-def generate_log(config: Configuration, seed: int = 0):
+def generate_log(config: Configuration, feature_keys, seed: int = 0):
     random.seed(RANDOM_SEED)
     tree = create_model(config)
     random.seed(RANDOM_SEED)
     log = simulate_log(tree, config)
-    #random.seed(RANDOM_SEED)
-    #result = self.eval_log(log)
-    return log
+    features = compute_features_from_event_data(feature_keys, log)
+    return log, features
 
 #TODO: See what parameters we can spare
 def generate_optimized_log(config: Configuration, feature_keys, output_path, objectives, task, identifier):
     if isinstance(config, list):
         config = config[0]
-    log = generate_log(config)
+    log, generated_features = generate_log(config, feature_keys)
     random.seed(RANDOM_SEED)
-    generated_features = compute_features_from_event_data(feature_keys, log)
     save_path = get_output_key_value_location(task.to_dict(),
                                         output_path, identifier, feature_keys)+".xes"
     write_xes(log, save_path)
@@ -99,7 +97,6 @@ def generate_optimized_log(config: Configuration, feature_keys, output_path, obj
     features_to_dump['target_similarity'] = compute_similarity(objectives, features_to_dump)
     dump_features_json(features_to_dump, save_path)
 
-    #return generated_features
     return {
     #"configuration": config,
     #"log": log,

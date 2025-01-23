@@ -102,7 +102,7 @@ class GenerateEventLogs():
         if tasks is not None:
             self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
-            #self.generator_wrapper([*tasks.iterrows()][0])# For testing
+            #self.generator_wrapper([*tasks.iterrows()][0], generator_params=generator_params)#TESTING
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
@@ -159,14 +159,13 @@ class GenerateEventLogs():
 
     def gen_log(self, config: Configuration, seed: int = RANDOM_SEED):
         random.seed(RANDOM_SEED)
-        log = generate_log(config, seed=seed)
+        _ , features= generate_log(config, self.objectives.keys(), seed=seed)
+        del _
         random.seed(RANDOM_SEED)
-        result = self.eval_log(log)
+        result = self.eval_log(features)
         return result
 
-    def eval_log(self, log):
-        random.seed(RANDOM_SEED)
-        features = compute_features_from_event_data(self.objectives.keys(), log)
+    def eval_log(self, features):
         log_evaluation = {}
         for key in self.objectives.keys():
             log_evaluation[key] = abs(self.objectives[key] - features[key])
