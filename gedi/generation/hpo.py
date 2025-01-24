@@ -18,7 +18,7 @@ from pm4py import write_xes
 from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
 from gedi.features import compute_features_from_event_data
-from gedi.generation.generator import generate_log, generate_optimized_log, add_extension_before_traces, setup_ptlg
+from gedi.generation.generator import PTLGenerator, add_extension_before_traces, setup_ptlg
 from gedi.utils.column_mappings import column_mappings
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
@@ -145,15 +145,19 @@ class GediTask():
         return tasks, generator_params
 
     def generator_wrapper(self, task, generator_params=None, embedded_generator = None):
+        embedded_generator = embedded_generator() if embedded_generator is not None else PTLGenerator()
         task = self.HPOTask(task, embedded_generator)
         configs = task.optimize(generator_params = generator_params)
         random.seed(RANDOM_SEED)
-        generated_features = generate_optimized_log(configs, self.output_path, task.objectives, task.identifier)
+        generated_features = embedded_generator.generate_optimized_log(config=configs,
+                                                                       output_path=self.output_path,
+                                                                       objectives=task.objectives,
+                                                                       identifier = task.identifier)
         return generated_features
 
 
     class HPOTask():
-        def __init__(self, task, embedded_generator = None):
+        def __init__(self, task, embedded_generator):
             # TODO Asses removing 'identifier', pros: less irrelevant code specially for generation from scratch, cons: harder to map targets and when reproducing BPICS
             try:
                 identifier = [x for x in task[1] if isinstance(x, str)][0]
@@ -164,12 +168,15 @@ class GediTask():
             task = task[1].drop('log', errors='ignore')
             self.objectives = task.dropna().to_dict()
             self.identifier = identifier
-            self.embedded_generator = embedded_generator if embedded_generator is not None else generate_log
+            self.embedded_generator = embedded_generator
             return
 
         def gen_log(self, config: Configuration, seed: int = RANDOM_SEED):
             random.seed(RANDOM_SEED)
-            _ , features= self.embedded_generator(config, self.objectives.keys(), seed=seed)
+            feature_keys = [*self.objectives.keys()]
+            _ , features= self.embedded_generator.generate_log(config=config,
+                                                               feature_keys=feature_keys,
+                                                               seed=seed)
             del _
             random.seed(RANDOM_SEED)
             result = self.eval_log(features)

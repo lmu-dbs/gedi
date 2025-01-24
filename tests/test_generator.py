@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 from gedi.run import gedi
+from gedi.generation.generator import PTLGenerator
 from gedi.generation.hpo import GediTask, GenerateEventLogs
 from gedi.utils.param_keys.features import FEATURE_SET, FEATURE_PARAMS
 
@@ -31,7 +32,7 @@ def test_GediTask_args():
                     }
     INPUT_PARAMS = IDEAL_INPUT_PARAMS
     VALIDATION_OUTPUT = [0.89, 0.7, 0.89, 1.0]
-    genED = GediTask(INPUT_PARAMS)
+    genED = GediTask(INPUT_PARAMS, embedded_generator = PTLGenerator)
     similarities = [round(target['features']['target_similarity'], 2) for target in genED.generated_features]
 
     print("SIMILARITIES:imilarities: ", similarities)

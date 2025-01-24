@@ -70,41 +70,6 @@ def add_extension_before_traces(xes_file):
     with open(xes_file, "w") as f:
         f.write(xml_str)
 
-def generate_log(config: Configuration, feature_keys, seed: int = 0):
-    random.seed(RANDOM_SEED)
-    tree = create_model(config)
-    random.seed(RANDOM_SEED)
-    log = simulate_log(tree, config)
-    features = compute_features_from_event_data(feature_keys, log)
-    return log, features
-
-def generate_optimized_log(config: Configuration, output_path, objectives, identifier=""):
-    if isinstance(config, list):
-        config = config[0]
-    feature_keys = objectives.keys()
-    log, generated_features = generate_log(config, feature_keys)
-
-    identifier = "genEL" +str(identifier)
-    random.seed(RANDOM_SEED)
-    save_path = get_output_key_value_location(objectives,
-                                        output_path, identifier, feature_keys)+".xes"
-    write_xes(log, save_path)
-    add_extension_before_traces(save_path)
-    print("SUCCESS: Saved generated event log in", save_path)
-    features_to_dump = generated_features
-
-    features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
-    # calculating the manhattan distance of the generated log to the target features
-    #features_to_dump['distance_to_target'] = calculate_manhattan_distance(objectives, features_to_dump)
-    features_to_dump['target_similarity'] = compute_similarity(objectives, features_to_dump)
-    dump_features_json(features_to_dump, save_path)
-
-    return {
-    #"configuration": config,
-    #"log": log,
-    "features": generated_features,
-    }
-
 def setup_ptlg(config_space: Configuration=None):
     if config_space is None:
         configspace_tuples = {
@@ -129,3 +94,42 @@ def setup_ptlg(config_space: Configuration=None):
             else:
                 configspace_tuples[k] = tuple(v)
     return configspace_tuples
+
+class PTLGenerator():
+    def __init__(self, configspace=None):
+        self.configspace = configspace
+
+    def generate_log(self, config: Configuration, feature_keys, seed: int = 0):
+        random.seed(RANDOM_SEED)
+        tree = create_model(config)
+        random.seed(RANDOM_SEED)
+        log = simulate_log(tree, config)
+        features = compute_features_from_event_data(feature_keys, log)
+        return log, features
+
+    def generate_optimized_log(self, config: Configuration, output_path, objectives, identifier=""):
+        if isinstance(config, list):
+            config = config[0]
+        feature_keys = objectives.keys()
+        log, generated_features = self.generate_log(config, feature_keys)
+
+        identifier = "genEL" +str(identifier)
+        random.seed(RANDOM_SEED)
+        save_path = get_output_key_value_location(objectives,
+                                            output_path, identifier, feature_keys)+".xes"
+        write_xes(log, save_path)
+        add_extension_before_traces(save_path)
+        print("SUCCESS: Saved generated event log in", save_path)
+        features_to_dump = generated_features
+
+        features_to_dump['log']= os.path.split(save_path)[1].split(".")[0]
+        # calculating the manhattan distance of the generated log to the target features
+        #features_to_dump['distance_to_target'] = calculate_manhattan_distance(objectives, features_to_dump)
+        features_to_dump['target_similarity'] = compute_similarity(objectives, features_to_dump)
+        dump_features_json(features_to_dump, save_path)
+
+        return {
+        #"configuration": config,
+        #"log": log,
+        "features": generated_features,
+        }
