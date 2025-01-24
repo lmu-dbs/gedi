@@ -141,95 +141,100 @@ class GenerateEventLogs():
         self.feature_keys = None
 
     def generator_wrapper(self, task, generator_params=None):
-        # TODO Asses removing 'identifier', pros: less irrelevant code specially for generation from scratch, cons: harder to map targets and when reproducing BPICS
-        try:
-            identifier = [x for x in task[1] if isinstance(x, str)][0]
-            identifier = str(identifier)
-        except IndexError:
-            identifier = ""
-
-        task = task[1].drop('log', errors='ignore')
-        self.objectives = task.dropna().to_dict()
+        task = self.HPOTask(task)
+        configs = task.optimize(generator_params = generator_params)
         random.seed(RANDOM_SEED)
-        configs = self.optimize(generator_params = generator_params)
-
-        random.seed(RANDOM_SEED)
-
-        generated_features = generate_optimized_log(configs, self.output_path, self.objectives, identifier)
+        generated_features = generate_optimized_log(configs, self.output_path, task.objectives, task.identifier)
         return generated_features
 
-    def gen_log(self, config: Configuration, seed: int = RANDOM_SEED):
-        random.seed(RANDOM_SEED)
-        _ , features= generate_log(config, self.objectives.keys(), seed=seed)
-        del _
-        random.seed(RANDOM_SEED)
-        result = self.eval_log(features)
-        return result
 
-    def eval_log(self, features):
-        log_evaluation = {}
-        for key in self.objectives.keys():
-            log_evaluation[key] = abs(self.objectives[key] - features[key])
-        return log_evaluation
 
-    def optimize(self, generator_params):
-        if generator_params.get(CONFIG_SPACE) is None:
-            configspace = ConfigurationSpace({
-                "mode": (5, 40),
-                "sequence": (0.01, 1),
-                "choice": (0.01, 1),
-                "parallel": (0.01, 1),
-                "loop": (0.01, 1),
-                "silent": (0.01, 1),
-                "lt_dependency": (0.01, 1),
-                "num_traces": (100, 1001),
-                "duplicate": (0),
-                "or": (0),
-            })
-            print(f"WARNING: No config_space specified in config file. Continuing with {configspace}")
-        else:
-            configspace_lists = generator_params[CONFIG_SPACE]
-            configspace_tuples = {}
-            for k, v in configspace_lists.items():
-                if len(v) == 1:
-                    configspace_tuples[k] = v[0]
-                else:
-                    configspace_tuples[k] = tuple(v)
-            configspace = ConfigurationSpace(configspace_tuples)
+    class HPOTask():
+        def __init__(self, task):
+            # TODO Asses removing 'identifier', pros: less irrelevant code specially for generation from scratch, cons: harder to map targets and when reproducing BPICS
+            try:
+                identifier = [x for x in task[1] if isinstance(x, str)][0]
+                identifier = str(identifier)
+            except IndexError:
+                identifier = ""
 
-        if generator_params.get(N_TRIALS) is None:
-            n_trials = 20
-            print(f"INFO: Running with n_trials={n_trials}")
-        else:
-            n_trials = generator_params[N_TRIALS]
+            task = task[1].drop('log', errors='ignore')
+            self.objectives = task.dropna().to_dict()
+            self.identifier = identifier
+            return
 
-        objectives = [*self.objectives.keys()]
+        def gen_log(self, config: Configuration, seed: int = RANDOM_SEED):
+            random.seed(RANDOM_SEED)
+            _ , features= generate_log(config, self.objectives.keys(), seed=seed)
+            del _
+            random.seed(RANDOM_SEED)
+            result = self.eval_log(features)
+            return result
 
-        # Scenario object specifying the multi-objective optimization environment
-        scenario = Scenario(
-            configspace,
-            deterministic=True,
-            n_trials=n_trials,
-            objectives=objectives,
-            n_workers=-1
-        )
+        def eval_log(self, features):
+            log_evaluation = {}
+            for key in self.objectives.keys():
+                log_evaluation[key] = abs(self.objectives[key] - features[key])
+            return log_evaluation
 
-        # Use SMAC to find the best configuration/hyperparameters
-        random.seed(RANDOM_SEED)
-        multi_obj = HyperparameterOptimizationFacade.get_multi_objective_algorithm(
-                scenario,
-                objective_weights=[1]*len(self.objectives),
+        def optimize(self, generator_params):
+            if generator_params.get(CONFIG_SPACE) is None:
+                configspace = ConfigurationSpace({
+                    "mode": (5, 40),
+                    "sequence": (0.01, 1),
+                    "choice": (0.01, 1),
+                    "parallel": (0.01, 1),
+                    "loop": (0.01, 1),
+                    "silent": (0.01, 1),
+                    "lt_dependency": (0.01, 1),
+                    "num_traces": (100, 1001),
+                    "duplicate": (0),
+                    "or": (0),
+                })
+                print(f"WARNING: No config_space specified in config file. Continuing with {configspace}")
+            else:
+                configspace_lists = generator_params[CONFIG_SPACE]
+                configspace_tuples = {}
+                for k, v in configspace_lists.items():
+                    if len(v) == 1:
+                        configspace_tuples[k] = v[0]
+                    else:
+                        configspace_tuples[k] = tuple(v)
+                configspace = ConfigurationSpace(configspace_tuples)
+
+            if generator_params.get(N_TRIALS) is None:
+                n_trials = 20
+                print(f"INFO: Running with n_trials={n_trials}")
+            else:
+                n_trials = generator_params[N_TRIALS]
+
+            objectives = [*self.objectives.keys()]
+
+            # Scenario object specifying the multi-objective optimization environment
+            scenario = Scenario(
+                configspace,
+                deterministic=True,
+                n_trials=n_trials,
+                objectives=objectives,
+                n_workers=-1
             )
 
-        random.seed(RANDOM_SEED)
-        smac = HyperparameterOptimizationFacade(
-            scenario=scenario,
-            target_function=self.gen_log,
-            multi_objective_algorithm=multi_obj,
-            # logging_level=False,
-            overwrite=True,
-        )
+            # Use SMAC to find the best configuration/hyperparameters
+            random.seed(RANDOM_SEED)
+            multi_obj = HyperparameterOptimizationFacade.get_multi_objective_algorithm(
+                    scenario,
+                    objective_weights=[1]*len(self.objectives),
+                )
 
-        random.seed(RANDOM_SEED)
-        incumbent = smac.optimize()
-        return incumbent
+            random.seed(RANDOM_SEED)
+            smac = HyperparameterOptimizationFacade(
+                scenario=scenario,
+                target_function=self.gen_log,
+                multi_objective_algorithm=multi_obj,
+                # logging_level=False,
+                overwrite=True,
+            )
+
+            random.seed(RANDOM_SEED)
+            incumbent = smac.optimize()
+            return incumbent
