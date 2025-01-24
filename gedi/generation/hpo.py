@@ -77,18 +77,19 @@ class GediTask():
         #generator_type: contains the generator type as a string
     @return: None
     """
-    def __init__(self, params=None) -> None:
+    def __init__(self, params = None, embedded_generator = None) -> None:
         print("=========================== Generator ==========================")
         tasks, generator_params = self.setup_GediTask(params)
         start = dt.now()
         if True: #try:
             self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
-            #self.generator_wrapper([*tasks.iterrows()][0], generator_params=generator_params)#TESTING
+            self.generator_wrapper([*tasks.iterrows()][0], generator_params=generator_params, embedded_generator = embedded_generator)#TESTING
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
-                partial_wrapper = partial(self.generator_wrapper, generator_params=generator_params)
+                partial_wrapper = partial(self.generator_wrapper, generator_params=generator_params,
+                                          embedded_generator = embedded_generator)
                 generated_features = p.map(partial_wrapper, [(index, row) for index, row in tasks.iterrows()])
             self.generated_features = [
                         {
@@ -143,8 +144,8 @@ class GediTask():
         self.output_path = output_path
         return tasks, generator_params
 
-    def generator_wrapper(self, task, generator_params=None):
-        task = self.HPOTask(task)
+    def generator_wrapper(self, task, generator_params=None, embedded_generator = None):
+        task = self.HPOTask(task, embedded_generator)
         configs = task.optimize(generator_params = generator_params)
         random.seed(RANDOM_SEED)
         generated_features = generate_optimized_log(configs, self.output_path, task.objectives, task.identifier)
@@ -152,7 +153,7 @@ class GediTask():
 
 
     class HPOTask():
-        def __init__(self, task):
+        def __init__(self, task, embedded_generator = None):
             # TODO Asses removing 'identifier', pros: less irrelevant code specially for generation from scratch, cons: harder to map targets and when reproducing BPICS
             try:
                 identifier = [x for x in task[1] if isinstance(x, str)][0]
@@ -163,11 +164,12 @@ class GediTask():
             task = task[1].drop('log', errors='ignore')
             self.objectives = task.dropna().to_dict()
             self.identifier = identifier
+            self.embedded_generator = embedded_generator if embedded_generator is not None else generate_log
             return
 
         def gen_log(self, config: Configuration, seed: int = RANDOM_SEED):
             random.seed(RANDOM_SEED)
-            _ , features= generate_log(config, self.objectives.keys(), seed=seed)
+            _ , features= self.embedded_generator(config, self.objectives.keys(), seed=seed)
             del _
             random.seed(RANDOM_SEED)
             result = self.eval_log(features)
