@@ -18,12 +18,13 @@ from pm4py import write_xes
 from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
 from gedi.features import compute_features_from_event_data
-from gedi.generation.generator import generate_log, generate_optimized_log, add_extension_before_traces
+from gedi.generation.generator import generate_log, generate_optimized_log, add_extension_before_traces, setup_ptlg
 from gedi.utils.column_mappings import column_mappings
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
 from gedi.utils.param_keys import OUTPUT_PATH, INPUT_PATH
-from gedi.utils.param_keys.generator import GENERATOR_PARAMS, TARGETS, CONFIG_SPACE, N_TRIALS
+from gedi.utils.param_keys.generator import GENERATOR_PARAMS, TARGETS, CONFIG_SPACE
+from gedi.utils.param_keys.generator import N_TRIALS, GENERATOR, GENERATOR_TYPE, SYSTEM_PARAMS
 from functools import partial
 
 RANDOM_SEED = 10
@@ -97,25 +98,6 @@ class GediTask():
                             if 'features' in config #and 'log' in config
                     ]
 
-        #except Exception as e:
-        """
-            random.seed(RANDOM_SEED)
-            task = self.HPOTask(generator_params)
-            configs = task.optimize(generator_params=generator_params)
-            if type(configs) is not list:
-                configs = [configs]
-            temp = self.generate_optimized_log(configs[0])
-            self.generated_features = [temp['features']] if 'features' in temp else []
-            save_path = get_output_key_value_location(generator_params[targets],
-                                             self.output_path, "genEL")+".xes"
-            write_xes(temp['log'], save_path)
-            add_extension_before_traces(save_path)
-            print("SUCCESS: Saved generated event log in", save_path)
-            """
-        print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.generated_features)} event log(s).")
-        print(f"         Saved generated logs in {self.output_path}")
-        print("========================= ~ Generator ==========================")
-
     def clear(self):
         print("Clearing parameters...")
         self.generated_features = None
@@ -144,7 +126,10 @@ class GediTask():
             self.generated_features = pd.read_csv(self.output_path)
             return
 
+        #SET UP GENERATOR PARAMS
         generator_params = params.get(GENERATOR_PARAMS)
+
+        ## SET UP: Tasks from targets
         targets = generator_params.get(TARGETS)
 
         if targets is None:
@@ -195,35 +180,18 @@ class GediTask():
             return log_evaluation
 
         def optimize(self, generator_params):
-            if generator_params.get(CONFIG_SPACE) is None:
-                configspace = ConfigurationSpace({
-                    "mode": (5, 40),
-                    "sequence": (0.01, 1),
-                    "choice": (0.01, 1),
-                    "parallel": (0.01, 1),
-                    "loop": (0.01, 1),
-                    "silent": (0.01, 1),
-                    "lt_dependency": (0.01, 1),
-                    "num_traces": (100, 1001),
-                    "duplicate": (0),
-                    "or": (0),
-                })
-                print(f"WARNING: No config_space specified in config file. Continuing with {configspace}")
+            ## SET UP GENERATOR
+            generator_specs = generator_params.get(GENERATOR)
+            if generator_specs is None:
+                configspace = ConfigurationSpace(setup_ptlg())
+            elif generator_specs.get(GENERATOR_TYPE) == 'ptlg':
+                configspace = ConfigurationSpace(setup_ptlg(generator_params.get(GENERATOR).get(CONFIG_SPACE)))
             else:
-                configspace_lists = generator_params[CONFIG_SPACE]
-                configspace_tuples = {}
-                for k, v in configspace_lists.items():
-                    if len(v) == 1:
-                        configspace_tuples[k] = v[0]
-                    else:
-                        configspace_tuples[k] = tuple(v)
-                configspace = ConfigurationSpace(configspace_tuples)
+                raise ValueError("Unknown generator type. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
 
-            if generator_params.get(N_TRIALS) is None:
-                n_trials = 20
-                print(f"INFO: Running with n_trials={n_trials}")
-            else:
-                n_trials = generator_params[N_TRIALS]
+            system_params = generator_params.get(SYSTEM_PARAMS)
+            n_trials = generator_params.get(SYSTEM_PARAMS).get(N_TRIALS) if system_params is not None and generator_params.get(SYSTEM_PARAMS).get(N_TRIALS) is not None else 20 #TODO: Add compatibility with older versions
+            print(f"INFO: Running with n_trials={n_trials}")
 
             objectives = [*self.objectives.keys()]
 

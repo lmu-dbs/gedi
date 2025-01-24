@@ -8,7 +8,7 @@ def test_GediTask_args():
     IDEAL_INPUT_PARAMS = {'generator_params': {'targets': {'input_path': 'data/test/grid_feat.csv',
                                                         'objectives': ['ratio_top_20_variants',
                                                                        'epa_normalized_sequence_entropy_linear_forgetting']},
-                                         'generator': {'type': 'ptlg',
+                                         'generator': {'generator_type': 'ptlg',
                                                        'config_space': {'mode': [5, 20], 'sequence': [0.01, 1],
                                                                         'choice': [0.01, 1], 'parallel': [0.01, 1],
                                                                         'loop': [0.01, 1], 'silent': [0.01, 1],
@@ -29,7 +29,7 @@ def test_GediTask_args():
                                                           'duplicate': [0], 'or': [0]},
                                          'n_trials': 50}
                     }
-    #INPUT_PARAMS = IDEAL_INPUT_PARAMS
+    INPUT_PARAMS = IDEAL_INPUT_PARAMS
     VALIDATION_OUTPUT = [0.89, 0.7, 0.89, 1.0]
     genED = GediTask(INPUT_PARAMS)
     similarities = [round(target['features']['target_similarity'], 2) for target in genED.generated_features]

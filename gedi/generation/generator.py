@@ -104,3 +104,28 @@ def generate_optimized_log(config: Configuration, output_path, objectives, ident
     #"log": log,
     "features": generated_features,
     }
+
+def setup_ptlg(config_space: Configuration=None):
+    if config_space is None:
+        configspace_tuples = {
+            "mode": (5, 40),
+            "sequence": (0.01, 1),
+            "choice": (0.01, 1),
+            "parallel": (0.01, 1),
+            "loop": (0.01, 1),
+            "silent": (0.01, 1),
+            "lt_dependency": (0.01, 1),
+            "num_traces": (100, 1001),
+            "duplicate": (0),
+            "or": (0),
+        }
+        print(f"WARNING: No config_space specified in config file. Continuing with {configspace_tuples}")
+    else:
+        configspace_lists = config_space
+        configspace_tuples = {}
+        for k, v in configspace_lists.items():
+            if len(v) == 1:
+                configspace_tuples[k] = v[0]
+            else:
+                configspace_tuples[k] = tuple(v)
+    return configspace_tuples
