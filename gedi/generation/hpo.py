@@ -78,6 +78,8 @@ class GediTask():
     """
     def __init__(self, params=None) -> None:
         print("=========================== Generator ==========================")
+        tasks, generator_params = self.setup_GediTask(params)
+        """
         if params is None:
             default_params = {'generator_params': {'experiment': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4},
                                                    'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1],
@@ -105,7 +107,9 @@ class GediTask():
             columns_to_rename = {col: column_mappings()[col] for col in tasks.columns if col in column_mappings()}
             tasks = tasks.rename(columns=columns_to_rename)
             self.output_path = output_path
+        """
 
+        start = dt.now()
         if tasks is not None:
             self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
@@ -146,6 +150,37 @@ class GediTask():
         # self.params = None
         self.output_path = None
         self.feature_keys = None
+
+    def setup_GediTask(self, params):
+        tasks = None
+        if params is None:
+            default_params = {'generator_params': {'experiment': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4},
+                                                   'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1],
+                                                                    'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]},
+                                                   'n_trials': 50}}
+            raise TypeError(f"Missing 'params'. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
+        print(f"INFO: Running with {params}")
+        if params.get(OUTPUT_PATH) is None:
+            self.output_path = 'data/generated'
+        else:
+            self.output_path = params.get(OUTPUT_PATH)
+        if not os.path.exists(self.output_path):
+            os.makedirs(self.output_path, exist_ok=True)
+
+        if self.output_path.endswith('csv'):
+            self.generated_features = pd.read_csv(self.output_path)
+            return
+
+        generator_params = params.get(GENERATOR_PARAMS)
+        experiment = generator_params.get(EXPERIMENT)
+
+        if experiment is not None:
+            tasks, output_path = get_tasks(experiment, self.output_path)
+            columns_to_rename = {col: column_mappings()[col] for col in tasks.columns if col in column_mappings()}
+            tasks = tasks.rename(columns=columns_to_rename)
+            self.output_path = output_path
+
+        return tasks, generator_params
 
     def generator_wrapper(self, task, generator_params=None):
         task = self.HPOTask(task)
