@@ -1,6 +1,6 @@
 [{"pipeline_step": "event_logs_generation",
 "output_path": "output/test",
-"generator_params": {"experiment":
+"generator_params": {"targets":
 	{"input_path": "data/test/igedi_table_1.csv",
 	"objectives": ["rmcv","ense"]},
 	"config_space": {"mode": [5, 20], "sequence": [0.01, 1],

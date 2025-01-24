@@ -1,6 +1,6 @@
 [{"pipeline_step": "event_logs_generation",
 "output_path": "output/generated",
-"generator_params": {"experiment":
+"generator_params": {"targets":
 	{"input_path": "data/test/2_bpic_features.csv",
 	"objectives": ["epa_normalized_sequence_entropy",
 	"epa_normalized_sequence_entropy_exponential_forgetting"]},

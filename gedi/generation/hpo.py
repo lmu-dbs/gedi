@@ -23,38 +23,38 @@ from gedi.utils.column_mappings import column_mappings
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
 from gedi.utils.param_keys import OUTPUT_PATH, INPUT_PATH
-from gedi.utils.param_keys.generator import GENERATOR_PARAMS, EXPERIMENT, CONFIG_SPACE, N_TRIALS
+from gedi.utils.param_keys.generator import GENERATOR_PARAMS, TARGETS, CONFIG_SPACE, N_TRIALS
 from functools import partial
 
 RANDOM_SEED = 10
 random.seed(RANDOM_SEED)
 
-def get_tasks(experiment, output_path="", reference_feature=None):
+def get_tasks(targets, output_path="", reference_feature=None):
     #Read tasks from file.
-    if isinstance(experiment, str) and experiment.endswith(".csv"):
-        tasks = pd.read_csv(experiment, index_col=None)
-        output_path=os.path.join(output_path,os.path.split(experiment)[-1].split(".")[0])
+    if isinstance(targets, str) and targets.endswith(".csv"):
+        tasks = pd.read_csv(targets, index_col=None)
+        output_path=os.path.join(output_path,os.path.split(targets)[-1].split(".")[0])
         if 'task' in tasks.columns:
             tasks.rename(columns={"task":"log"}, inplace=True)
-    elif isinstance(experiment, str) and os.path.isdir(os.path.join(os.getcwd(), experiment)):
-        tasks = read_csvs(experiment, reference_feature)
+    elif isinstance(targets, str) and os.path.isdir(os.path.join(os.getcwd(), targets)):
+        tasks = read_csvs(targets, reference_feature)
     #Read tasks from a real log features selection.
-    elif isinstance(experiment, dict) and INPUT_PATH in experiment.keys():
-        output_path=os.path.join(output_path,os.path.split(experiment.get(INPUT_PATH))[-1].split(".")[0])
-        tasks = pd.read_csv(experiment.get(INPUT_PATH), index_col=None)
+    elif isinstance(targets, dict) and INPUT_PATH in targets.keys():
+        output_path=os.path.join(output_path,os.path.split(targets.get(INPUT_PATH))[-1].split(".")[0])
+        tasks = pd.read_csv(targets.get(INPUT_PATH), index_col=None)
         id_col = tasks.select_dtypes(include=['object']).dropna(axis=1).columns[0]
-        if "objectives" in experiment.keys():
-            incl_cols = experiment["objectives"]
+        if "objectives" in targets.keys():
+            incl_cols = targets["objectives"]
             tasks = tasks[(incl_cols +  [id_col])]
     # TODO: Solve/Catch error for different objective keys.
     #Read tasks from config_file with list of targets
-    elif isinstance(experiment, list):
-        tasks = pd.DataFrame.from_dict(data=experiment)
+    elif isinstance(targets, list):
+        tasks = pd.DataFrame.from_dict(data=targets)
     #Read single tasks from config_file
-    elif isinstance(experiment, dict):
-        tasks = pd.DataFrame.from_dict(data=[experiment])
+    elif isinstance(targets, dict):
+        tasks = pd.DataFrame.from_dict(data=[targets])
     else:
-        raise FileNotFoundError(f"{experiment} not found. Please check path in filesystem.")
+        raise FileNotFoundError(f"{targets} not found. Please check path in filesystem.")
     return tasks, output_path
 
 def GenerateEventLogs(*args, **kwargs):
@@ -69,7 +69,7 @@ class GediTask():
     Generates event logs with the provided parameters.
     @param params: dict
         contains the generator parameters
-        experiment: contains a dict with the desired feature values
+        targets: contains a dict with the desired feature values
         config_space: contains a dict with possible configuration parameter ranges
         n_trials: contains the number of trials
         #system_params: contains the system parameters, which don't change e.g. n_trials
@@ -79,38 +79,8 @@ class GediTask():
     def __init__(self, params=None) -> None:
         print("=========================== Generator ==========================")
         tasks, generator_params = self.setup_GediTask(params)
-        """
-        if params is None:
-            default_params = {'generator_params': {'experiment': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4},
-                                                   'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1],
-                                                                    'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]},
-                                                   'n_trials': 50}}
-            raise TypeError(f"Missing 'params'. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
-        print(f"INFO: Running with {params}")
         start = dt.now()
-        if params.get(OUTPUT_PATH) is None:
-            self.output_path = 'data/generated'
-        else:
-            self.output_path = params.get(OUTPUT_PATH)
-        if not os.path.exists(self.output_path):
-            os.makedirs(self.output_path, exist_ok=True)
-
-        if self.output_path.endswith('csv'):
-            self.generated_features = pd.read_csv(self.output_path)
-            return
-
-        generator_params = params.get(GENERATOR_PARAMS)
-        experiment = generator_params.get(EXPERIMENT)
-
-        if experiment is not None:
-            tasks, output_path = get_tasks(experiment, self.output_path)
-            columns_to_rename = {col: column_mappings()[col] for col in tasks.columns if col in column_mappings()}
-            tasks = tasks.rename(columns=columns_to_rename)
-            self.output_path = output_path
-        """
-
-        start = dt.now()
-        if tasks is not None:
+        if True: #try:
             self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
             #self.generator_wrapper([*tasks.iterrows()][0], generator_params=generator_params)#TESTING
@@ -127,18 +97,21 @@ class GediTask():
                             if 'features' in config #and 'log' in config
                     ]
 
-        else:
+        #except Exception as e:
+        """
             random.seed(RANDOM_SEED)
-            configs = self.optimize(generator_params=generator_params)
+            task = self.HPOTask(generator_params)
+            configs = task.optimize(generator_params=generator_params)
             if type(configs) is not list:
                 configs = [configs]
             temp = self.generate_optimized_log(configs[0])
             self.generated_features = [temp['features']] if 'features' in temp else []
-            save_path = get_output_key_value_location(generator_params[EXPERIMENT],
+            save_path = get_output_key_value_location(generator_params[targets],
                                              self.output_path, "genEL")+".xes"
             write_xes(temp['log'], save_path)
             add_extension_before_traces(save_path)
             print("SUCCESS: Saved generated event log in", save_path)
+            """
         print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.generated_features)} event log(s).")
         print(f"         Saved generated logs in {self.output_path}")
         print("========================= ~ Generator ==========================")
@@ -154,7 +127,7 @@ class GediTask():
     def setup_GediTask(self, params):
         tasks = None
         if params is None:
-            default_params = {'generator_params': {'experiment': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4},
+            default_params = {'generator_params': {'targets': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4},
                                                    'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1],
                                                                     'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]},
                                                    'n_trials': 50}}
@@ -172,14 +145,17 @@ class GediTask():
             return
 
         generator_params = params.get(GENERATOR_PARAMS)
-        experiment = generator_params.get(EXPERIMENT)
+        targets = generator_params.get(TARGETS)
 
-        if experiment is not None:
-            tasks, output_path = get_tasks(experiment, self.output_path)
-            columns_to_rename = {col: column_mappings()[col] for col in tasks.columns if col in column_mappings()}
-            tasks = tasks.rename(columns=columns_to_rename)
-            self.output_path = output_path
+        if targets is None:
+            targets = generator_params.get("experiment")#Compatibility with older versions
+            if targets is None:
+                raise TypeError(f"Missing 'targets'. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
 
+        tasks, output_path = get_tasks(targets, self.output_path)
+        columns_to_rename = {col: column_mappings()[col] for col in tasks.columns if col in column_mappings()}
+        tasks = tasks.rename(columns=columns_to_rename)
+        self.output_path = output_path
         return tasks, generator_params
 
     def generator_wrapper(self, task, generator_params=None):
@@ -188,7 +164,6 @@ class GediTask():
         random.seed(RANDOM_SEED)
         generated_features = generate_optimized_log(configs, self.output_path, task.objectives, task.identifier)
         return generated_features
-
 
 
     class HPOTask():

@@ -3,7 +3,7 @@
     "pipeline_step": "event_logs_generation",
     "output_path": "output",
     "generator_params": {
-      "experiment": {
+      "targets": {
         "input_path": "data/BaselineED_feat.csv",
         "objectives":["ratio_variants_per_number_of_traces","ratio_most_common_variant","ratio_top_10_variants","epa_normalized_variant_entropy","epa_normalized_sequence_entropy","epa_normalized_sequence_entropy_linear_forgetting","epa_normalized_sequence_entropy_exponential_forgetting"]},
         "config_space": {
