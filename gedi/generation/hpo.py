@@ -2,6 +2,7 @@ import multiprocessing
 import os
 import pandas as pd
 import random
+import warnings
 from ConfigSpace import Configuration, ConfigurationSpace
 from datetime import datetime as dt
 from feeed.activities import Activities as activities
@@ -56,8 +57,14 @@ def get_tasks(experiment, output_path="", reference_feature=None):
         raise FileNotFoundError(f"{experiment} not found. Please check path in filesystem.")
     return tasks, output_path
 
+def GenerateEventLogs(*args, **kwargs):
+    warnings.warn(
+        "'GenerateEventLogs' is deprecated and will be removed in a future version. Use 'GediTask' instead.",
+        DeprecationWarning
+    )
+    return GediTask(*args, **kwargs)
 
-class GenerateEventLogs():
+class GediTask():
     """
     Generates event logs with the provided parameters.
     @param params: dict
