@@ -24,7 +24,7 @@ This repository contains the codebase for the interactive web application tool (
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [General Usage](#general-usage)
-- [Experiments](#experimentss)
+- [Experiments](#experiments)
 - [Citation](#citation)
 
 ## Interactive Web Application
@@ -112,11 +112,8 @@ python main.py -a config_files/pipeline_steps/generation.json
 In the `generation.json`, we have the following key-value pairs:
 
 * pipeline_step: denotes the current step in the pipeline (here: event_logs_generation)
-* output_path: defines the output folder
-* generator_params: defines the configuration of the generator itself. For the generator itself, we can set values for the general 'target', 'config_space', 'n_trials', and a specific 'plot_reference_feature' being used for plotting
-
-    - target: defines the path to the input file which contains the features that are used for the optimization step. The 'objectives' define the specific features, which are the optimization criteria.
-    - config_space: here, we define the configuration of the generator module (here: process tree generator). The process tree generator can process input information which defines characteristics for the generated data (a more thorough overview of the params can be found [here](https://github.com/tjouck/PTandLogGenerator):
+* targets: defines the path to the input file which contains the features that are used for the optimization step. The 'objectives' define the specific features, which are the optimization criteria.
+* config_space: here, we define the configuration of the generator module (here: process tree generator). The process tree generator can process input information which defines characteristics for the generated data (a more thorough overview of the params can be found [here](https://github.com/tjouck/PTandLogGenerator):
 
         - mode: most frequent number of visible activities
         - sequence: the probability of adding a sequence operator to the tree
@@ -129,9 +126,10 @@ In the `generation.json`, we have the following key-value pairs:
         - duplicate: the probability of duplicating an activity label
         - or: probability to add an or operator to the tree
 
+* system_params:
+    - output_path: defines the output folder
     - n_trials: the maximum number of trials for the hyperparameter optimization to find a feasible solution to the specific configuration being used as the target
-
-    - plot_reference_feature: defines the feature, which is used on the x-axis on the output plots, i.e., each feature defined in the 'objectives' of the 'target' is plotted against the reference feature being defined in this value
+* plot_reference_feature: defines the feature, which is used on the x-axis on the output plots, i.e., each feature defined in the 'objectives' of the 'target' is plotted against the reference feature being defined in this value
 
 In case of manually defining the targets for the features in config space, the following table shows the range of the features in the real-world event log data (BPIC's) for reference:
 <div style="overflow-x:auto;">
@@ -388,18 +386,18 @@ In this repository, targets can be run selectively or from scratch, as preferred
 We present two settings for generating intentional event logs, using [real targets](#generating-data-with-real-targets) or using [grid targets](#generating-data-with-grid-targets). Both settings output `.xes` event logs, `.json` and `.csv` files containing feature values, as well as evaluation results, from running a [process discovery benchmark](#benchmark), for the generated event logs.
 
 ### Generating data with real targets
-To execute the experiments with real targets, we employ the [experiments_real_targets.json](config_files/experiments_real_targets.json). The script's pipeline will output the [generated event logs (GenBaselineED)](data/event_logs/GenBaselineED), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
+To execute the experiments with real targets, we employ the [experiment_real_targets.json](config_files/experiment_real_targets.json). The script's pipeline will output the [generated event logs (GenBaselineED)](data/event_logs/GenBaselineED), which optimize their feature values towards [real-world event data features](data/BaselineED_feat.csv), alongside their respectively measured [feature values](data/GenBaselineED_feat.csv) and [benchmark metrics values](data/GenBaselineED_bench.csv).
 
 ```console
 conda activate gedi
-python main.py -a config_files/experiments_real_targets.json
+python main.py -a config_files/experiment_real_targets.json
 ```
 
 ### Generating data with grid targets
 To execute the experiments with grid targets, a single [configuration](config_files/grid_2obj) can be selected or all [grid objectives](data/grid_2obj) can be run with one command using the following script. This script will output the [generated event logs (GenED)](data/event_logs/GenED), alongside their respectively measured [feature values](data/GenED_feat.csv) and [benchmark metrics values](data/GenED_bench.csv).
 ```
 conda activate gedi
-python gedi/utils/execute_grid_targets.py config_files/test
+python gedi/utils/execute_grid_experiments.py config_files/test
 ```
 We employ the [Config files fabric](notebooks/grid_experiment_configfiles_fabric.ipynb) to create all necessary [configuration](config_files/grid_2obj) and [objective](data/grid_2obj) files for this experiment.
 For more details about these config_files, please refer to [Feature Extraction](#feature-extraction), [Generation](#generation), and [Benchmark](#benchmark).

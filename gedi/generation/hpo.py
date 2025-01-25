@@ -18,7 +18,7 @@ from pm4py import write_xes
 from pm4py.sim import play_out
 from smac import HyperparameterOptimizationFacade, Scenario
 from gedi.features import compute_features_from_event_data
-from gedi.generation.generator import PTLGenerator, add_extension_before_traces, setup_ptlg
+from gedi.generation.generator import PTLGenerator, add_extension_before_traces
 from gedi.utils.column_mappings import column_mappings
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
@@ -77,19 +77,34 @@ class GediTask():
         #generator_type: contains the generator type as a string
     @return: None
     """
-    def __init__(self, params = None, embedded_generator = None) -> None:
+    def __init__(self, params = None, embedded_generator = None, targets = None, config_space = None, system_params = None) -> None:
         print("=========================== Generator ==========================")
-        tasks, generator_params = self.setup_GediTask(params)
+        if embedded_generator is None and targets is None and config_space is None and system_params is None:
+            if params.get("generator_params") is not None and set(params.get("generator_params").keys()) == set(['experiment', 'config_space', 'n_trials']):
+                targets = params.get('generator_params').get('experiment')
+                config_space = params.get('generator_params').get('config_space')
+                system_params = {'n_trials': params.get('generator_params').get('n_trials')}
+            else:
+                raise TypeError(f"Missing 'params'. Please provide a dictionary with generator valid parameters. See https://github.com/lmu-dbs/gedi for more info.")
+
+        # If generator is not suitable, raise an error.
+        if embedded_generator is not None and (not hasattr(embedded_generator, 'generate_log') or not hasattr(embedded_generator, 'generate_optimized_log')):
+            raise ValueError("Unknown generator type. Please provide a valid generator or None. See https://github.com/lmu-dbs/gedi for more info.")
+
+        tasks, system_params = self.setup_GediTask(targets = targets,
+                                                      system_params = system_params)
         start = dt.now()
         if True: #try:
             self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
-            self.generator_wrapper([*tasks.iterrows()][0], generator_params=generator_params, embedded_generator = embedded_generator)#TESTING
+            #self.generator_wrapper([*tasks.iterrows()][0], embedded_generator = embedded_generator, config_space = config_space, system_params = system_params)#TESTING
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
                 random.seed(RANDOM_SEED)
-                partial_wrapper = partial(self.generator_wrapper, generator_params=generator_params,
-                                          embedded_generator = embedded_generator)
+                partial_wrapper = partial(self.generator_wrapper,
+                                          embedded_generator = embedded_generator,
+                                          config_space = config_space,
+                                          system_params = system_params)
                 generated_features = p.map(partial_wrapper, [(index, row) for index, row in tasks.iterrows()])
             self.generated_features = [
                         {
@@ -107,19 +122,20 @@ class GediTask():
         self.output_path = None
         self.feature_keys = None
 
-    def setup_GediTask(self, params):
+    def setup_GediTask(self, targets=None, system_params=None, params = None):
         tasks = None
-        if params is None:
+        if targets is None and system_params is None:
             default_params = {'generator_params': {'targets': {'ratio_top_20_variants': 0.2, 'epa_normalized_sequence_entropy_linear_forgetting': 0.4},
                                                    'config_space': {'mode': [5, 20], 'sequence': [0.01, 1], 'choice': [0.01, 1], 'parallel': [0.01, 1],
                                                                     'loop': [0.01, 1], 'silent': [0.01, 1], 'lt_dependency': [0.01, 1], 'num_traces': [10, 101], 'duplicate': [0], 'or': [0]},
-                                                   'n_trials': 50}}
+                                                   'system_params': {'n_trials': 50}
+                                                   }}
             raise TypeError(f"Missing 'params'. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
-        print(f"INFO: Running with {params}")
-        if params.get(OUTPUT_PATH) is None:
-            self.output_path = 'data/generated'
-        else:
-            self.output_path = params.get(OUTPUT_PATH)
+        print(f"INFO: Running with {targets}, {system_params}")
+        if system_params is None:
+            system_params = {'output_path': None, 'n_trials': None}
+
+        self.output_path = 'data/generated' if system_params.get(OUTPUT_PATH) is None else system_params.get(OUTPUT_PATH)
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path, exist_ok=True)
 
@@ -127,27 +143,25 @@ class GediTask():
             self.generated_features = pd.read_csv(self.output_path)
             return
 
-        #SET UP GENERATOR PARAMS
-        generator_params = params.get(GENERATOR_PARAMS)
-
         ## SET UP: Tasks from targets
-        targets = generator_params.get(TARGETS)
-
+        #TODO: Compatibility to older versions
+        """'
         if targets is None:
             targets = generator_params.get("experiment")#Compatibility with older versions
-            if targets is None:
+        """
+        if targets is None:
                 raise TypeError(f"Missing 'targets'. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
 
         tasks, output_path = get_tasks(targets, self.output_path)
         columns_to_rename = {col: column_mappings()[col] for col in tasks.columns if col in column_mappings()}
         tasks = tasks.rename(columns=columns_to_rename)
         self.output_path = output_path
-        return tasks, generator_params
+        return tasks, system_params
 
-    def generator_wrapper(self, task, generator_params=None, embedded_generator = None):
-        embedded_generator = embedded_generator() if embedded_generator is not None else PTLGenerator()
+    def generator_wrapper(self, task, embedded_generator = None, config_space = None, system_params = None):
+        embedded_generator = embedded_generator(config_space) if embedded_generator is not None else PTLGenerator(config_space)
         task = self.HPOTask(task, embedded_generator)
-        configs = task.optimize(generator_params = generator_params)
+        configs = task.optimize(system_params)
         random.seed(RANDOM_SEED)
         generated_features = embedded_generator.generate_optimized_log(config=configs,
                                                                        output_path=self.output_path,
@@ -188,21 +202,13 @@ class GediTask():
                 log_evaluation[key] = abs(self.objectives[key] - features[key])
             return log_evaluation
 
-        def optimize(self, generator_params):
-            ## SET UP GENERATOR
-            generator_specs = generator_params.get(GENERATOR)
-            if generator_specs is None:
-                configspace = ConfigurationSpace(setup_ptlg())
-            elif generator_specs.get(GENERATOR_TYPE) == 'ptlg':
-                configspace = ConfigurationSpace(setup_ptlg(generator_params.get(GENERATOR).get(CONFIG_SPACE)))
-            else:
-                raise ValueError("Unknown generator type. Please provide a dictionary with generator parameters as so: {default_params}. See https://github.com/lmu-dbs/gedi for more info.")
-
-            system_params = generator_params.get(SYSTEM_PARAMS)
-            n_trials = generator_params.get(SYSTEM_PARAMS).get(N_TRIALS) if system_params is not None and generator_params.get(SYSTEM_PARAMS).get(N_TRIALS) is not None else 20 #TODO: Add compatibility with older versions
+        def optimize(self, system_params):
+            #TODO: Add compatibility with older versions
+            n_trials = system_params.get(N_TRIALS) if system_params.get(N_TRIALS) is not None else 20
             print(f"INFO: Running with n_trials={n_trials}")
 
             objectives = [*self.objectives.keys()]
+            configspace = ConfigurationSpace(self.embedded_generator.configspace)
 
             # Scenario object specifying the multi-objective optimization environment
             scenario = Scenario(

@@ -70,34 +70,33 @@ def add_extension_before_traces(xes_file):
     with open(xes_file, "w") as f:
         f.write(xml_str)
 
-def setup_ptlg(config_space: Configuration=None):
-    if config_space is None:
-        configspace_tuples = {
-            "mode": (5, 40),
-            "sequence": (0.01, 1),
-            "choice": (0.01, 1),
-            "parallel": (0.01, 1),
-            "loop": (0.01, 1),
-            "silent": (0.01, 1),
-            "lt_dependency": (0.01, 1),
-            "num_traces": (100, 1001),
-            "duplicate": (0),
-            "or": (0),
-        }
-        print(f"WARNING: No config_space specified in config file. Continuing with {configspace_tuples}")
-    else:
-        configspace_lists = config_space
-        configspace_tuples = {}
-        for k, v in configspace_lists.items():
-            if len(v) == 1:
-                configspace_tuples[k] = v[0]
-            else:
-                configspace_tuples[k] = tuple(v)
-    return configspace_tuples
+
 
 class PTLGenerator():
     def __init__(self, configspace=None):
-        self.configspace = configspace
+        if configspace is None:
+            configspace_tuples = {
+                "mode": (5, 40),
+                "sequence": (0.01, 1),
+                "choice": (0.01, 1),
+                "parallel": (0.01, 1),
+                "loop": (0.01, 1),
+                "silent": (0.01, 1),
+                "lt_dependency": (0.01, 1),
+                "num_traces": (100, 1001),
+                "duplicate": (0),
+                "or": (0),
+            }
+            print(f"WARNING: No configspace specified in config file. Continuing with {configspace_tuples}")
+        else:
+            configspace_lists = configspace
+            configspace_tuples = {}
+            for k, v in configspace_lists.items():
+                if len(v) == 1:
+                    configspace_tuples[k] = v[0]
+                else:
+                    configspace_tuples[k] = tuple(v)
+        self.configspace = configspace_tuples
 
     def generate_log(self, config: Configuration, feature_keys, seed: int = 0):
         random.seed(RANDOM_SEED)
