@@ -102,6 +102,7 @@ class EventDataFeatures(EventLogFile):
                 print(f"SUCCESS: EventDataFeatures loaded features from {self.filepath}")
             elif isinstance(self.filename, list): # Computes features for list of .xes files
                 combined_features=pd.DataFrame()
+                #TODO: Fix IndexError when running config_files/experiment_real_targets.json
                 if self.filename[0].endswith(".json"):
                     self.filename = [ filename for filename in self.filename if filename.endswith(".json")]
                     dfs = []
