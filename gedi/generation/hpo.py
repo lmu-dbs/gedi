@@ -113,6 +113,10 @@ class GediTask():
                             for config in generated_features
                             if 'features' in config #and 'log' in config
                     ]
+        print(f"SUCCESS: Generator took {dt.now()-start} sec. Generated {len(self.generated_features)} event log(s).")
+        print(f"         Saved generated logs in {self.output_path}")
+        print("========================= ~ Generator ==========================")
+
 
     def clear(self):
         print("Clearing parameters...")
