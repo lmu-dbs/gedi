@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from ConfigSpace.configuration_space import Configuration
 from gedi.features import compute_features_from_event_data
 from gedi.generation.model import create_model
-from gedi.generation.simulation import simulate_log
+from gedi.generation.scheduler import play_log
 from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from pm4py import write_xes
 from xml.dom import minidom
@@ -102,7 +102,7 @@ class PTLGenerator():
         random.seed(RANDOM_SEED)
         tree = create_model(config)
         random.seed(RANDOM_SEED)
-        log = simulate_log(tree, config)
+        log = play_log(tree, config)
         features = compute_features_from_event_data(feature_keys, log)
         return log, features
 
