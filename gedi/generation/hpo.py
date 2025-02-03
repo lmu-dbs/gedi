@@ -97,6 +97,7 @@ class GediTask():
         if True: #try:
             self.feature_keys = sorted([feature for feature in tasks.columns.tolist() if feature != "log"])
             num_cores = multiprocessing.cpu_count() if len(tasks) >= multiprocessing.cpu_count() else len(tasks)
+            #NOTE FOR DEBUGGING USE THE LINE BELOW
             #self.generator_wrapper([*tasks.iterrows()][0], embedded_generator = embedded_generator, config_space = config_space, system_params = system_params)#TESTING
             with multiprocessing.Pool(num_cores) as p:
                 print(f"INFO: Generator starting at {start.strftime('%H:%M:%S')} using {num_cores} cores for {len(tasks)} tasks...")
@@ -163,14 +164,15 @@ class GediTask():
         return tasks, system_params
 
     def generator_wrapper(self, task, embedded_generator = None, config_space = None, system_params = None):
+        output_path = system_params.get(OUTPUT_PATH) if system_params.get(OUTPUT_PATH) is not None else self.output_path
         embedded_generator = embedded_generator(config_space) if embedded_generator is not None else PTLGenerator(config_space)
-        task = self.HPOTask(task, embedded_generator)
-        configs = task.optimize(system_params)
+        hpo_task = self.HPOTask(task, embedded_generator)
+        configs = hpo_task.optimize(system_params)
         random.seed(RANDOM_SEED)
         generated_features = embedded_generator.generate_optimized_log(config=configs,
-                                                                       output_path=self.output_path,
-                                                                       objectives=task.objectives,
-                                                                       identifier = task.identifier)
+                                                                       output_path=output_path,
+                                                                       objectives=task[1].drop('log', errors='ignore').to_dict(),
+                                                                       identifier = hpo_task.identifier)
         return generated_features
 
 

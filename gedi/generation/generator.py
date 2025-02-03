@@ -1,3 +1,4 @@
+import math
 import os
 import random
 import re
@@ -110,7 +111,9 @@ class PTLGenerator():
         if isinstance(config, list):
             config = config[0]
         feature_keys = objectives.keys()
-        log, generated_features = self.generate_log(config, feature_keys)
+        generation_keys = {k: v for k, v in objectives.items() if v is not None and
+                           not (isinstance(v, float) and math.isnan(v))}
+        log, generated_features = self.generate_log(config, generation_keys)
 
         identifier = "genEL" +str(identifier)
         random.seed(RANDOM_SEED)
