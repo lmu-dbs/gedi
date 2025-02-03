@@ -82,7 +82,7 @@ def dump_features_json(features: dict, output_path, content_type="features"):
     os.makedirs(os.path.split(json_path)[0], exist_ok=True)
     with open(json_path, 'w') as fp:
         json.dump(features, fp, default=int)
-        print(f"SUCCESS: Saved {len(features)-1} {content_type} in {json_path}")#-1 because 'log' is not a feature
+        print(f"SUCCESS: Saved {len(features)-2} {content_type} in {json_path}")#-2 because 'log' and 'target_similarities' are not features
 
 def compute_similarity(v1, v2):
 
