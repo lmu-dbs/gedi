@@ -118,7 +118,7 @@ class PTLGenerator():
         identifier = "genEL" +str(identifier)
         random.seed(RANDOM_SEED)
         save_path = get_output_key_value_location(objectives,
-                                            output_path, identifier, feature_keys)+".xes"
+                                            output_path, identifier)+".xes"
         write_xes(log, save_path)
         add_extension_before_traces(save_path)
         print("SUCCESS: Saved generated event log in", save_path)

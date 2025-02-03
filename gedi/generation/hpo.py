@@ -20,7 +20,6 @@ from smac import HyperparameterOptimizationFacade, Scenario
 from gedi.features import compute_features_from_event_data
 from gedi.generation.generator import PTLGenerator, add_extension_before_traces
 from gedi.utils.column_mappings import column_mappings
-from gedi.utils.io_helpers import get_output_key_value_location, dump_features_json, compute_similarity
 from gedi.utils.io_helpers import read_csvs
 from gedi.utils.param_keys import OUTPUT_PATH, INPUT_PATH
 from gedi.utils.param_keys.generator import GENERATOR_PARAMS, TARGETS, CONFIG_SPACE

@@ -54,21 +54,14 @@ def get_keys_abbreviation(obj_keys):
         abbreviated_keys.append(abbreviated_key)
     return '_'.join(abbreviated_keys)
 
-def get_output_key_value_location(obj, output_path, identifier, obj_keys=None):
+def get_output_key_value_location(obj, output_path, identifier):
     obj_sorted = dict(sorted(obj.items()))
-    if obj_keys is None:
-        obj_keys = [*obj_sorted.keys()]
+    obj_keys = [*obj_sorted.keys()]
+    folder_path = os.path.join(output_path, f"{len(obj_keys)}_{get_keys_abbreviation(obj_keys)}")
 
     obj_values = [round(x, 4) for x in [*obj_sorted.values()]]
-
-    if len(obj_keys) > 10:
-        folder_path = os.path.join(output_path, f"{len(obj_keys)}_features")
-        generated_file_name = f"{identifier}"
-    else:
-        folder_path = os.path.join(output_path, f"{len(obj_keys)}_{get_keys_abbreviation(obj_keys)}")
-        obj_values_joined = '_'.join(map(str, obj_values)).replace('.', '')
-        generated_file_name = f"{identifier}_{obj_values_joined}"
-
+    obj_values_joined = '_'.join(map(str, obj_values)).replace('.', '')
+    generated_file_name = f"{identifier}_{obj_values_joined}"
 
     os.makedirs(folder_path, exist_ok=True)
     save_path = os.path.join(folder_path, generated_file_name)
