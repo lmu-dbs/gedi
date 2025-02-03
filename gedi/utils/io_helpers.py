@@ -6,6 +6,7 @@ import re
 import shutil
 import numpy as np
 from collections import defaultdict
+from gedi.utils.param_keys.features import bpic_feature_values
 from pathlib import PurePath
 from scipy.spatial.distance import euclidean
 
@@ -84,27 +85,32 @@ def dump_features_json(features: dict, output_path, content_type="features"):
         json.dump(features, fp, default=int)
         print(f"SUCCESS: Saved {len(features)-2} {content_type} in {json_path}")#-2 because 'log' and 'target_similarities' are not features
 
-def compute_similarity(v1, v2):
+def normalize_value(value, min_val, max_val):
+    return (value - min_val) / (max_val - min_val) if max_val != min_val else 0.0
 
-    # Convert all values to float except for the value for the key "Log"
+def compute_similarity(v1, v2):
+    feature_ranges = bpic_feature_values()
+
+    # Convert all values to float except for the "log" key
     v1 = {k: (float(v) if k != "log" else v) for k, v in v1.items()}
     v2 = {k: (float(v) if k != "log" else v) for k, v in v2.items()}
 
-    # Filter out non-numeric values and ensure the same keys exist in both dictionaries
-    common_keys = set(v1.keys()).intersection(set(v2.keys()))
+    # Identify common numeric keys
+    common_keys = set(v1.keys()).intersection(set(v2.keys()), set(feature_ranges.keys()))
     numeric_keys = [k for k in common_keys if isinstance(v1[k], (int, float)) and isinstance(v2[k], (int, float))]
 
-    # Create vectors from the filtered keys
-    vec1 = np.array([v1[k] for k in numeric_keys])
-    vec2 = np.array([v2[k] for k in numeric_keys])
-
-    if len(vec1) == 0 or len(vec2) == 0:
-        print("[ERROR]: No common numeric keys found for (Edit) Distance calculation.")
+    if not numeric_keys:
+        print("[ERROR]: No common numeric keys found for similarity calculation.")
         return None
 
-    else:
-        # Calculate Euclidean Similarity
-        target_similarity = 1 / (1 + euclidean(vec1, vec2))
-        # print("VECTORS: ", vec1, vec2, target_similarity)
+    # Normalize values and compute differences
+    differences = []
+    for key in numeric_keys:
+        min_val, max_val = feature_ranges[key]
+        norm_v1 = normalize_value(v1[key], min_val, max_val)
+        norm_v2 = normalize_value(v2[key], min_val, max_val)
+        differences.append(abs(norm_v1 - norm_v2))
 
-        return target_similarity
+    # Compute average difference as similarity metric
+    target_similarity = 1 - np.mean(differences)
+    return target_similarity
