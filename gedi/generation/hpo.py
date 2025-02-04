@@ -167,10 +167,11 @@ class GediTask():
         embedded_generator = embedded_generator(config_space) if embedded_generator is not None else PTLGenerator(config_space)
         hpo_task = self.HPOTask(task, embedded_generator)
         configs = hpo_task.optimize(system_params)
+        objectives = dict(sorted(task[1].drop('log', errors='ignore').to_dict().items()))
         random.seed(RANDOM_SEED)
         generated_features = embedded_generator.generate_optimized_log(config=configs,
                                                                        output_path=output_path,
-                                                                       objectives=task[1].drop('log', errors='ignore').to_dict(),
+                                                                       objectives=objectives,
                                                                        identifier = hpo_task.identifier)
         return generated_features
 

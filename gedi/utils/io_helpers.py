@@ -67,14 +67,20 @@ def get_output_key_value_location(obj, output_path, identifier):
     save_path = os.path.join(folder_path, generated_file_name)
     return save_path
 
-def dump_features_json(features: dict, output_path, content_type="features"):
-    output_parts = PurePath(output_path.split(".xes")[0]).parts
-    features_path = os.path.join(output_parts[0], content_type,
-                                   *output_parts[1:])
-    json_path = features_path+'.json'
+def dump_features_json(features: dict, output_path, objectives=None, content_type="features"):
+    identifier = features['log']
+    output_parts = PurePath(output_path.split(".xes")[0]).parts if output_path.endswith(".xes") else PurePath(output_path).parts
+    feature_dir = os.path.join(output_parts[0],
+                                   *output_parts[1:], content_type)
+    if objectives is not None:
+        json_path = get_output_key_value_location(objectives,
+                                                feature_dir, identifier)+".json"
+    else:
+        json_path = os.path.join(feature_dir, identifier)+".json"
 
     os.makedirs(os.path.split(json_path)[0], exist_ok=True)
     with open(json_path, 'w') as fp:
+        #print(len(features), type(features), features)
         json.dump(features, fp, default=int)
         print(f"SUCCESS: Saved {len(features)-2} {content_type} in {json_path}")#-2 because 'log' and 'target_similarities' are not features
 
