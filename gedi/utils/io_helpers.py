@@ -69,7 +69,7 @@ def get_output_key_value_location(obj, output_path, identifier):
 
 def dump_features_json(features: dict, output_path, objectives=None, content_type="features"):
     identifier = features['log']
-    output_parts = PurePath(output_path.split(".xes")[0]).parts if output_path.endswith(".xes") else PurePath(output_path).parts
+    output_parts = PurePath(output_path.split(".xes")[0]).parts[:-1] if output_path.endswith(".xes") else PurePath(output_path).parts
     feature_dir = os.path.join(output_parts[0],
                                    *output_parts[1:], content_type)
     if objectives is not None:
