@@ -12,6 +12,7 @@ from gedi.utils.io_helpers import dump_features_json
 from gedi.utils.param_keys import INPUT_PATH
 from gedi.utils.param_keys.features import FEATURE_PARAMS, FEATURE_SET
 
+#TODO: replace with other feature file
 def get_sortby_parameter(elem):
     number = int(elem.rsplit(".")[0].rsplit("_", 1)[1])
     return number
