@@ -4,7 +4,7 @@ from datetime import datetime as dt
 from gedi.augmentation import InstanceAugmentator
 from gedi.benchmark import BenchmarkTest
 from gedi.config import get_model_params_list
-from gedi.features import EventLogFeatures
+from gedi.features import EventDataFeatures
 from gedi.generator import GenerateEventLogs
 from gedi.plotter import BenchmarkPlotter, FeaturesPlotter, AugmentationPlotter, GenerationPlotter
 from gedi.utils.default_argparse import ArgParser
@@ -22,7 +22,7 @@ def run(kwargs:dict, model_params_list: list, filename_list:list):
     @return:
     """
     params = kwargs[PARAMS]
-    ft = EventLogFeatures(None)
+    ft = EventDataFeatures(None)
     augmented_ft = InstanceAugmentator()
     gen = pd.DataFrame(columns=['metafeatures'])
 
@@ -38,7 +38,7 @@ def run(kwargs:dict, model_params_list: list, filename_list:list):
             benchmark = BenchmarkTest(model_params)#, event_logs=gen['log'])
             # BenchmarkPlotter(benchmark.features, output_path="output/plots")
         elif model_params.get(PIPELINE_STEP) == 'feature_extraction':
-            ft = EventLogFeatures(**kwargs, ft_params=model_params)
+            ft = EventDataFeatures(**kwargs, ft_params=model_params)
             FeaturesPlotter(ft.feat, model_params)
         elif model_params.get(PIPELINE_STEP) == "evaluation_plotter":
             GenerationPlotter(gen, model_params, output_path=model_params['output_path'], input_path=model_params['input_path'])
